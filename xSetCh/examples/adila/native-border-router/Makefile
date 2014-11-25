@@ -27,5 +27,5 @@ endif
 include $(CONTIKI)/Makefile.include
 
 connect-router:	border-router.native
-	#sudo ./border-router.native aaaa::1/64
-	sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64
+	sudo ./border-router.native aaaa::1/64
+	#sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64

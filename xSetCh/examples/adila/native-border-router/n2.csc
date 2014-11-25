@@ -47,9 +47,9 @@
       se.sics.cooja.mspmote.SkyMoteType
       <identifier>sky2</identifier>
       <description>setCh/unicast-senderC1</description>
-      <source EXPORT="discard">/home/adila/Desktop/241114-5pm/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
+      <source EXPORT="discard">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
       <commands EXPORT="discard">make unicast-senderC1.sky TARGET=sky</commands>
-      <firmware EXPORT="copy">/home/adila/Desktop/241114-5pm/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
+      <firmware EXPORT="copy">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
       <moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>

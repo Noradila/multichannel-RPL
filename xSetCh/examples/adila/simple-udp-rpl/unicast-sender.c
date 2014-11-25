@@ -100,7 +100,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
   uip_ipaddr_t *addr;
 
   uip_ipaddr_t sendTo1;
-  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+  //uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7400, 0x149c, 0x07ec);
 
   PROCESS_BEGIN();
 
