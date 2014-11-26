@@ -111,17 +111,17 @@ CMD_HANDLERS(border_router_cmd_handler);
 PROCESS(border_router_process, "Border router process");
 PROCESS(chChange_process, "Channel change process");
 
-#if WEBSERVER==0
+//#if WEBSERVER==0
 /* No webserver */
 AUTOSTART_PROCESSES(&border_router_process,&border_router_cmd_process, &chChange_process);
-#elif WEBSERVER>1
+//#elif WEBSERVER>1
 /* Use an external webserver application */
-#include "webserver-nogui.h"
+/*#include "webserver-nogui.h"
 AUTOSTART_PROCESSES(&border_router_process,&border_router_cmd_process,
 		    &webserver_nogui_process, &chChange_process);
-#else
+#else*/
 /* Use simple webserver with only one page */
-#include "httpd-simple.h"
+/*#include "httpd-simple.h"
 PROCESS(webserver_nogui_process, "Web server");
 PROCESS_THREAD(webserver_nogui_process, ev, data)
 {
@@ -138,9 +138,9 @@ PROCESS_THREAD(webserver_nogui_process, ev, data)
 }
 AUTOSTART_PROCESSES(&border_router_process,&border_router_cmd_process,
 		    &webserver_nogui_process, &chChange_process);
-
-static const char *TOP = "<html><head><title>ContikiRPL</title></head><body>\n";
-static const char *BOTTOM = "</body></html>\n";
+*/
+//static const char *TOP = "<html><head><title>ContikiRPL</title></head><body>\n";
+//static const char *BOTTOM = "</body></html>\n";
 static char buf[128];
 static int blen;
 #define ADD(...) do {                                                   \
@@ -162,7 +162,7 @@ receiver(struct simple_udp_connection *c,
          receiver_port, sender_port, datalen, data);
 }
 /*---------------------------------------------------------------------------*/
-static void
+/*static void
 ipaddr_add(const uip_ipaddr_t *addr)
 {
   uint16_t a;
@@ -183,9 +183,9 @@ ipaddr_add(const uip_ipaddr_t *addr)
       ADD("%x", a);
     }
   }
-}
+}*/
 /*---------------------------------------------------------------------------*/
-static
+/*static
 PT_THREAD(generate_routes(struct httpd_state *s))
 {
   static int i;
@@ -249,15 +249,15 @@ PT_THREAD(generate_routes(struct httpd_state *s))
   SEND_STRING(&s->sout, BOTTOM);
 
   PSOCK_END(&s->sout);
-}
+}*/
 /*---------------------------------------------------------------------------*/
-httpd_simple_script_t
+/*httpd_simple_script_t
 httpd_simple_get_script(const char *name)
 {
   return generate_routes;
 }
 
-#endif /* WEBSERVER */
+#endif*/ /* WEBSERVER */
 
 /*---------------------------------------------------------------------------*/
 static void

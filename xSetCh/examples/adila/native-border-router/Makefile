@@ -18,7 +18,7 @@ slip-config.c slip-dev.c
 WITH_WEBSERVER=1
 ifeq ($(WITH_WEBSERVER),1)
 CFLAGS += -DWEBSERVER=1
-PROJECT_SOURCEFILES += httpd-simple.c
+#PROJECT_SOURCEFILES += httpd-simple.c
 else ifneq ($(WITH_WEBSERVER), 0)
 APPS += $(WITH_WEBSERVER)
 CFLAGS += -DWEBSERVER=2
@@ -27,5 +27,5 @@ endif
 include $(CONTIKI)/Makefile.include
 
 connect-router:	border-router.native
-	sudo ./border-router.native aaaa::1/64
-	#sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64
+	#sudo ./border-router.native aaaa::1/64
+	sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64
