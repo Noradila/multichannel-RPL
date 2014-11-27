@@ -45,6 +45,7 @@
 #include <string.h>
 
 #define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -118,6 +119,11 @@ send_packet(mac_callback_t sent, void *ptr)
   } else {
     /* here we send the data over SLIP to the radio-chip */
     size = 0;
+
+//ADILA EDIT 26/11/14
+printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
+//-------------------
+
 #if SERIALIZE_ATTRIBUTES
     size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
 #endif

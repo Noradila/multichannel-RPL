@@ -91,7 +91,7 @@ slipnet_input(void)
     printf("\n");
   }
 
-  /* printf("SUT: %u\n", uip_len); */
+  /*printf("SUT: %u\n", uip_len); */
   slip_send_packet(uip_buf, uip_len);
 }
 /*---------------------------------------------------------------------------*/

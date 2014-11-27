@@ -165,7 +165,7 @@ slip_input_callback(void)
 {
 
 //ADILA EDIT 10/11/14
-  static uip_ds6_route_t *r;
+/*  static uip_ds6_route_t *r;
   static uip_ds6_nbr_t *nbr;
 
 /*printf(" addr ");
@@ -175,7 +175,7 @@ uip_debug_ipaddr_print(PACKETBUF_ADDR_RECEIVER);
 printf("\n\n");*/
 //printf("PRINT? rime[0] %d rime[1] %d ", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1]);
 
-    printf("contikimac: send unicast to %u.%u\n",
+/*    printf("contikimac: send unicast to %u.%u\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1]);
 
@@ -200,7 +200,7 @@ printf("PRINT? ");
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
 */
-nbr = nbr_table_head(ds6_neighbors);
+/*nbr = nbr_table_head(ds6_neighbors);
 uip_debug_ipaddr_print(&nbr->ipaddr);
 	printf("nbr->ipaddr.u8[0] %d %d %d %d %d %d\n\n", nbr->ipaddr.u8[0], nbr->ipaddr.u8[1], nbr->ipaddr.u8[2], nbr->ipaddr.u8[3], nbr->ipaddr.u8[4], nbr->ipaddr.u8[5]);
 	for(nbr = nbr_table_head(ds6_neighbors);
@@ -220,7 +220,7 @@ uip_debug_ipaddr_print(&nbr->ipaddr);
 	uip_debug_lladdr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
     }*/
-r = uip_ds6_route_head();
+/*r = uip_ds6_route_head();
 //change to tx channel?
 printf("CHANGE TO TX CHANNEL ");
 uip_debug_ipaddr_print(&uip_ds6_if.addr_list[1].ipaddr);
@@ -232,7 +232,7 @@ printf("\n\n");
 //printf(" buf %d.%d.%d.%d.%d.%d.%d.%d.%d buf LLADDR?\n\n", uip_buf[2], uip_buf[3], uip_buf[4], uip_buf[5], uip_buf[6], uip_buf[7], uip_buf[8], uip_buf[9], uip_buf[10]);
 
 //-------------------
-
+*/
   PRINTF("SR-SIN: %u '%c%c'\n", uip_len, uip_buf[0], uip_buf[1]);
   cmd_input(uip_buf, uip_len);
   uip_len = 0;
