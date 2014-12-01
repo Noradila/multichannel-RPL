@@ -55,6 +55,8 @@
 #define PRINTF(...)
 #endif
 
+#define PRINTADDR(addr) printf(" %02x%02x:%02x%02x:%02x%02x:%02x%02x ", ((uint8_t *)addr)[0], ((uint8_t *)addr)[1], ((uint8_t *)addr)[2], ((uint8_t *)addr)[3], ((uint8_t *)addr)[4], ((uint8_t *)addr)[5], ((uint8_t *)addr)[6], ((uint8_t *)addr)[7])
+
 #define MAX_CALLBACKS 16
 static int callback_pos;
 
@@ -105,7 +107,12 @@ send_packet(mac_callback_t sent, void *ptr)
 {
   int size;
   /* 3 bytes per packet attribute is required for serialization */
-  uint8_t buf[PACKETBUF_NUM_ATTRS * 3 + PACKETBUF_SIZE + 3];
+  //uint8_t buf[PACKETBUF_NUM_ATTRS * 3 + PACKETBUF_SIZE + 3];
+
+//ADILA EDIT 1/12/14
+  uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
+//------------------
+
   uint8_t sid;
 
   packetbuf_set_addr(PACKETBUF_ADDR_SENDER, &rimeaddr_node_addr);
@@ -123,8 +130,19 @@ send_packet(mac_callback_t sent, void *ptr)
     size = 0;
 
 //ADILA EDIT 26/11/14
-printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
+static uip_ds6_route_t *r;
+r = uip_ds6_route_head();
+uip_ipaddr_t theNextHop;
+//uip_ipaddr_copy(&theNextHop, uip_ds6_route_nexthop(r));
+//uip_debug_ipaddr_print(&theNextHop);
 
+printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
+//uip_debug_ipaddr_print(&rimeaddr_node_addr);
+//uip_debug_ipadddr_print((rimeaddr_t *)&frame.dest_addr);
+//uip_debug_ipaddr_print(packetbuf_addr(PACKETBUF_ADDR_SENDER));
+//uip_debug_ipaddr_print(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
+PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
+printf("\n\n");
 /*  static uip_ds6_route_t *r;
 
     for(r = uip_ds6_route_head(); r != NULL; 
@@ -141,9 +159,18 @@ printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
 //-------------------
 
 #if SERIALIZE_ATTRIBUTES
-    size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
+    //size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
+
+//ADILA EDIT 1/12/14
+    size = packetutils_serialize_atts(&buf[4], sizeof(buf) - 4);
+//------------------
+
 #endif
-    if(size < 0 || size + packetbuf_totlen() + 3 > sizeof(buf)) {
+    //if(size < 0 || size + packetbuf_totlen() + 3 > sizeof(buf)) {
+
+//ADILA EDIT 1/12/14
+    if(size < 0 || size + packetbuf_totlen() + 4 > sizeof(buf)) {
+//------------------
       PRINTF("br-rdc: send failed, too large header\n");
       mac_call_sent_callback(sent, ptr, MAC_TX_ERR_FATAL, 1);
     } else {
@@ -154,17 +181,17 @@ printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
       buf[2] = sid; /* sequence or session number for this packet */
 
 //ADILA EDIT 1/12/14
-/*buf[3] = 17;
+buf[3] = 17;
       memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
 
       write_to_slip(buf, packetbuf_totlen() + size + 4);
-*/
+
 //------------------
 
       /* Copy packet data */
-      memcpy(&buf[3 + size], packetbuf_hdrptr(), packetbuf_totlen());
+      //memcpy(&buf[3 + size], packetbuf_hdrptr(), packetbuf_totlen());
 
-      write_to_slip(buf, packetbuf_totlen() + size + 3);
+      //write_to_slip(buf, packetbuf_totlen() + size + 3);
     }
   }
 }

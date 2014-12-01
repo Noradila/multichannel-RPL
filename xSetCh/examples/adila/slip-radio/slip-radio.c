@@ -111,13 +111,15 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
       int pos;
       packet_ids[packet_pos] = data[2];
 
+//ADILA EDIT 1/12/14
+printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
       packetbuf_clear();
-      pos = packetutils_deserialize_atts(&data[3], len - 3);
+      pos = packetutils_deserialize_atts(&data[4], len - 4);
       if(pos < 0) {
         PRINTF("slip-radio: illegal packet attributes\n");
         return 1;
       }
-      pos += 3;
+      pos += 4;
       len -= pos;
       if(len > PACKETBUF_SIZE) {
         len = PACKETBUF_SIZE;
@@ -139,6 +141,36 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
       }
 
       return 1;
+//------------------
+
+/*      packetbuf_clear();
+      pos = packetutils_deserialize_atts(&data[3], len - 3);
+      if(pos < 0) {
+        PRINTF("slip-radio: illegal packet attributes\n");
+        return 1;
+      }
+      pos += 3;
+      len -= pos;
+      if(len > PACKETBUF_SIZE) {
+        len = PACKETBUF_SIZE;
+      }
+      memcpy(packetbuf_dataptr(), &data[pos], len);
+      packetbuf_set_datalen(len);
+
+      PRINTF("slip-radio: sending %u (%d bytes)\n",
+             data[2], packetbuf_datalen());
+      printf("RADIO sending packet\n");
+
+      /* parse frame before sending to get addresses, etc. */
+/*      no_framer.parse();
+      NETSTACK_MAC.send(packet_sent, &packet_ids[packet_pos]);
+
+      packet_pos++;
+      if(packet_pos >= sizeof(packet_ids)) {
+	packet_pos = 0;
+      }
+
+      return 1;*/
     }
   } else if(uip_buf[0] == '?') {
     PRINTF("Got request message of type %c\n", uip_buf[1]);
