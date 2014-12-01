@@ -64,6 +64,10 @@
 #include "lib/list.h"
 #include "lib/memb.h"
 
+//#include "/home/adila/Desktop/multichannel-RPL/xSetCh/examples/adila/slip-radio/slip-radio-cc2420.c"
+//#include "dev/cc2420.h"
+//#include "cmd.h"
+
 #include "simple-udp.h"
 #define UDP_PORT 1234
 #define SERVICE_ID 190
@@ -420,10 +424,18 @@ PROCESS_THREAD(chChange_process, ev, data)
   uip_ipaddr_t sendTo2;
   uip_ip6addr(&sendTo2, 0xaaaa, 0, 0, 0, 0x212, 0x7402, 0x0002, 0x0202);
 
+//const uint8_t *arr[3];
+//arr[0] = "!";
+//arr[1] = "C";
+//arr[2] = 14;
+
   PROCESS_BEGIN();
 
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
+
+//cmd_handler_cc2420(const uint8_t *data, int len)
+//cmd_handler_cc2420(arr, sizeof(arr));
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {

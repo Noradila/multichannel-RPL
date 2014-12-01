@@ -39,6 +39,9 @@
 int
 cmd_handler_cc2420(const uint8_t *data, int len)
 {
+
+//printf("cc2420_cmd: setting channel: %d\n", data[2]);
+
   if(data[0] == '!') {
     if(data[1] == 'C') {
       printf("cc2420_cmd: setting channel: %d\n", data[2]);

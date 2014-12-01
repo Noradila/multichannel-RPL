@@ -15,6 +15,9 @@ CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 PROJECT_SOURCEFILES += border-router-cmds.c tun-bridge.c border-router-rdc.c \
 slip-config.c slip-dev.c
 
+#/home/adila/Desktop/multichannel-RPL/xSetCh/examples/adila/slip-radio/slip-radio-cc2420.c
+#../../slip-radio/slip-radio-cc2420.c
+
 WITH_WEBSERVER=1
 ifeq ($(WITH_WEBSERVER),1)
 CFLAGS += -DWEBSERVER=1
