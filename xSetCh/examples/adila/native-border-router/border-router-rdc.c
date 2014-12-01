@@ -44,6 +44,8 @@
 #include "border-router.h"
 #include <string.h>
 
+#include "net/uip-ds6.h"
+
 #define DEBUG 0
 #define DEBUG 1
 #if DEBUG
@@ -122,6 +124,20 @@ send_packet(mac_callback_t sent, void *ptr)
 
 //ADILA EDIT 26/11/14
 printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
+
+/*  static uip_ds6_route_t *r;
+
+    for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+	printf("IN BR-RDCC ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+    }
+*/
 //-------------------
 
 #if SERIALIZE_ATTRIBUTES
@@ -136,6 +152,14 @@ printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP\n\n");
       buf[0] = '!';
       buf[1] = 'S';
       buf[2] = sid; /* sequence or session number for this packet */
+
+//ADILA EDIT 1/12/14
+/*buf[3] = 17;
+      memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
+
+      write_to_slip(buf, packetbuf_totlen() + size + 4);
+*/
+//------------------
 
       /* Copy packet data */
       memcpy(&buf[3 + size], packetbuf_hdrptr(), packetbuf_totlen());

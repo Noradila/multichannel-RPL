@@ -101,6 +101,9 @@ static int
 slip_radio_cmd_handler(const uint8_t *data, int len)
 {
   int i;
+//cc2420_set_channel(15);
+//printf("\n\nSET CHANNEL 24\n\n");
+//printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
   if(data[0] == '!') {
     /* should send out stuff to the radio - ignore it as IP */
     /* --- s e n d --- */
