@@ -131,23 +131,34 @@ send_packet(mac_callback_t sent, void *ptr)
 
 //ADILA EDIT 26/11/14
 static uip_ds6_route_t *r;
-r = uip_ds6_route_head();
-uip_ipaddr_t *theNextHop;
+//r = uip_ds6_route_head();
+//uip_ipaddr_t *theNextHop;
 uip_ipaddr_t nH;
-//uip_ipaddr_copy(&theNextHop, uip_ds6_route_nexthop(r));
-//uip_debug_ipaddr_print(&theNextHop);
 
 printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-//uip_debug_ipaddr_print(&rimeaddr_node_addr);
-//uip_debug_ipadddr_print((rimeaddr_t *)&frame.dest_addr);
-//uip_debug_ipaddr_print(packetbuf_addr(PACKETBUF_ADDR_SENDER));
-//uip_debug_ipaddr_print(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
 PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
 printf("\n\n");
-/*  static uip_ds6_route_t *r;
+
+uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
+
+
+printf("\n\nNEWLY FORMAT IP ");
+uip_debug_ipaddr_print(&nH);
+printf("\n\n");
+
+//  static uip_ds6_route_t *r;
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
+
+	if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
+		printf("\n\nSAME ");
+		uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+		printf(" nH ");
+		uip_debug_ipaddr_print(&nH);
+		printf("\n\n");
+	}
+
 	printf("IN BR-RDCC ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
@@ -156,7 +167,7 @@ printf("\n\n");
 	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
     }
-*/
+
 //-------------------
 
 #if SERIALIZE_ATTRIBUTES
@@ -183,30 +194,6 @@ printf("\n\n");
 
 //ADILA EDIT 1/12/14
 buf[3] = 17;
-
-theNextHop = uip_ds6_route_nexthop(r);
-//nH = theNextHop;
-//uip_ipaddr_copy(&theNextHop, uip_ds6_route_nexthop(r));
-printf("\n\nIN NBR NEXTHOP IS ");
-//uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-uip_debug_ipaddr_print(theNextHop);
-//uip_debug_ipaddr_print(&nH);
-//printf(" UIP_HTONS(addr4) %u", UIP_HTONS(&theNextHop));
-//printf(" part 11 is %x\n\n", (theNextHop)[10]);
-printf("\n\n");
-//printf(" part 11 is %x\n\n", (theNextHop)->u8[10]);
-//printf(" part 11 is %x\n\n", (theNextHop)[10]);
-
-printf("\n\nPACKETBUF ADDR RECEIVER %02x%02x:%02x%02x:%02x%02x:%02x%02x \n\n", ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[0], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
-
-uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
-
-//uint8_t oX;
-//oX = ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2];
-
-printf("\n\nNEWLY FORMAT IP ");
-uip_debug_ipaddr_print(&nH);
-printf("\n\n");
 
       memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
 
