@@ -109,9 +109,12 @@ send_packet(mac_callback_t sent, void *ptr)
   /* 3 bytes per packet attribute is required for serialization */
   //uint8_t buf[PACKETBUF_NUM_ATTRS * 3 + PACKETBUF_SIZE + 3];
 
-//ADILA EDIT 1/12/14
+  //ADILA EDIT 1/12/14
+  static uip_ds6_route_t *r;
+  uip_ipaddr_t nH;
+
   uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
-//------------------
+  //------------------
 
   uint8_t sid;
 
@@ -129,24 +132,18 @@ send_packet(mac_callback_t sent, void *ptr)
     /* here we send the data over SLIP to the radio-chip */
     size = 0;
 
-//ADILA EDIT 26/11/14
-static uip_ds6_route_t *r;
-//r = uip_ds6_route_head();
-//uip_ipaddr_t *theNextHop;
-uip_ipaddr_t nH;
+    //ADILA EDIT 26/11/14
+    //printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
+    //PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
+    //printf("\n\n");
 
-printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
-printf("\n\n");
-
-uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
+    //reconstruct the local IP from MAC address
+    uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 
 
-printf("\n\nNEWLY FORMAT IP ");
-uip_debug_ipaddr_print(&nH);
-printf("\n\n");
-
-//  static uip_ds6_route_t *r;
+    //printf("\n\nNEWLY FORMAT IP ");
+    //uip_debug_ipaddr_print(&nH);
+    //printf("\n\n");
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {

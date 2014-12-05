@@ -64,10 +64,6 @@
 #include "lib/list.h"
 #include "lib/memb.h"
 
-//#include "/home/adila/Desktop/multichannel-RPL/xSetCh/examples/adila/slip-radio/slip-radio-cc2420.c"
-//#include "dev/cc2420.h"
-//#include "cmd.h"
-
 #include "simple-udp.h"
 #define UDP_PORT 1234
 #define SERVICE_ID 190
@@ -421,21 +417,10 @@ PROCESS_THREAD(chChange_process, ev, data)
   uint8_t randomNewCh;
   static uip_ds6_route_t *r;
 
-  uip_ipaddr_t sendTo2;
-  uip_ip6addr(&sendTo2, 0xaaaa, 0, 0, 0, 0x212, 0x7402, 0x0002, 0x0202);
-
-//const uint8_t *arr[3];
-//arr[0] = "!";
-//arr[1] = "C";
-//arr[2] = 14;
-
   PROCESS_BEGIN();
 
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
-
-//cmd_handler_cc2420(const uint8_t *data, int len)
-//cmd_handler_cc2420(arr, sizeof(arr));
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -452,6 +437,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	r = uip_ds6_route_next(r)) {
 
 	randomNewCh = random_rand() % 16 + 11;
+	//! check if randomNewCh is blacklisted (if it's on the list, low success rate)
 
 	msg2.type = CH_CHANGE;
 	msg2.value = randomNewCh;
@@ -461,10 +447,8 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//uip_debug_ipaddr_print(&sendTo2);
 	printf("\n");
 
-	//simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo2);
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
 	//equals to 30 secs? (even though it's supposed to be 3 secs
