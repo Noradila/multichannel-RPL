@@ -145,7 +145,7 @@ send_packet(mac_callback_t sent, void *ptr)
     //uip_debug_ipaddr_print(&nH);
     //printf("\n\n");
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+/*    for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
 	if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
@@ -154,16 +154,19 @@ send_packet(mac_callback_t sent, void *ptr)
 		printf(" nH ");
 		uip_debug_ipaddr_print(&nH);
 		printf("\n\n");
-	}
 
-	printf("IN BR-RDCC ROUTE: ");
+		//buf[3] = 15;
+		break;
+	}
+*/
+	/*printf("IN BR-RDCC ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }
+	printf("\n");*/
+//    }
 
 //-------------------
 
@@ -189,8 +192,32 @@ send_packet(mac_callback_t sent, void *ptr)
       buf[1] = 'S';
       buf[2] = sid; /* sequence or session number for this packet */
 
-//ADILA EDIT 1/12/14
-buf[3] = 17;
+      //ADILA EDIT 1/12/14
+      //! if receiver MAC address is not 0000.0000.0000.0000
+      //! it's supposed to be 0021.7402.0002.0202
+      if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5] != 0) {
+
+        for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {
+
+	  if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
+	    printf("\n\nSAME ");
+	    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	    printf(" nH ");
+	    uip_debug_ipaddr_print(&nH);
+	    printf("\n\n");
+
+	    buf[3] = r->nbrCh;
+	    break;
+	  }
+        }
+        printf("\n\n%d SEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",buf[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
+	printf("\n\n");
+	//buf[3] = 21;
+      }
+      else {
+	buf[3] = 0;
+      }
 
       memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
 

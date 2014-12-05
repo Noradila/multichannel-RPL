@@ -422,7 +422,7 @@ PROCESS_THREAD(chChange_process, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+    /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -431,7 +431,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-    }
+    }*/
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {

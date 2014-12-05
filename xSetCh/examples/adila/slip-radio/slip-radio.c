@@ -101,9 +101,7 @@ static int
 slip_radio_cmd_handler(const uint8_t *data, int len)
 {
   int i;
-//cc2420_set_channel(15);
-//printf("\n\nSET CHANNEL 24\n\n");
-//printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
+
   if(data[0] == '!') {
     /* should send out stuff to the radio - ignore it as IP */
     /* --- s e n d --- */
@@ -111,8 +109,12 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
       int pos;
       packet_ids[packet_pos] = data[2];
 
-//ADILA EDIT 1/12/14
-printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
+      //ADILA EDIT 1/12/14
+      if(data[3] != 0) {
+        printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
+        //cc2420_set_channel(data[3]);
+      }
+
       packetbuf_clear();
       pos = packetutils_deserialize_atts(&data[4], len - 4);
       if(pos < 0) {
@@ -141,7 +143,7 @@ printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
       }
 
       return 1;
-//------------------
+      //------------------
 
 /*      packetbuf_clear();
       pos = packetutils_deserialize_atts(&data[3], len - 3);
@@ -198,76 +200,6 @@ slip_radio_cmd_output(const uint8_t *data, int data_len)
 static void
 slip_input_callback(void)
 {
-
-//ADILA EDIT 10/11/14
-/*  static uip_ds6_route_t *r;
-  static uip_ds6_nbr_t *nbr;
-
-/*printf(" addr ");
-uip_debug_ipaddr_print(PACKETBUF_ADDR_SENDER);
-printf(" addr ");
-uip_debug_ipaddr_print(PACKETBUF_ADDR_RECEIVER);
-printf("\n\n");*/
-//printf("PRINT? rime[0] %d rime[1] %d ", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1]);
-
-/*    printf("contikimac: send unicast to %u.%u\n",
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1]);
-
-    printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[0],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[1],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[2],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[3],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[4],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[5],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[6],
-               packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[7]);
-/*
-printf("PRINT? ");
-    printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[3],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[4],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
-*/
-/*nbr = nbr_table_head(ds6_neighbors);
-uip_debug_ipaddr_print(&nbr->ipaddr);
-	printf("nbr->ipaddr.u8[0] %d %d %d %d %d %d\n\n", nbr->ipaddr.u8[0], nbr->ipaddr.u8[1], nbr->ipaddr.u8[2], nbr->ipaddr.u8[3], nbr->ipaddr.u8[4], nbr->ipaddr.u8[5]);
-	for(nbr = nbr_table_head(ds6_neighbors);
-	  nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors, nbr)) {
-	uip_debug_ipaddr_print(&nbr->ipaddr);
-	printf(" via ");
-	//uip_debug_ipaddr_print(nbr_table_nexthop(nbr));
-	printf("\n");
-	}
-
-/*    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("%d ROUTE: ", r->nbrCh);
-	uip_debug_lladdr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_lladdr_print(uip_ds6_route_nexthop(r));
-	printf("\n");
-    }*/
-/*r = uip_ds6_route_head();
-//change to tx channel?
-printf("CHANGE TO TX CHANNEL ");
-uip_debug_ipaddr_print(&uip_ds6_if.addr_list[1].ipaddr);
-printf(" ");
-uip_debug_ipaddr_print(uip_ds6_route_nexthop(&uip_ds6_if.addr_list[1].ipaddr));
-//uip_debug_ipaddr_print(&r->ipaddr);
-printf("\n\n");
-//printf("%d.%d.%d.%d.%d.%d.%d.%d.%d", uip_lladdr.addr[0], uip_lladdr.addr[1], uip_lladdr.addr[2], uip_lladdr.addr[3], uip_lladdr.addr[4], uip_lladdr.addr[5], uip_lladdr.addr[6], uip_lladdr.addr[7], uip_lladdr.addr[8]);
-//printf(" buf %d.%d.%d.%d.%d.%d.%d.%d.%d buf LLADDR?\n\n", uip_buf[2], uip_buf[3], uip_buf[4], uip_buf[5], uip_buf[6], uip_buf[7], uip_buf[8], uip_buf[9], uip_buf[10]);
-
-//-------------------
-*/
   PRINTF("SR-SIN: %u '%c%c'\n", uip_len, uip_buf[0], uip_buf[1]);
   cmd_input(uip_buf, uip_len);
   uip_len = 0;
