@@ -164,7 +164,7 @@ slip_packet_input(unsigned char *data, int len)
 {
   packetbuf_copyfrom(data, len);
   if(slip_config_verbose > 0) {
-    printf("Packet input over SLIP: %d\n", len);
+    //printf("Packet input over SLIP: %d\n", len);
   }
   NETSTACK_RDC.input();
 }
@@ -220,7 +220,7 @@ serial_input(FILE *inslip)
         }
       } else {
         if(slip_config_verbose > 2) {
-          printf("Packet from SLIP of length %d - write TUN\n", inbufptr);
+          //printf("Packet from SLIP of length %d - write TUN\n", inbufptr);
           if(slip_config_verbose > 4) {
 #if WIRESHARK_IMPORT_FORMAT
 //            printf("0000");
@@ -365,7 +365,7 @@ write_to_serial(int outfd, const uint8_t *inbuf, int len)
 #ifdef __CYGWIN__
 //    printf("Packet from WPCAP of length %d - write SLIP\n", len);
 #else
-    printf("Packet from TUN of length %d - write SLIP\n", len);
+    //printf("Packet from TUN of length %d - write SLIP\n", len);
 #endif
     if(slip_config_verbose > 4) {
 #if WIRESHARK_IMPORT_FORMAT
@@ -417,7 +417,7 @@ write_to_slip(const uint8_t *buf, int len)
   if(slipfd > 0) {
 
 //ADILA EDIT 26/11/14
-printf("\n\nIN SLIP-DEV WRITE TO SLIP\n\n");
+//printf("\n\nIN SLIP-DEV WRITE TO SLIP\n\n");
 //-------------------
 
     write_to_serial(slipfd, buf, len);

@@ -333,6 +333,12 @@ uip_ds6_addr_add(uip_ipaddr_t *ipaddr, unsigned long vlifetime, uint8_t type)
       locaddr->isinfinite = 0;
       stimer_set(&(locaddr->vlifetime), vlifetime);
     }
+
+//ADILA EDIT 03/11/14
+locaddr->currentCh = 26;
+locaddr->prevCh = 26;
+//-------------------
+
 #if UIP_ND6_DEF_MAXDADNS > 0
     locaddr->state = ADDR_TENTATIVE;
     timer_set(&locaddr->dadtimer,

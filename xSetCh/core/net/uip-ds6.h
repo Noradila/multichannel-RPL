@@ -170,6 +170,12 @@ typedef struct uip_ds6_addr {
   uint8_t type;
   uint8_t isinfinite;
   struct stimer vlifetime;
+
+//ADILA EDIT 03/11/14
+uint8_t currentCh;
+uint8_t prevCh;
+//-------------------
+
 #if UIP_ND6_DEF_MAXDADNS > 0
   struct timer dadtimer;
   uint8_t dadnscount;

@@ -47,7 +47,7 @@
 #include "net/uip-ds6.h"
 
 #define DEBUG 0
-#define DEBUG 1
+//#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -132,57 +132,22 @@ send_packet(mac_callback_t sent, void *ptr)
     /* here we send the data over SLIP to the radio-chip */
     size = 0;
 
-    //ADILA EDIT 26/11/14
-    //printf("\n\nSEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-    //PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));
-    //printf("\n\n");
-
     //reconstruct the local IP from MAC address
     uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
-
-
-    //printf("\n\nNEWLY FORMAT IP ");
-    //uip_debug_ipaddr_print(&nH);
-    //printf("\n\n");
-
-/*    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-
-	if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
-		printf("\n\nSAME ");
-		uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-		printf(" nH ");
-		uip_debug_ipaddr_print(&nH);
-		printf("\n\n");
-
-		//buf[3] = 15;
-		break;
-	}
-*/
-	/*printf("IN BR-RDCC ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");*/
-//    }
-
-//-------------------
 
 #if SERIALIZE_ATTRIBUTES
     //size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
 
-//ADILA EDIT 1/12/14
+    //ADILA EDIT 1/12/14
     size = packetutils_serialize_atts(&buf[4], sizeof(buf) - 4);
-//------------------
+    //------------------
 
 #endif
     //if(size < 0 || size + packetbuf_totlen() + 3 > sizeof(buf)) {
 
-//ADILA EDIT 1/12/14
+    //ADILA EDIT 1/12/14
     if(size < 0 || size + packetbuf_totlen() + 4 > sizeof(buf)) {
-//------------------
+    //------------------
       PRINTF("br-rdc: send failed, too large header\n");
       mac_call_sent_callback(sent, ptr, MAC_TX_ERR_FATAL, 1);
     } else {
@@ -201,23 +166,23 @@ send_packet(mac_callback_t sent, void *ptr)
 	  r = uip_ds6_route_next(r)) {
 
 	  if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
-	    printf("\n\nSAME ");
-	    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	    printf(" nH ");
-	    uip_debug_ipaddr_print(&nH);
-	    printf("\n\n");
+	    //printf("\n\nSAME ");
+	    //uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	    //printf(" nH ");
+	    //uip_debug_ipaddr_print(&nH);
+	    //printf("\n\n");
 
+	    //! get the transmitting channel from routing table
 	    buf[3] = r->nbrCh;
 	    break;
 	  }
         }
-        printf("\n\n%d SEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",buf[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-	printf("\n\n");
-	//buf[3] = 21;
       }
       else {
 	buf[3] = 0;
       }
+
+      //printf("\n\n%d SEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",buf[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
 
       memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
 

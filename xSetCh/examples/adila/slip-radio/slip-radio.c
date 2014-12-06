@@ -43,7 +43,7 @@
 #include "net/packetbuf.h"
 
 #define DEBUG DEBUG_NONE
-#define DEBUG 1
+//#define DEBUG 1
 #include "net/uip-debug.h"
 #include "cmd.h"
 #include "slip-radio.h"
@@ -81,7 +81,7 @@ packet_sent(void *ptr, int status, int transmissions)
 
 //ADILA EDIT 10/11/14
 //reset channel here?
-printf("RESET TO LISTENING CH\n\n");
+printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
 cc2420_set_channel(26);
 //-------------------
 
@@ -111,7 +111,7 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
 
       //ADILA EDIT 1/12/14
       if(data[3] != 0) {
-        printf("\n\nADILA EDIT VALUE SHOULD BE 17. DATA[3] IS %d\n\n", data[3]);
+        printf("DATA[3] IS %d\n", data[3]);
         //cc2420_set_channel(data[3]);
       }
 
