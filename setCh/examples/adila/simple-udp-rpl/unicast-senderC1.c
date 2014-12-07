@@ -55,9 +55,13 @@
 
 static struct simple_udp_connection unicast_connection;
 
+//the application specific event value
+static process_event_t event_data_ready;
+
 enum {
 	TRIGGER,
-	CH_CHANGE
+	CH_CHANGE,
+	NBR_CH_CHANGE
 };
 
 struct unicast_message {
@@ -71,7 +75,8 @@ struct unicast_message {
 
 /*---------------------------------------------------------------------------*/
 PROCESS(unicast_sender_process, "Unicast sender example process");
-AUTOSTART_PROCESSES(&unicast_sender_process);
+PROCESS(test1, "test");
+AUTOSTART_PROCESSES(&unicast_sender_process, &test1);
 /*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
@@ -90,6 +95,11 @@ receiver(struct simple_udp_connection *c,
       printf("%d received CH_CHANGE from ", msg->value);
       uip_debug_ipaddr_print(sender_addr);
       printf("\n");
+
+      msg2.type = NBR_CH_CHANGE;
+      msg2.value = msg->value;
+
+      process_post_synch(&test1, event_data_ready, &msg2);
   }//end if(msg->type == CH_CHANGE)
   else {
   printf("Data received on port %d from port %d with length %d\n",
@@ -179,6 +189,74 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
       message_number++;
       simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &sendTo1);
   }
+
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(test1, ev, data)
+{
+  static struct etimer time;
+  struct unicast_message *msg;
+  struct unicast_message msg2;
+  msg = data;
+
+  static uip_ds6_route_t *r;
+
+  uip_ipaddr_t sendTo1;
+  uip_ip6addr(&sendTo1, 0xfe80, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
+  uip_ipaddr_t sendTo1G;
+  uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
+  uip_ipaddr_t nextHopAddr;
+  uip_ip6addr(&nextHopAddr, 0, 0, 0, 0, 0, 0, 0, 0);
+
+  PROCESS_BEGIN();
+
+  while(1) {
+    PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
+
+    if(msg->type == NBR_CH_CHANGE) {
+      //changeTo = msg->value;
+      //currentVal = cc2420_get_channel();
+
+      //uip_ds6_if.addr_list[1].currentCh = msg->value;
+      //uip_ds6_if.addr_list[1].currentCh = cc2420_get_channel();
+      printf("PREVCH %d CURRENTCH %d\n", uip_ds6_if.addr_list[1].prevCh, uip_ds6_if.addr_list[1].currentCh);
+
+      //msg2.type = NBR_CH_CHANGE;
+      //msg2.value = changeTo;
+	//msg2.address = uip_ds6_route_nexthop(r);
+
+      for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+
+	printf("CLIENT ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+
+	/*if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
+	  printf("NEXTHOP NOT REPEAT! ");
+	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	  printf("\n");
+
+	  uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+	}*/
+      }
+
+      if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
+	printf("DEFAULT ROUTE ");
+	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+	printf("\n");
+      }
+
+    }//end if(msg->type == NBR_CH_CHANGE)
+
+  }//end while(1)
 
   PROCESS_END();
 }
