@@ -101,6 +101,16 @@ receiver(struct simple_udp_connection *c,
 
       process_post_synch(&test1, event_data_ready, &msg2);
   }//end if(msg->type == CH_CHANGE)
+
+  else if(msg->type == NBR_CH_CHANGE) {
+    printf("RECEIVED NBR_CH_CHANGE %d\n", msg->value);
+    //msg2.type = OKCH;
+    //msg2.value = msg->value;
+    //msg2.addrPtr = sender_addr;
+
+    //process_post_synch(&test1, event_data_ready, &msg2);
+  }//end if(msg->type == NBR_CH_CHANGE)
+
   else {
   printf("Data received on port %d from port %d with length %d\n",
          receiver_port, sender_port, datalen);
@@ -224,34 +234,41 @@ PROCESS_THREAD(test1, ev, data)
       //uip_ds6_if.addr_list[1].currentCh = cc2420_get_channel();
       printf("PREVCH %d CURRENTCH %d\n", uip_ds6_if.addr_list[1].prevCh, uip_ds6_if.addr_list[1].currentCh);
 
-      //msg2.type = NBR_CH_CHANGE;
-      //msg2.value = changeTo;
+      msg2.type = NBR_CH_CHANGE;
+      msg2.value = msg->value;
 	//msg2.address = uip_ds6_route_nexthop(r);
 
       for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
-	printf("CLIENT ROUTE: ");
+	/*printf("CLIENT ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
+	printf("\n");*/
 
-	/*if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
+	if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 	  printf("NEXTHOP NOT REPEAT! ");
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	  printf("\n");
 
+	  msg2.addrPtr = uip_ds6_route_nexthop(r);
+	  //uip_ipaddr_copy(&msg.address, uip_ds6_route_nexthop(r));
+
 	  uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
-	}*/
+
+	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	}
       }
 
       if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
+	msg2.addrPtr = uip_ds6_defrt_choose();
 	printf("DEFAULT ROUTE ");
 	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	printf("\n");
+
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       }
 
     }//end if(msg->type == NBR_CH_CHANGE)
