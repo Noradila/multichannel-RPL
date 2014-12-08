@@ -117,7 +117,9 @@ receiver(struct simple_udp_connection *c,
   }//end if(msg->type == NBR_CH_CHANGE)
 
   else if(msg->type == NBRPROBE) {
-    printf("GET NBRPROBE\n\n");
+    printf("GET NBRPROBE FROM ");
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n\n");
   }
 
   else {
@@ -230,6 +232,8 @@ PROCESS_THREAD(test1, ev, data)
   uip_ipaddr_t nextHopAddr;
   uip_ip6addr(&nextHopAddr, 0, 0, 0, 0, 0, 0, 0, 0);
 
+//uint8_t calculateProbe = 0;
+
   PROCESS_BEGIN();
 
   while(1) {
@@ -289,13 +293,15 @@ PROCESS_THREAD(test1, ev, data)
 	msg2.type = NBRPROBE;
 	msg2.addrPtr = msg->addrPtr;
 	msg2.value = msg->value;
-      printf("NBRPROBE\n\n");
+      //printf("NBRPROBE\n\n");
 
+//for(calculateProbe = 0; calculateProbe <= 5; calculateProbe++) {
 	printf("Sending NBRPROBE %d to sender ", msg2.value);
-	uip_debug_ipaddr_print(msg->addrPtr);
+	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+//}
 
     }//end if(msg->type == NBRPROBE)
   }//end while(1)
