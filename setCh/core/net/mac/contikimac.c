@@ -358,7 +358,7 @@ powercycle_turn_radio_off(void)
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
 //ADILA EDIT 10/11/14
 //cc2420_set_channel(27);
-printf("OFF!!\n\n");
+//printf("OFF!!\n\n");
 //-------------------
 
     off();
@@ -379,7 +379,7 @@ powercycle_turn_radio_on(void)
 //cc2420_set_channel(27);
 //printf("27 ");
 //printf("%d ", uip_ds6_if.addr_list[1].currentCh);
-printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
+//printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
 //-------------------
     on();
 

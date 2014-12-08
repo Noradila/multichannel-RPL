@@ -88,6 +88,8 @@ struct unicast_message {
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
+
+	char paddingBuf[50];
 };
 
 uint16_t dag_id[] = {0x1111, 0x1100, 0, 0, 0, 0, 0, 0x0011};
@@ -455,7 +457,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 
 	//equals to 30 secs? (even though it's supposed to be 3 secs
 	//etimer_set(&time, 6 * CLOCK_SECOND);
-	etimer_set(&time, 3 * CLOCK_SECOND);
+	etimer_set(&time, 4 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
   }

@@ -253,13 +253,14 @@ found_route_ch = r->nbrCh;
     PRINTF("\n");
 
 //ADILA EDIT 10/11/14
-    printf("uip-ds6-route: Found route: ");
+/*    printf("uip-ds6-route: Found route: ");
     uip_debug_ipaddr_print(addr);
     printf(" via ");
     uip_debug_ipaddr_print(uip_ds6_route_nexthop(found_route));
     printf("\n");
 
 printf("FOUND ROUTE CHANGE TO NEXTHOP CHANNEL %d\n\n", found_route_ch);
+*/
 //-------------------
   } else {
     PRINTF("uip-ds6-route: No route found\n");

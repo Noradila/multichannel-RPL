@@ -53,6 +53,12 @@
 #define SEND_INTERVAL		(300 * CLOCK_SECOND)
 #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 
+uint8_t currentVal;
+uint8_t changeTo;
+static uip_ipaddr_t holdAddr;
+uint8_t x;
+uint8_t y;
+
 static struct simple_udp_connection unicast_connection;
 
 //the application specific event value
@@ -72,6 +78,8 @@ struct unicast_message {
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
+
+	char paddingBuf[50];
 };
 
 /*---------------------------------------------------------------------------*/
@@ -117,9 +125,9 @@ receiver(struct simple_udp_connection *c,
   }//end if(msg->type == NBR_CH_CHANGE)
 
   else if(msg->type == NBRPROBE) {
-    printf("GET NBRPROBE FROM ");
+    printf("%d GET NBRPROBE FROM ", msg->value);
     uip_debug_ipaddr_print(sender_addr);
-    printf("\n\n");
+    printf("\n");
   }
 
   else {
@@ -293,14 +301,44 @@ PROCESS_THREAD(test1, ev, data)
 	msg2.type = NBRPROBE;
 	msg2.addrPtr = msg->addrPtr;
 	msg2.value = msg->value;
+
+	changeTo = msg2.value;
+	uip_ipaddr_copy(&holdAddr, msg2.addrPtr);
       //printf("NBRPROBE\n\n");
 
+
+//! updates the routing table
+//! keeps the value in changeTo so that it doesn't need to go through the table again
+      for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+
+	printf("CHECK ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+
+      }
 //for(calculateProbe = 0; calculateProbe <= 5; calculateProbe++) {
-	printf("Sending NBRPROBE %d to sender ", msg2.value);
+	y = 1;
+	  //msg2.paddingBuf[50] = "hello world! hello world! hello world! hello world! hello world!";
+
+	//! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
+	msg2.paddingBuf[50] = " ";
+	for(x = 1; x <= 5; x++) {
+	  //msg2.value = changeTo;
+	  msg2.value = y;
+	  msg2.addrPtr = &holdAddr;
+
+	  
+	printf("%d Sending NBRPROBE %d to sender ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
 
+	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	}
 //}
 
     }//end if(msg->type == NBRPROBE)
