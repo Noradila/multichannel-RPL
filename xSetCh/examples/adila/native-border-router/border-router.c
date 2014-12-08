@@ -78,7 +78,8 @@ enum {
 	TRIGGER,
 	CH_CHANGE,
 	NBR_CH_CHANGE,
-	NBRPROBE
+	NBRPROBE,
+	ENDPROBE
 };
 
 struct unicast_message {
@@ -89,7 +90,7 @@ struct unicast_message {
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
 
-	char paddingBuf[50];
+	char paddingBuf[30];
 };
 
 uint16_t dag_id[] = {0x1111, 0x1100, 0, 0, 0, 0, 0, 0x0011};
