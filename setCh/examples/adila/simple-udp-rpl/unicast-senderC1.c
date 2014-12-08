@@ -61,7 +61,8 @@ static process_event_t event_data_ready;
 enum {
 	TRIGGER,
 	CH_CHANGE,
-	NBR_CH_CHANGE
+	NBR_CH_CHANGE,
+	NBRPROBE
 };
 
 struct unicast_message {
@@ -104,12 +105,20 @@ receiver(struct simple_udp_connection *c,
 
   else if(msg->type == NBR_CH_CHANGE) {
     printf("RECEIVED NBR_CH_CHANGE %d\n", msg->value);
+    printf("START PROBING?\n\n");
+
+    msg2.type = NBRPROBE;
     //msg2.type = OKCH;
-    //msg2.value = msg->value;
-    //msg2.addrPtr = sender_addr;
+    msg2.value = msg->value;
+    msg2.addrPtr = sender_addr;
 
     //process_post_synch(&test1, event_data_ready, &msg2);
+    process_post(&test1, event_data_ready, &msg2);
   }//end if(msg->type == NBR_CH_CHANGE)
+
+  else if(msg->type == NBRPROBE) {
+    printf("GET NBRPROBE\n\n");
+  }
 
   else {
   printf("Data received on port %d from port %d with length %d\n",
@@ -249,13 +258,14 @@ PROCESS_THREAD(test1, ev, data)
 	printf("\n");*/
 
 	if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-	  printf("NEXTHOP NOT REPEAT! ");
+
+	  printf("Sending channel change %d to tree neighbour ", msg2.value);
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	  printf("\n");
+	  printf("\n");	
 
 	  msg2.addrPtr = uip_ds6_route_nexthop(r);
-	  //uip_ipaddr_copy(&msg.address, uip_ds6_route_nexthop(r));
 
+	  //! keep nextHop address so that it won't send to the same address again
 	  uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
 
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
@@ -264,15 +274,30 @@ PROCESS_THREAD(test1, ev, data)
 
       if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	msg2.addrPtr = uip_ds6_defrt_choose();
-	printf("DEFAULT ROUTE ");
+	printf("Sending channel change %d to parent ", msg2.value);
 	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	printf("\n");
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       }
 
+      uip_ds6_if.addr_list[1].prevCh = 18;
+      printf("END SENDING CHANNEL CHANGE\n\n");
     }//end if(msg->type == NBR_CH_CHANGE)
 
+    if(msg->type == NBRPROBE) {
+	msg2.type = NBRPROBE;
+	msg2.addrPtr = msg->addrPtr;
+	msg2.value = msg->value;
+      printf("NBRPROBE\n\n");
+
+	printf("Sending NBRPROBE %d to sender ", msg2.value);
+	uip_debug_ipaddr_print(msg->addrPtr);
+	printf("\n");
+
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+    }//end if(msg->type == NBRPROBE)
   }//end while(1)
 
   PROCESS_END();

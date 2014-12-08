@@ -77,7 +77,8 @@ uint8_t a = 0;
 enum {
 	TRIGGER,
 	CH_CHANGE,
-	NBR_CH_CHANGE
+	NBR_CH_CHANGE,
+	NBRPROBE
 };
 
 struct unicast_message {

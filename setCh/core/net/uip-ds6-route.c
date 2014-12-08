@@ -589,10 +589,10 @@ uip_ds6_defrt_choose(void)
       PRINT6ADDR(&d->ipaddr);
 
 //ADILA EDIT 03/11/14
-      printf("Defrt found, IP address ");
-      uip_debug_ipaddr_print(&d->ipaddr);
-      printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
-      printf(" PARENTCH %d\n", d->parentCh);
+//      printf("Defrt found, IP address ");
+//      uip_debug_ipaddr_print(&d->ipaddr);
+//      printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
+//      printf(" PARENTCH %d\n", d->parentCh);
 //-------------------
 
       PRINTF("\n");
