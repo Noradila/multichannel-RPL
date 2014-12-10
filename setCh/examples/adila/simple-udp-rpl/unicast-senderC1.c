@@ -82,7 +82,8 @@ enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
-	PROBERESULT
+	PROBERESULT,
+	CONFIRM_CH
 };
 
 struct unicast_message {
@@ -142,7 +143,25 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN) {
 }
 /*---------------------------------------------------------------------------*/
 static void decideChChange(void *ptr) {
- printf("\n\nAFTER 1 SEC CALL DECIDECHCHANGE\n\n");
+ //printf("\n\nAFTER 1 SEC CALL DECIDECHCHANGE\n\n");
+  struct probeResult *pr;
+  uint8_t sum = 0;
+  uint8_t listValue = 0;
+  struct unicast_message msg2;
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    sum = sum + pr->rxValue;
+    listValue++;
+  }
+
+  listValue = listValue * 2;
+  printf("sum is %d/%d = %d\n\n", sum, listValue, sum/listValue);
+
+  if(sum/listValue > 1) {
+    msg2.type = CONFIRM_CH;
+    process_post_synch(&test1, event_data_ready, &msg2);    
+  }
+
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -321,11 +340,14 @@ PROCESS_THREAD(test1, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-    if(msg->type == NBR_CH_CHANGE) {
-      msg2.type = NBR_CH_CHANGE;
+    if(msg->type == NBR_CH_CHANGE || msg->type == CONFIRM_CH) {
+      msg2.type = msg->type;
+      //msg2.type = NBR_CH_CHANGE;
       msg2.value = msg->value;
 
-ctimer_set(&timer, 0.5 * CLOCK_SECOND, decideChChange, NULL);
+      if(msg2.type == NBR_CH_CHANGE) {
+      ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
+      }
 
       for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -333,7 +355,13 @@ ctimer_set(&timer, 0.5 * CLOCK_SECOND, decideChChange, NULL);
 	//! check to ensure it doesn't repeat the same nexthop neighbour
 	if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
+	  if(msg2.type == NBR_CH_CHANGE) {
 	  printf("Sending channel change %d to tree neighbour ", msg2.value);
+	  }
+	  else {
+	    printf("CONFIRM CH! ");
+	  }
+
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	  printf("\n");	
 
@@ -348,7 +376,14 @@ ctimer_set(&timer, 0.5 * CLOCK_SECOND, decideChChange, NULL);
 
       if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	msg2.addrPtr = uip_ds6_defrt_choose();
+
+	if(msg2.type == NBR_CH_CHANGE) {
 	printf("Sending channel change %d to parent ", msg2.value);
+	}
+	else {
+	  printf("CONFIRM CH PARENT! ");
+	}
+
 	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	printf("\n");
 
