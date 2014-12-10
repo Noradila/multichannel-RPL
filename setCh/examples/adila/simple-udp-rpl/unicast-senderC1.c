@@ -102,18 +102,7 @@ PROCESS(unicast_sender_process, "Unicast sender example process");
 PROCESS(test1, "test");
 AUTOSTART_PROCESSES(&unicast_sender_process, &test1);
 /*---------------------------------------------------------------------------*/
-/*static void deleteAllProbe() {
-  struct probeResult *pr;
-
-  pr = list_head(probeResult_table);
-  while(list_head(probeResult_table) != NULL) {
-    pr = list_head(probeResult_table);
-    list_head(probeResult_table) = (list_head(probeResult_table))->next;
-    free(pr);
-  }
-}*/
-/*---------------------------------------------------------------------------*/
-static void removeProveAll() {
+static void removeProbe() {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
@@ -122,30 +111,23 @@ static void removeProveAll() {
   }
 }
 /*---------------------------------------------------------------------------*/
-static void removeProbe(void *n) {
-  struct probeResult *pr = n;
-
-  list_remove(probeResult_table, pr);
-  memb_free(&probeResult_mem, pr);
-}
-/*---------------------------------------------------------------------------*/
 static void readProbe() {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("READPROBE pktLoss %d, chNum %d, ip ", pr->rxValue, pr->chNum);
+    printf("READPROBE pktRx %d, chNum %d, ip ", pr->rxValue, pr->chNum);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n");
   }
 }
 /*---------------------------------------------------------------------------*/
-static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t rxN) {
+static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN) {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
       if(chN == pr->chNum) {
-	pr->rxValue = rxN + (pr->rxValue);
+	pr->rxValue = (pr->rxValue) + 1;
 	return;
       }
     }
@@ -153,11 +135,15 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t rxN
 
   pr = memb_alloc(&probeResult_mem);
   if(pr != NULL) {
-    pr->rxValue = rxN;
+    pr->rxValue = 1;
     pr->chNum = chN;
     uip_ipaddr_copy(&pr->pAddr, prAddr);
     list_add(probeResult_table, pr);
   }
+}
+/*---------------------------------------------------------------------------*/
+static void decideChChange(void *ptr) {
+ printf("\n\nAFTER 1 SEC CALL DECIDECHCHANGE\n\n");
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -202,11 +188,7 @@ receiver(struct simple_udp_connection *c,
     //uip_debug_ipaddr_print(sender_addr);
     //printf("\n");
 
-    msg2.type = PROBERESULT;
-    msg2.value = msg->value;
-    msg2.addrPtr = sender_addr;
-
-    process_post(&test1, event_data_ready, &msg2);
+    keepProbeResult(sender_addr, msg->value);
   }
 
   else if(msg->type = ENDPROBE) {
@@ -254,6 +236,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
 
   static uip_ds6_route_t *r;
 
+
+uint8_t q;
   PROCESS_BEGIN();
 
   servreg_hack_init();
@@ -296,12 +280,21 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
 //uip_ds6_if.addr_list[1].currentCh = 15;
 /*printf("  OWNCH %d ", uip_ds6_if.addr_list[1].currentCh);
 */
+
+
+      readProbe();
+
       printf("Sending unicast to ");
       uip_debug_ipaddr_print(&sendTo1);
       printf("\n");
       sprintf(buf, "Message %d", message_number);
       message_number++;
       simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &sendTo1);
+
+      //? to be called after sending the PROBE INFO to LPBR - empty the list
+      for(q = 1; q <= 3; q++) {
+        removeProbe();
+      }
   }
 
   PROCESS_END();
@@ -325,6 +318,8 @@ PROCESS_THREAD(test1, ev, data)
   uip_ipaddr_t nextHopAddr;
   uip_ip6addr(&nextHopAddr, 0, 0, 0, 0, 0, 0, 0, 0);
 
+  static struct ctimer timer;
+
 //uint8_t calculateProbe = 0;
 
   PROCESS_BEGIN();
@@ -335,6 +330,8 @@ PROCESS_THREAD(test1, ev, data)
     if(msg->type == NBR_CH_CHANGE) {
       msg2.type = NBR_CH_CHANGE;
       msg2.value = msg->value;
+
+ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
 
       for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -370,6 +367,13 @@ PROCESS_THREAD(test1, ev, data)
       //# uip_ds6_if.addr_list[1].currentCh = msg2.value;
       uip_ds6_if.addr_list[1].prevCh = 18;
 
+      /*etimer_set(&time, 1 * CLOCK_SECOND);
+      //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time));
+
+      if(etimer_expired(&time)) {
+      printf("\n\nAFTER TIME 1 SEC EXPIRED!\n\n");
+      }*/
+
     }//end if(msg->type == NBR_CH_CHANGE)
 
     if(msg->type == NBRPROBE) {
@@ -397,21 +401,13 @@ PROCESS_THREAD(test1, ev, data)
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       msg2.paddingBuf[30] = " ";
       for(x = 1; x <= 5; x++) {
-	//msg2.value = changeTo;
-	msg2.value = y;
+	msg2.value = changeTo;
+	//msg2.value = y;
 	msg2.addrPtr = &holdAddr;
 
-	if(x != 5) {
-  	  printf("%d Sending NBRPROBE %d to sender ", sizeof(msg2), msg2.value);
-	  uip_debug_ipaddr_print(msg2.addrPtr);
-	  printf("\n");
-	}
-	else {
-	  msg2.type = ENDPROBE;
-  	  printf("%d Sending ENDPROBE %d to sender ", sizeof(msg2), msg2.value);
-	  uip_debug_ipaddr_print(msg2.addrPtr);
-	  printf("\n");
-	}
+ 	//printf("%d Sending NBRPROBE %d to sender ", sizeof(msg2), msg2.value);
+	//uip_debug_ipaddr_print(msg2.addrPtr);
+	//printf("\n");
 
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
@@ -422,22 +418,6 @@ PROCESS_THREAD(test1, ev, data)
       //? PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
     }//end if(msg->type == NBRPROBE)
-
-    if(msg->type == PROBERESULT) {
-      printf("%d received NBRPROBE from ", msg->value);
-      uip_debug_ipaddr_print(msg->addrPtr);
-      printf("\n");
-
-      //if(msg->value == 5) {
-      etimer_set(&time, 0.0005 * CLOCK_SECOND);
-      //if(etimer_expired(&time)) {
-      //  printf("\n\nETIMER EXPIRED?\n\n");
-      //}
-      PROCESS_WAIT_UNTIL(etimer_expired(&time));
-      //PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-      printf("\n\nETIMER EXPIRED?\n\n");
-    }//end if(msg->type == PROBERESULT)
   }//end while(1)
 
   PROCESS_END();
