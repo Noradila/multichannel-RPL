@@ -82,7 +82,6 @@ enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
-	ENDPROBE,
 	PROBERESULT
 };
 
@@ -191,12 +190,6 @@ receiver(struct simple_udp_connection *c,
     keepProbeResult(sender_addr, msg->value);
   }
 
-  else if(msg->type = ENDPROBE) {
-    printf("%d received ENDPROBE from ", msg->value);
-    uip_debug_ipaddr_print(sender_addr);
-    printf("\n");   
-  }
-
   else {
   printf("Data received on port %d from port %d with length %d\n",
          receiver_port, sender_port, datalen);
@@ -292,6 +285,7 @@ uint8_t q;
       simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &sendTo1);
 
       //? to be called after sending the PROBE INFO to LPBR - empty the list
+      //? QUICK HACK
       for(q = 1; q <= 3; q++) {
         removeProbe();
       }
@@ -331,7 +325,7 @@ PROCESS_THREAD(test1, ev, data)
       msg2.type = NBR_CH_CHANGE;
       msg2.value = msg->value;
 
-ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
+ctimer_set(&timer, 0.5 * CLOCK_SECOND, decideChChange, NULL);
 
       for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -401,6 +395,7 @@ ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       msg2.paddingBuf[30] = " ";
       for(x = 1; x <= 5; x++) {
+      msg2.type = NBRPROBE;
 	msg2.value = changeTo;
 	//msg2.value = y;
 	msg2.addrPtr = &holdAddr;
@@ -411,6 +406,9 @@ ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
 
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+	//etimer_set(&time, 0.05 * CLOCK_SECOND);
+        //PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
 
       //? timeout if ENDPROBE is not received - time should be the time success probing happen
