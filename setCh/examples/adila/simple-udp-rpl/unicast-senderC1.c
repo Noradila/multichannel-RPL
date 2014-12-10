@@ -82,7 +82,8 @@ enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
-	ENDPROBE
+	ENDPROBE,
+	PROBERESULT
 };
 
 struct unicast_message {
@@ -111,6 +112,15 @@ AUTOSTART_PROCESSES(&unicast_sender_process, &test1);
     free(pr);
   }
 }*/
+/*---------------------------------------------------------------------------*/
+static void removeProveAll() {
+  struct probeResult *pr;
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    list_remove(probeResult_table, pr);
+    memb_free(&probeResult_mem, pr);
+  }
+}
 /*---------------------------------------------------------------------------*/
 static void removeProbe(void *n) {
   struct probeResult *pr = n;
@@ -188,9 +198,15 @@ receiver(struct simple_udp_connection *c,
   }//end if(msg->type == NBR_CH_CHANGE)
 
   else if(msg->type == NBRPROBE) {
-    printf("%d received NBRPROBE from ", msg->value);
-    uip_debug_ipaddr_print(sender_addr);
-    printf("\n");
+    //printf("%d received NBRPROBE from ", msg->value);
+    //uip_debug_ipaddr_print(sender_addr);
+    //printf("\n");
+
+    msg2.type = PROBERESULT;
+    msg2.value = msg->value;
+    msg2.addrPtr = sender_addr;
+
+    process_post(&test1, event_data_ready, &msg2);
   }
 
   else if(msg->type = ENDPROBE) {
@@ -400,7 +416,28 @@ PROCESS_THREAD(test1, ev, data)
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       }
+
+      //? timeout if ENDPROBE is not received - time should be the time success probing happen
+      //? etimer_set(&time (to be defined), 0.05 * CLOCK_SECOND (need to check the time);
+      //? PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
     }//end if(msg->type == NBRPROBE)
+
+    if(msg->type == PROBERESULT) {
+      printf("%d received NBRPROBE from ", msg->value);
+      uip_debug_ipaddr_print(msg->addrPtr);
+      printf("\n");
+
+      //if(msg->value == 5) {
+      etimer_set(&time, 0.0005 * CLOCK_SECOND);
+      //if(etimer_expired(&time)) {
+      //  printf("\n\nETIMER EXPIRED?\n\n");
+      //}
+      PROCESS_WAIT_UNTIL(etimer_expired(&time));
+      //PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+      printf("\n\nETIMER EXPIRED?\n\n");
+    }//end if(msg->type == PROBERESULT)
   }//end while(1)
 
   PROCESS_END();

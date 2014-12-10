@@ -79,7 +79,8 @@ enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
-	ENDPROBE
+	ENDPROBE,
+	PROBERESULT
 };
 
 struct unicast_message {
