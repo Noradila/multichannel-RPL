@@ -74,8 +74,18 @@ static process_event_t event_data_ready;
 
 uint8_t a = 0;
 
+struct probeResult {
+  struct probeResult *next;
+  uip_ipaddr_t routeAddr;
+  uip_ipaddr_t nbrAddr;
+  uint8_t chNum;
+  uint8_t rxValue;
+};
+
+LIST(probeResult_table);
+MEMB(probeResult_mem, struct probeResult, 5);
+
 enum {
-	TRIGGER,
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
@@ -87,7 +97,8 @@ enum {
 struct unicast_message {
 	uint8_t type;
 	uint8_t value;
-	uint8_t holdV;
+	//uint8_t holdV;
+	uint8_t value2;
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
@@ -163,10 +174,24 @@ receiver(struct simple_udp_connection *c,
          const uint8_t *data,
          uint16_t datalen)
 {
+  struct unicast_message *msg;
+  msg = data;
+
+  if(msg->type == PROBERESULT) {
+    printf("LPBR RECEIVED PROBERESULT: from ");
+    uip_debug_ipaddr_print(sender_addr);
+    printf(" nbr ");
+    uip_debug_ipaddr_print(&msg->address);
+    printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
+  }
+
+  else {
   printf("Data received from ");
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
+  }
+
 }
 /*---------------------------------------------------------------------------*/
 /*static void

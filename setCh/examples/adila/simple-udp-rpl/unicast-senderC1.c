@@ -75,7 +75,7 @@ uint8_t x;
 uint8_t y;
 
 static uint8_t noOfTreeNbr;
-uint8_t q;
+uint8_t q = 0;
 
 static struct simple_udp_connection unicast_connection;
 
@@ -83,7 +83,6 @@ static struct simple_udp_connection unicast_connection;
 static process_event_t event_data_ready;
 
 enum {
-	TRIGGER,
 	CH_CHANGE,
 	NBR_CH_CHANGE,
 	NBRPROBE,
@@ -95,7 +94,8 @@ enum {
 struct unicast_message {
 	uint8_t type;
 	uint8_t value;
-	uint8_t holdV;
+	//uint8_t holdV;
+	uint8_t value2;
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
@@ -121,10 +121,13 @@ static void readProbe() {
   struct probeResult *pr;
   struct unicast_message msg2;
 
+  uip_ipaddr_t sendTo1;
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
-    uip_debug_ipaddr_print(&pr->pAddr);
-    printf("\n");
+    //printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
+    //uip_debug_ipaddr_print(&pr->pAddr);
+    //printf("\n");
 
 //!!! NOT YET TESTED - RETRANSMIT CONFIRM_CH
     if(pr->checkAck == 0) {
@@ -133,6 +136,26 @@ static void readProbe() {
       msg2.addrPtr = &pr->pAddr;
       simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
     }
+    else {
+      printf("Sending results to ");
+      uip_debug_ipaddr_print(&sendTo1);
+      printf("\n");
+
+      printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
+      uip_debug_ipaddr_print(&pr->pAddr);
+      printf("\n");
+
+      msg2.type = PROBERESULT;
+      //msg2.addrPtr = &pr->pAddr;
+      msg2.address = pr->pAddr;
+      msg2.value = pr->chNum;
+      msg2.value2 = pr->rxValue;
+      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), &sendTo1);
+    }
+  }
+
+  for(q = 1; q <= 3; q++) {
+    removeProbe();
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -239,12 +262,15 @@ receiver(struct simple_udp_connection *c,
   }
 
   else if(msg->type == GET_ACK) {
-    //q++;
-    printf("GET ACK BACK %d\n", noOfTreeNbr);
+    q++;
+    printf("%d GET ACK BACK %d\n", q, noOfTreeNbr);
     keepProbeResult(sender_addr, 0, 1);
 //? check table and update the success rate table to confirm ACK is received
 //? by so, would be able to retransmit confirm channel to the non ACK node
 
+    if(q == noOfTreeNbr) {
+      readProbe();
+    }
   }
 
   else {
@@ -332,7 +358,15 @@ uint8_t q;
 */
 
 
-      readProbe();
+      //readProbe();
+
+  struct probeResult *pr;
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    printf("BEFORE SENDING %d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
+    uip_debug_ipaddr_print(&pr->pAddr);
+    printf("\n");
+  }
 
       printf("Sending unicast to ");
       uip_debug_ipaddr_print(&sendTo1);
@@ -343,9 +377,9 @@ uint8_t q;
 
       //? to be called after sending the PROBE INFO to LPBR - empty the list
       //? QUICK HACK
-      for(q = 1; q <= 3; q++) {
-        removeProbe();
-      }
+      //for(q = 1; q <= 3; q++) {
+        //removeProbe();
+      //}
   }
 
   PROCESS_END();
