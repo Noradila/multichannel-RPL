@@ -61,6 +61,8 @@ struct probeResult {
   uip_ipaddr_t pAddr;
   uint8_t chNum;
   uint8_t rxValue;
+
+  uint8_t checkAck;
 };
 
 LIST(probeResult_table);
@@ -71,6 +73,9 @@ uint8_t changeTo;
 static uip_ipaddr_t holdAddr;
 uint8_t x;
 uint8_t y;
+
+static uint8_t noOfTreeNbr;
+uint8_t q;
 
 static struct simple_udp_connection unicast_connection;
 
@@ -83,7 +88,8 @@ enum {
 	NBR_CH_CHANGE,
 	NBRPROBE,
 	PROBERESULT,
-	CONFIRM_CH
+	CONFIRM_CH,
+	GET_ACK
 };
 
 struct unicast_message {
@@ -113,21 +119,34 @@ static void removeProbe() {
 /*---------------------------------------------------------------------------*/
 static void readProbe() {
   struct probeResult *pr;
+  struct unicast_message msg2;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("READPROBE pktRx %d, chNum %d, ip ", pr->rxValue, pr->chNum);
+    printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n");
+
+//!!! NOT YET TESTED - RETRANSMIT CONFIRM_CH
+    if(pr->checkAck == 0) {
+      //? retransmit CONFIRM_CH
+      msg2.type = CONFIRM_CH;
+      msg2.addrPtr = &pr->pAddr;
+      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+    }
   }
 }
 /*---------------------------------------------------------------------------*/
-static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN) {
+static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
       if(chN == pr->chNum) {
 	pr->rxValue = (pr->rxValue) + 1;
+	return;
+      }
+      if(chN == 0) {
+	pr->checkAck = getAck;
 	return;
       }
     }
@@ -154,6 +173,7 @@ static void decideChChange(void *ptr) {
     listValue++;
   }
 
+  noOfTreeNbr = listValue;
   listValue = listValue * 2;
   printf("sum is %d/%d = %d\n\n", sum, listValue, sum/listValue);
 
@@ -206,7 +226,25 @@ receiver(struct simple_udp_connection *c,
     //uip_debug_ipaddr_print(sender_addr);
     //printf("\n");
 
-    keepProbeResult(sender_addr, msg->value);
+    keepProbeResult(sender_addr, msg->value, 0);
+  }
+
+  else if(msg->type == CONFIRM_CH) {
+    printf("Received confirm ch\n");
+ 
+    msg2.type = GET_ACK;
+    msg2.addrPtr = sender_addr;
+
+    process_post(&test1, event_data_ready, &msg2);
+  }
+
+  else if(msg->type == GET_ACK) {
+    //q++;
+    printf("GET ACK BACK %d\n", noOfTreeNbr);
+    keepProbeResult(sender_addr, 0, 1);
+//? check table and update the success rate table to confirm ACK is received
+//? by so, would be able to retransmit confirm channel to the non ACK node
+
   }
 
   else {
@@ -451,6 +489,15 @@ PROCESS_THREAD(test1, ev, data)
       //? PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
     }//end if(msg->type == NBRPROBE)
+
+    if(msg->type == GET_ACK) {
+      msg2.type = GET_ACK;
+      msg2.addrPtr = msg->addrPtr;
+
+      printf("Sending ACK back\n");
+      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+    }//end if(msg->type == GET_ACK)
+
   }//end while(1)
 
   PROCESS_END();

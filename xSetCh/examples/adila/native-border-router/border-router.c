@@ -80,7 +80,8 @@ enum {
 	NBR_CH_CHANGE,
 	NBRPROBE,
 	PROBERESULT,
-	CONFIRM_CH
+	CONFIRM_CH,
+	GET_ACK
 };
 
 struct unicast_message {
