@@ -345,7 +345,7 @@ uint8_t q;
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
-    }
+    } 
 
 //printf("DEFAULT ROUTE ");
 //uip_debug_ipaddr_print(uip_ds6_defrt_choose());

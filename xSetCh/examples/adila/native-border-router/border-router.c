@@ -182,7 +182,7 @@ static void readProbe() {
 }
 /*---------------------------------------------------------------------------*/
 static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, uint8_t chValue, uint8_t pktRecv) {
-  struct lpbrList *l;
+  struct lpbrList *l; 
 
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(uip_ipaddr_cmp(senderAddr, &l->routeAddr)) {
