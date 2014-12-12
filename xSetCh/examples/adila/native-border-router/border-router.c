@@ -168,13 +168,16 @@ static int blen;
 static void readProbe() {
   struct lpbrList *l;
 
+  printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-    printf("LPBR ");
+    //printf("LPBR ");
     uip_debug_ipaddr_print(&l->routeAddr);
-    printf(" nbr ");
+    printf("\t");
+    //printf(" nbr ");
     uip_debug_ipaddr_print(&l->nbrAddr);
-    //printf("\n");
-    printf(" ch %d pktRecv %d\n", l->chNum, l->rxValue);
+    printf("\t");
+    //printf(" ch %d pktRecv %d\n", l->chNum, l->rxValue);
+    printf("%d\t%d\n", l->chNum, l->rxValue);
   }
 }
 /*---------------------------------------------------------------------------*/

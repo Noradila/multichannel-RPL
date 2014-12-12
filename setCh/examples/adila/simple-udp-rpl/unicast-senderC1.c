@@ -154,8 +154,10 @@ static void readProbe() {
     }
   }
 
-  for(q = 1; q <= 3; q++) {
+  //for(q = 1; q <= 3; q++) {
+  while(noOfTreeNbr != 0) {
     removeProbe();
+    noOfTreeNbr--;
   }
 }
 /*---------------------------------------------------------------------------*/
