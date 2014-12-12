@@ -74,16 +74,16 @@ static process_event_t event_data_ready;
 
 uint8_t a = 0;
 
-struct probeResult {
-  struct probeResult *next;
+struct lpbrList {
+  struct lpbrList *next;
   uip_ipaddr_t routeAddr;
   uip_ipaddr_t nbrAddr;
   uint8_t chNum;
   uint8_t rxValue;
 };
 
-LIST(probeResult_table);
-MEMB(probeResult_mem, struct probeResult, 20);
+LIST(lpbrList_table);
+MEMB(lpbrList_mem, struct lpbrList, 50);
 
 enum {
 	CH_CHANGE,
@@ -166,6 +166,43 @@ static int blen;
   } while(0)
 /*---------------------------------------------------------------------------*/
 static void readProbe() {
+  struct lpbrList *l;
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    printf("LPBR ");
+    uip_debug_ipaddr_print(&l->routeAddr);
+    printf(" nbr ");
+    uip_debug_ipaddr_print(&l->nbrAddr);
+    //printf("\n");
+    printf(" ch %d pktRecv %d\n", l->chNum, l->rxValue);
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, uint8_t chValue, uint8_t pktRecv) {
+  struct lpbrList *l;
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(uip_ipaddr_cmp(senderAddr, &l->routeAddr)) {
+      if(uip_ipaddr_cmp(&nbrAddr, &l->nbrAddr)) {
+        if(chValue == l->chNum) {
+	  l->rxValue = pktRecv;
+	  return;
+        }
+      }
+    }
+  }
+
+  l = memb_alloc(&lpbrList_mem);
+  if(l != NULL) {
+    uip_ipaddr_copy(&l->routeAddr, senderAddr);
+    uip_ipaddr_copy(&l->nbrAddr, &nbrAddr);
+    l->chNum = chValue;
+    l->rxValue = pktRecv;
+    list_add(lpbrList_table, l);
+  }
+}
+/*---------------------------------------------------------------------------*/
+/*static void readProbe() {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
@@ -175,9 +212,9 @@ static void readProbe() {
     uip_debug_ipaddr_print(&pr->nbrAddr);
     printf(" ch %d pktRecv %d\n", pr->chNum, pr->rxValue);
   }
-}
+}*/
 /*---------------------------------------------------------------------------*/
-static void keepProbeResult(const uip_ipaddr_t *routeAddr, const uip_ipaddr_t *nbrAddr, uint8_t chN, uint8_t pktRecv) {
+/*static void keepProbeResult(const uip_ipaddr_t *routeAddr, const uip_ipaddr_t *nbrAddr, uint8_t chN, uint8_t pktRecv) {
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
@@ -201,7 +238,7 @@ static void keepProbeResult(const uip_ipaddr_t *routeAddr, const uip_ipaddr_t *n
   }
 
   readProbe();
-}
+}*/
 /*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
@@ -222,6 +259,8 @@ receiver(struct simple_udp_connection *c,
     uip_debug_ipaddr_print(&msg->address);
     printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
 
+    keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
+    readProbe();
     //keepProbeResult(sender_addr, msg->addrPtr, msg->value, msg->value2);
   }
 
@@ -231,7 +270,7 @@ receiver(struct simple_udp_connection *c,
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
 
-  readProbe();
+  //readProbe();
   }
 
 }
