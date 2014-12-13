@@ -204,9 +204,13 @@ static void decideChChange(void *ptr) {
 
   if(sum/listValue > 1) {
     msg2.type = CONFIRM_CH;
+    msg2.value = 0;
     process_post_synch(&test1, event_data_ready, &msg2);    
   }
-
+  else {
+    //? revert back to previous channel - send PREVCH VALUE!!
+    //? msg2.value = uip_ds6_if.addr_list[1].prevCh;
+  }
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -433,7 +437,12 @@ PROCESS_THREAD(test1, ev, data)
 	  printf("Sending channel change %d to tree neighbour ", msg2.value);
 	  }
 	  else {
-	    printf("CONFIRM CH! ");
+	    if(msg2.value == 0) {
+	      printf("CONFIRM CH! ");
+	    }
+	    else {
+	      printf("SEND REVERT BACK CHANNEL %d\n", msg2.value);
+	    }
 	  }
 
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));

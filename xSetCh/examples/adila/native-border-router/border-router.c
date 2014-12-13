@@ -165,19 +165,28 @@ static int blen;
     blen += snprintf(&buf[blen], sizeof(buf) - blen, __VA_ARGS__);      \
   } while(0)
 /*---------------------------------------------------------------------------*/
-static void readProbe() {
+static void readProbe(uint8_t checkValue) {
   struct lpbrList *l;
 
-  printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
+  if(checkValue == 1) {
+    printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
+    checkValue = 0;
+  }
+
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-    //printf("LPBR ");
+    if(checkValue == 0) {
     uip_debug_ipaddr_print(&l->routeAddr);
     printf("\t");
-    //printf(" nbr ");
     uip_debug_ipaddr_print(&l->nbrAddr);
     printf("\t");
-    //printf(" ch %d pktRecv %d\n", l->chNum, l->rxValue);
     printf("%d\t%d\n", l->chNum, l->rxValue);
+    }
+
+    else {
+      //? 2 hops?
+      //? compare checkValue == l->chNum for LPBR to decide what channel the node should probe on
+      //? return;
+    }
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -205,44 +214,6 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
-/*static void readProbe() {
-  struct probeResult *pr;
-
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("LPBR ");
-    uip_debug_ipaddr_print(&pr->routeAddr);
-    printf(" nbrRoute ");
-    uip_debug_ipaddr_print(&pr->nbrAddr);
-    printf(" ch %d pktRecv %d\n", pr->chNum, pr->rxValue);
-  }
-}*/
-/*---------------------------------------------------------------------------*/
-/*static void keepProbeResult(const uip_ipaddr_t *routeAddr, const uip_ipaddr_t *nbrAddr, uint8_t chN, uint8_t pktRecv) {
-  struct probeResult *pr;
-
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    if(uip_ipaddr_cmp(routeAddr, &pr->routeAddr)) {
-      //if(uip_ipaddr_cmp(nbrAddr, &pr->nbrAddr)) {
-       // if(pr->chNum == chN) {
-          //pr->rxValue = pktRecv;
-	  return;
-	//}
-      //}
-    }
-  }
-
-  pr = memb_alloc(&probeResult_mem);
-  if(pr != NULL) {
-    pr->rxValue = pktRecv;
-    pr->chNum = chN;
-    uip_ipaddr_copy(&pr->routeAddr, routeAddr);
-    uip_ipaddr_copy(&pr->nbrAddr, nbrAddr);
-    list_add(probeResult_table, pr);
-  }
-
-  readProbe();
-}*/
-/*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
          const uip_ipaddr_t *sender_addr,
@@ -256,15 +227,14 @@ receiver(struct simple_udp_connection *c,
   msg = data;
 
   if(msg->type == PROBERESULT) {
-    printf("LPBR RECEIVED PROBERESULT: from ");
-    uip_debug_ipaddr_print(sender_addr);
-    printf(" nbr ");
-    uip_debug_ipaddr_print(&msg->address);
-    printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
+    //printf("LPBR RECEIVED PROBERESULT: from ");
+    //uip_debug_ipaddr_print(sender_addr);
+    //printf(" nbr ");
+    //uip_debug_ipaddr_print(&msg->address);
+    //printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
-    readProbe();
-    //keepProbeResult(sender_addr, msg->addrPtr, msg->value, msg->value2);
+    readProbe(1);
   }
 
   else {
@@ -272,10 +242,7 @@ receiver(struct simple_udp_connection *c,
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
-
-  //readProbe();
   }
-
 }
 /*---------------------------------------------------------------------------*/
 /*static void
@@ -517,6 +484,7 @@ PROCESS_THREAD(border_router_process, ev, data)
     etimer_set(&et, CLOCK_SECOND * 2);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
+    //! QUICK HACK - should put timer here
     if(a == 5) {
       process_post_synch(&chChange_process, event_data_ready, NULL);
     }
