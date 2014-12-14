@@ -581,75 +581,28 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
 
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
+
 	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-	  //printf("\n\nTEST %d %d\n\n", r->ipaddr.u8[11], nbr->ipaddr.u8[11]);
 
 	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
 	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
 		  nbr->newCh = msg2.value;
-		  printf("NBR->NEWCH %d\n\n", nbr->newCh);
-		  //r->nbrCh = msg2.value;
-	    	  //printf("SAME %d ", r->nbrCh);
-	    	  //uip_debug_ipaddr_print(&r->ipaddr);
-	    	  //printf(" ");
-	    	  //uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	    	  //printf("\n");
-		  //break;
+		  //printf("NBR->NEWCH %d\n\n", nbr->newCh);
 	    }
-	    else {
-		printf("NBR->NEWCH %d\n\n", nbr->newCh);
-	    }
+	    //else {
+		//? change to the receiver channel? (should be at border-router-rdc.c)
+		//printf("NBR->NEWCH %d\n\n", nbr->newCh);
+	   // }
 	  }
 	}
-	//else 
-	  //r->nbrCh = r->nbrCh;
-
-	//?? roundabout way?
-	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-	  
-	  //printf("\n\nTEST %d %d\n\n", r->ipaddr.u8[11], nbr->ipaddr.u8[11]);
-
-	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
-	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
-	      for(re = uip_ds6_route_head(); re != NULL; 
-		re = uip_ds6_route_next(re)) {
-		if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(re))){
-		  re->nbrCh = msg2.value;
-	    	  printf("SAME %d ", re->nbrCh);
-	    	  uip_debug_ipaddr_print(&re->ipaddr);
-	    	  printf(" ");
-	    	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(re));
-	    	  printf("\n");
-		}
-	      }
-	    }
-	  }
-	}*/
-
-	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
 	//equals to 30 secs? (even though it's supposed to be 3 secs
 	//etimer_set(&time, 6 * CLOCK_SECOND);
 	etimer_set(&time, 4 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
-
-	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-    	  for(r = uip_ds6_route_head(); r != NULL; 
-	    r = uip_ds6_route_next(r)) {
-	    if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
-		r->nbrCh = nbr->newCh;
-		printf("NBR: ");
-		uip_debug_ipaddr_print(&nbr->ipaddr);
-		printf(" nbr->newCh %d", nbr->newCh);
-		printf("\n");
-	    }
-	  }
-	}*/
   }
   PROCESS_END();
 }

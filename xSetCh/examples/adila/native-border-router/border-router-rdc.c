@@ -113,6 +113,8 @@ send_packet(mac_callback_t sent, void *ptr)
   static uip_ds6_route_t *r;
   uip_ipaddr_t nH;
 
+  static uip_ds6_nbr_t *nbr;
+
   uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
   //------------------
 
@@ -162,7 +164,18 @@ send_packet(mac_callback_t sent, void *ptr)
       //! it's supposed to be 0021.7402.0002.0202
       if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5] != 0) {
 
-        for(r = uip_ds6_route_head(); r != NULL; 
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
+		  printf("NBR->NEWCH %d\n\n", nbr->newCh);
+		  buf[3] = nbr->newCh;
+		  break;
+	    }
+	}
+
+
+        /*for(r = uip_ds6_route_head(); r != NULL; 
 	  r = uip_ds6_route_next(r)) {
 
 	  if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
@@ -176,7 +189,7 @@ send_packet(mac_callback_t sent, void *ptr)
 	    buf[3] = r->nbrCh;
 	    break;
 	  }
-        }
+        }*/
       }
       else {
 	buf[3] = 0;
