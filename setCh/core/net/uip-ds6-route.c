@@ -258,9 +258,9 @@ found_route_ch = r->nbrCh;
     printf(" via ");
     uip_debug_ipaddr_print(uip_ds6_route_nexthop(found_route));
     printf("\n");
-
-printf("FOUND ROUTE CHANGE TO NEXTHOP CHANNEL %d\n\n", found_route_ch);
 */
+printf("FOUND ROUTE CHANGE TO NEXTHOP CHANNEL %d\n\n", found_route_ch);
+
 //-------------------
   } else {
     PRINTF("uip-ds6-route: No route found\n");

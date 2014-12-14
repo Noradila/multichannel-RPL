@@ -378,12 +378,12 @@ powercycle_turn_radio_on(void)
 //if it's FWD PKT, DON'T RESET CH?
 //cc2420_set_channel(27);
 //printf("27 ");
-//printf("%d ", uip_ds6_if.addr_list[1].currentCh);
+//printf("ON CHANNEL IS %d\n", uip_ds6_if.addr_list[1].currentCh);
 //printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
 //-------------------
     on();
 
-    //! cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     //printf("Radio ON set channel to currentCh %d\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
 //printf("26\n\n");

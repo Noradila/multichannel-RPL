@@ -134,7 +134,9 @@ send_packet(mac_callback_t sent, void *ptr)
     /* here we send the data over SLIP to the radio-chip */
     size = 0;
 
-    //reconstruct the local IP from MAC address
+    //! reconstruct the local IP from MAC address
+    //! not sure what other way to get the RECEIVER (correct next hop) address
+    //! reading from routing table - it doesn't know where next
     uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 
 #if SERIALIZE_ATTRIBUTES
@@ -178,17 +180,19 @@ send_packet(mac_callback_t sent, void *ptr)
         /*for(r = uip_ds6_route_head(); r != NULL; 
 	  r = uip_ds6_route_next(r)) {
 
-	  if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
+	  //if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
 	    //printf("\n\nSAME ");
-	    //uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	    printf("IN BORDER-ROUTER-RDC ");
+	    uip_debug_ipaddr_print(&r->ipaddr);
+	    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	    //printf(" nH ");
 	    //uip_debug_ipaddr_print(&nH);
-	    //printf("\n\n");
+	    printf("\n\n");
 
 	    //! get the transmitting channel from routing table
-	    buf[3] = r->nbrCh;
-	    break;
-	  }
+	    //buf[3] = r->nbrCh;
+	    //break;
+	  //}
         }*/
       }
       else {

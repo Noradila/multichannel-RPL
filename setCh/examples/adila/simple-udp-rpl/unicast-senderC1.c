@@ -117,50 +117,6 @@ static void removeProbe() {
   }
 }
 /*---------------------------------------------------------------------------*/
-static void readProbe() {
-  struct probeResult *pr;
-  struct unicast_message msg2;
-
-  uip_ipaddr_t sendTo1;
-  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
-
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    //printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
-    //uip_debug_ipaddr_print(&pr->pAddr);
-    //printf("\n");
-
-//!!! NOT YET TESTED - RETRANSMIT CONFIRM_CH
-    if(pr->checkAck == 0) {
-      //? retransmit CONFIRM_CH
-      msg2.type = CONFIRM_CH;
-      msg2.addrPtr = &pr->pAddr;
-      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-    }
-    else {
-      printf("Sending results to ");
-      uip_debug_ipaddr_print(&sendTo1);
-      printf("\n");
-
-      printf("%d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
-      uip_debug_ipaddr_print(&pr->pAddr);
-      printf("\n");
-
-      msg2.type = PROBERESULT;
-      //msg2.addrPtr = &pr->pAddr;
-      msg2.address = pr->pAddr;
-      msg2.value = pr->chNum;
-      msg2.value2 = pr->rxValue;
-      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), &sendTo1);
-    }
-  }
-
-  //for(q = 1; q <= 3; q++) {
-  while(noOfTreeNbr != 0) {
-    removeProbe();
-    noOfTreeNbr--;
-  }
-}
-/*---------------------------------------------------------------------------*/
 static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
   struct probeResult *pr;
 
@@ -186,35 +142,6 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
-static void decideChChange(void *ptr) {
- //printf("\n\nAFTER 1 SEC CALL DECIDECHCHANGE\n\n");
-  struct probeResult *pr;
-  uint8_t sum = 0;
-  uint8_t listValue = 0;
-  struct unicast_message msg2;
-
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    sum = sum + pr->rxValue;
-    listValue++;
-
-    msg2.value2 = pr->chNum;
-  }
-
-  noOfTreeNbr = listValue;
-  listValue = listValue * 2;
-  printf("sum is %d/%d = %d\n\n", sum, listValue, sum/listValue);
-
-  if(sum/listValue > 1) {
-    msg2.type = CONFIRM_CH;
-    msg2.value = 0;
-    process_post_synch(&test1, event_data_ready, &msg2);    
-  }
-  else {
-    //? revert back to previous channel - send PREVCH VALUE!!
-    //? msg2.value = uip_ds6_if.addr_list[1].prevCh;
-  }
-}
-/*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
          const uip_ipaddr_t *sender_addr,
@@ -231,11 +158,10 @@ receiver(struct simple_udp_connection *c,
   if(msg->type == CH_CHANGE) {
     printf("%d received CH_CHANGE from ", msg->value);
     uip_debug_ipaddr_print(sender_addr);
-    printf("\n");
+    printf("\n");  
 
-    uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();
+    uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
     uip_ds6_if.addr_list[1].currentCh = msg->value;
-    //printf("  OWNCH %d ", uip_ds6_if.addr_list[1].currentCh);    
 
     msg2.type = NBR_CH_CHANGE;
     msg2.value = msg->value;
@@ -252,16 +178,16 @@ receiver(struct simple_udp_connection *c,
     msg2.value = msg->value;
     msg2.addrPtr = sender_addr;
 
-    //process_post_synch(&test1, event_data_ready, &msg2);
-    process_post(&test1, event_data_ready, &msg2);
+    process_post_synch(&test1, event_data_ready, &msg2);
+    //process_post(&test1, event_data_ready, &msg2);
   }//end if(msg->type == NBR_CH_CHANGE)
 
   else if(msg->type == NBRPROBE) {
-    //printf("%d received NBRPROBE from ", msg->value);
-    //uip_debug_ipaddr_print(sender_addr);
-    //printf("\n");
+    printf("%d received NBRPROBE from ", msg->value);
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n");
 
-    keepProbeResult(sender_addr, msg->value, 0);
+    //keepProbeResult(sender_addr, msg->value, 0);
   }
 
   else if(msg->type == CONFIRM_CH) {
@@ -276,12 +202,12 @@ receiver(struct simple_udp_connection *c,
   else if(msg->type == GET_ACK) {
     q++;
     printf("%d GET ACK BACK %d\n", q, noOfTreeNbr);
-    keepProbeResult(sender_addr, 0, 1);
+   // keepProbeResult(sender_addr, 0, 1);
 //? check table and update the success rate table to confirm ACK is received
 //? by so, would be able to retransmit confirm channel to the non ACK node
 
     if(q == noOfTreeNbr) {
-      readProbe();
+      //readProbe();
     }
   }
 
@@ -424,17 +350,11 @@ PROCESS_THREAD(test1, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-    if(msg->type == NBR_CH_CHANGE || msg->type == CONFIRM_CH) {
-      msg2.type = msg->type;
-      //msg2.type = NBR_CH_CHANGE;
+    if(msg->type == NBR_CH_CHANGE) {
+      msg2.type = NBR_CH_CHANGE;
       msg2.value = msg->value;
-     
-      //# used in quick hack to send to LPBR CONFIRM_CH
-      msg2.value2 = msg->value2;
 
-      if(msg2.type == NBR_CH_CHANGE) {
-      ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
-      }
+      changeTo = msg2.value;
 
       //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
       for(r = uip_ds6_route_head(); r != NULL; 
@@ -442,19 +362,8 @@ PROCESS_THREAD(test1, ev, data)
 
 	//! check to ensure it doesn't repeat the same nexthop neighbour
 	if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-
-	  if(msg2.type == NBR_CH_CHANGE) {
-	  printf("Sending channel change %d to tree neighbour ", msg2.value);
-	  }
-	  else {
-	    if(msg2.value == 0) {
-	      printf("CONFIRM CH! ");
-	    }
-	    else {
-	      printf("SEND REVERT BACK CHANNEL %d\n", msg2.value);
-	    }
-	  }
-
+	  printf("%d Sending channel change %d to tree neighbour ", r->nbrCh, msg2.value);
+	  cc2420_set_channel(r->nbrCh);
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	  printf("\n");	
 
@@ -464,63 +373,27 @@ PROCESS_THREAD(test1, ev, data)
 
 	  //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+	  etimer_set(&time, 10 * CLOCK_SECOND);
+	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
 	}
       }
 
       if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	msg2.addrPtr = uip_ds6_defrt_choose();
+	msg2.type = NBR_CH_CHANGE;
+	msg2.value = changeTo;
 
-	if(msg2.type == NBR_CH_CHANGE) {
-	printf("Sending channel change %d to parent ", msg2.value);
-	}
-	else {
-	  printf("CONFIRM CH PARENT! ");
-	}
-
+	printf("%d Sending channel change %d %d to parent ", uip_ds6_defrt_ch(), msg2.value, changeTo);
+	cc2420_set_channel(uip_ds6_defrt_ch());
 	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	printf("\n");
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	etimer_set(&time, 0.2 * CLOCK_SECOND);
+	PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
-      //else {
-      /*if(uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
-	if(msg2.type == CONFIRM_CH) {
-	  msg2.addrPtr = uip_ds6_defrt_choose();
-	  //msg2.addrPtr = &sendTo1G;
-	  printf("CONFIRM CH TO 1 Sending channel change %d to parent ", msg2.value2);
-	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-	  printf("\n");
-
-	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-	}
-      }*/
-
-      //! QUICK HACK TO SEND LPBR ROUTING TABLE UPDATE
-      /*else {
-	if(msg2.type == CONFIRM_CH) {
-	  msg2.addrPtr = uip_ds6_defrt_choose();
-	  printf("CONFIRM CH TO LPBR WITHOUT PROBING ");
- 	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-	  printf("\n");
-
-	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-	}
-      }*/
-
-      //? set the node OWN currentCh so that it will wake up to it's own new listening channel
-      //? the new currentCh is NOT yet confirm; keep the previous channel to prevCh
-      //# uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
-      //# uip_ds6_if.addr_list[1].currentCh = msg2.value;
-      //uip_ds6_if.addr_list[1].prevCh = 18;
-
-      /*etimer_set(&time, 1 * CLOCK_SECOND);
-      //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time));
-
-      if(etimer_expired(&time)) {
-      printf("\n\nAFTER TIME 1 SEC EXPIRED!\n\n");
-      }*/
-
-    }//end if(msg->type == NBR_CH_CHANGE)
+    }
 
     if(msg->type == NBRPROBE) {
       msg2.type = NBRPROBE;
@@ -543,25 +416,8 @@ PROCESS_THREAD(test1, ev, data)
 	  printf(" via ");
 	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	  printf(" nbrCh %d\n", r->nbrCh);
-	
 	}
-
-	/*printf("CHECK ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");*/
-
       }
-
-//printf("DEFAULT ROUTE ");
-//uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-//printf("\n");
-
-//printf("SET DEFAULT ROUTE ");
-//uip_ds6_defrt_ch();
-//printf("\n");
 
       if(uip_ipaddr_cmp(msg2.addrPtr, uip_ds6_defrt_choose())) {
 	  uip_ds6_defrt_setCh(msg2.value);
@@ -569,28 +425,27 @@ PROCESS_THREAD(test1, ev, data)
 	  printf("%d PARENT UPDATE OWN ROUTING TABLE ", msg2.value);
 	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	  printf(" nbrCh %d\n", uip_ds6_defrt_ch());
-
-
       }
 
       y = 1;
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       msg2.paddingBuf[30] = " ";
-      for(x = 1; x <= 5; x++) {
+      for(x = 1; x <= 10; x++) {
       msg2.type = NBRPROBE;
 	msg2.value = changeTo;
 	//msg2.value = y;
 	msg2.addrPtr = &holdAddr;
 
- 	//printf("%d Sending NBRPROBE %d to sender ", sizeof(msg2), msg2.value);
-	//uip_debug_ipaddr_print(msg2.addrPtr);
-	//printf("\n");
+        cc2420_set_channel(msg2.value);
+ 	printf("%d %d Sending NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value);
+	uip_debug_ipaddr_print(msg2.addrPtr);
+	printf("\n");
 
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	//etimer_set(&time, 0.05 * CLOCK_SECOND);
-        //PROCESS_YIELD_UNTIL(etimer_expired(&time));
+	etimer_set(&time, 0.2 * CLOCK_SECOND);
+        PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
 
       //? timeout if ENDPROBE is not received - time should be the time success probing happen
@@ -599,13 +454,6 @@ PROCESS_THREAD(test1, ev, data)
 
     }//end if(msg->type == NBRPROBE)
 
-    if(msg->type == GET_ACK) {
-      msg2.type = GET_ACK;
-      msg2.addrPtr = msg->addrPtr;
-
-      printf("Sending ACK back\n");
-      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-    }//end if(msg->type == GET_ACK)
 
   }//end while(1)
 

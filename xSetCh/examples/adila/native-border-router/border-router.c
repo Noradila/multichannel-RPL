@@ -165,23 +165,6 @@ static int blen;
     blen += snprintf(&buf[blen], sizeof(buf) - blen, __VA_ARGS__);      \
   } while(0)
 /*---------------------------------------------------------------------------*/
-/*static void updateRoutingTable(const uip_ipaddr_t senderAddr, uint8_t chValue) {
-  static uip_ds6_route_t *r;
-
-    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-
-	if(senderAddr.u8[11] == ) {
-	printf("ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }
-}*/
-/*---------------------------------------------------------------------------*/
 static void readProbe(uint8_t checkValue) {
   struct lpbrList *l;
 
@@ -243,9 +226,6 @@ receiver(struct simple_udp_connection *c,
   struct unicast_message *msg;
   msg = data;
 
-  static uip_ds6_route_t *r;
-  static uip_ds6_nbr_t *nbr;
-
   if(msg->type == PROBERESULT) {
     //printf("LPBR RECEIVED PROBERESULT: from ");
     //uip_debug_ipaddr_print(sender_addr);
@@ -255,38 +235,12 @@ receiver(struct simple_udp_connection *c,
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
-
-    //updateRoutingTable(sender_addr, msg->value);
-  }
-  else if(msg->type == CONFIRM_CH) {
-    printf("RECEIVED CONFIRM CH FROM ");
-    uip_debug_ipaddr_print(sender_addr);
-    printf("\n\n");
   }
   else {
   printf("Data received from ");
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
-
-	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-	printf("NBR: ");
-	uip_debug_ipaddr_print(&nbr->ipaddr);
-	printf(" nbr->newCh %d", nbr->newCh);
-	printf("\n");
-	}
-
-/*    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }*/
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -589,12 +543,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
 	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
 		  nbr->newCh = msg2.value;
-		  //printf("NBR->NEWCH %d\n\n", nbr->newCh);
 	    }
-	    //else {
-		//? change to the receiver channel? (should be at border-router-rdc.c)
-		//printf("NBR->NEWCH %d\n\n", nbr->newCh);
-	   // }
 	  }
 	}
 
