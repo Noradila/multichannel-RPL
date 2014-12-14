@@ -146,6 +146,7 @@ void uip_ds6_defrt_periodic(void);
 
 //ADILA EDIT 05/11/14
 uip_ipaddr_t *uip_ds6_defrt_ch(void);
+uip_ipaddr_t *uip_ds6_defrt_setCh(uint8_t pCh);
 //-------------------
 
 /** @} */

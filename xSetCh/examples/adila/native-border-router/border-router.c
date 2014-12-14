@@ -226,6 +226,8 @@ receiver(struct simple_udp_connection *c,
   struct unicast_message *msg;
   msg = data;
 
+  static uip_ds6_route_t *r;
+
   if(msg->type == PROBERESULT) {
     //printf("LPBR RECEIVED PROBERESULT: from ");
     //uip_debug_ipaddr_print(sender_addr);
@@ -236,12 +238,27 @@ receiver(struct simple_udp_connection *c,
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
   }
-
+  else if(msg->type == CONFIRM_CH) {
+    printf("RECEIVED CONFIRM CH FROM ");
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n\n");
+  }
   else {
   printf("Data received from ");
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
+
+    /*for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+	printf("ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+    }*/
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -501,6 +518,9 @@ PROCESS_THREAD(chChange_process, ev, data)
   uint8_t randomNewCh;
   static uip_ds6_route_t *r;
 
+  static uip_ds6_nbr_t *nbr;
+  static uip_ds6_route_t *re;
+
   PROCESS_BEGIN();
 
   while(1) {
@@ -532,6 +552,29 @@ PROCESS_THREAD(chChange_process, ev, data)
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
+
+	//?? roundabout way?
+	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	  
+	  //printf("\n\nTEST %d %d\n\n", r->ipaddr.u8[11], nbr->ipaddr.u8[11]);
+
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
+	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
+	      for(re = uip_ds6_route_head(); re != NULL; 
+		re = uip_ds6_route_next(re)) {
+		if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(re))){
+		  re->nbrCh = msg2.value;
+	    	  printf("SAME %d ", re->nbrCh);
+	    	  uip_debug_ipaddr_print(&re->ipaddr);
+	    	  printf(" ");
+	    	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(re));
+	    	  printf("\n");
+		}
+	      }
+	    }
+	  }
+	}*/
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 

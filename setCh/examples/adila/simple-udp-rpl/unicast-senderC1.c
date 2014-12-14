@@ -196,6 +196,8 @@ static void decideChChange(void *ptr) {
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     sum = sum + pr->rxValue;
     listValue++;
+
+    msg2.value2 = pr->chNum;
   }
 
   noOfTreeNbr = listValue;
@@ -230,6 +232,10 @@ receiver(struct simple_udp_connection *c,
     printf("%d received CH_CHANGE from ", msg->value);
     uip_debug_ipaddr_print(sender_addr);
     printf("\n");
+
+    uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();
+    uip_ds6_if.addr_list[1].currentCh = msg->value;
+    //printf("  OWNCH %d ", uip_ds6_if.addr_list[1].currentCh);    
 
     msg2.type = NBR_CH_CHANGE;
     msg2.value = msg->value;
@@ -422,11 +428,15 @@ PROCESS_THREAD(test1, ev, data)
       msg2.type = msg->type;
       //msg2.type = NBR_CH_CHANGE;
       msg2.value = msg->value;
+     
+      //# used in quick hack to send to LPBR CONFIRM_CH
+      msg2.value2 = msg->value2;
 
       if(msg2.type == NBR_CH_CHANGE) {
       ctimer_set(&timer, 1 * CLOCK_SECOND, decideChChange, NULL);
       }
 
+      //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
       for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
@@ -472,12 +482,36 @@ PROCESS_THREAD(test1, ev, data)
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       }
+      //else {
+      if(uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
+	if(msg2.type == CONFIRM_CH) {
+	  msg2.addrPtr = uip_ds6_defrt_choose();
+	  //msg2.addrPtr = &sendTo1G;
+	  printf("CONFIRM CH TO 1 Sending channel change %d to parent ", msg2.value2);
+	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+	  printf("\n");
+
+	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	}
+      }
+
+      //! QUICK HACK TO SEND LPBR ROUTING TABLE UPDATE
+      /*else {
+	if(msg2.type == CONFIRM_CH) {
+	  msg2.addrPtr = uip_ds6_defrt_choose();
+	  printf("CONFIRM CH TO LPBR WITHOUT PROBING ");
+ 	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+	  printf("\n");
+
+	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	}
+      }*/
 
       //? set the node OWN currentCh so that it will wake up to it's own new listening channel
       //? the new currentCh is NOT yet confirm; keep the previous channel to prevCh
       //# uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
       //# uip_ds6_if.addr_list[1].currentCh = msg2.value;
-      uip_ds6_if.addr_list[1].prevCh = 18;
+      //uip_ds6_if.addr_list[1].prevCh = 18;
 
       /*etimer_set(&time, 1 * CLOCK_SECOND);
       //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&time));
@@ -498,17 +532,47 @@ PROCESS_THREAD(test1, ev, data)
 
       //? updates the routing table r->nbrCh = msg->value;
       //? keeps the value in changeTo so that it doesn't need to go through the table again
-      /*for(r = uip_ds6_route_head(); r != NULL; 
+      for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
-	printf("CHECK ROUTE: ");
+	if(uip_ipaddr_cmp(uip_ds6_route_nexthop(r), msg2.addrPtr)) {
+	  r->nbrCh = msg2.value;
+
+	  printf("%d UPDATE OWN ROUTING TABLE ", msg2.value);
+	  uip_debug_ipaddr_print(&r->ipaddr);
+	  printf(" via ");
+	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	  printf(" nbrCh %d\n", r->nbrCh);
+	
+	}
+
+	/*printf("CHECK ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
+	printf("\n");*/
 
-      }*/
+      }
+
+//printf("DEFAULT ROUTE ");
+//uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+//printf("\n");
+
+//printf("SET DEFAULT ROUTE ");
+//uip_ds6_defrt_ch();
+//printf("\n");
+
+      if(uip_ipaddr_cmp(msg2.addrPtr, uip_ds6_defrt_choose())) {
+	  uip_ds6_defrt_setCh(msg2.value);
+
+	  printf("%d PARENT UPDATE OWN ROUTING TABLE ", msg2.value);
+	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+	  printf(" nbrCh %d\n", uip_ds6_defrt_ch());
+
+
+      }
+
       y = 1;
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       msg2.paddingBuf[30] = " ";

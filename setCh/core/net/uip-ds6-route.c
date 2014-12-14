@@ -590,10 +590,11 @@ uip_ds6_defrt_choose(void)
       PRINT6ADDR(&d->ipaddr);
 
 //ADILA EDIT 03/11/14
-//      printf("Defrt found, IP address ");
-//      uip_debug_ipaddr_print(&d->ipaddr);
-//      printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
-//      printf(" PARENTCH %d\n", d->parentCh);
+/*      printf("Defrt found, IP address ");
+      uip_debug_ipaddr_print(&d->ipaddr);
+      printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
+      printf(" PARENTCH %d\n", d->parentCh);
+*/
 //-------------------
 
       PRINTF("\n");
@@ -635,7 +636,34 @@ uip_ds6_defrt_ch(void)
       d != NULL;
       d = list_item_next(d)) {
 
-      d->parentCh = 17;
+      //d->parentCh = 17;
+      //d->parentCh = pCh;
+      //printf("d->parentCh %d\n", d->parentCh);
+      return d->parentCh;
+
+      //printf("2Defrt found, IP address ");
+      //uip_debug_ipaddr_print(&d->ipaddr);
+      //printf("  2OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
+      //printf(" 2PARENTCH %d\n", d->parentCh);
+  }
+}
+/*---------------------------------------------------------------------------*/
+//ADILA EDIT 05/11/14
+uip_ipaddr_t *
+uip_ds6_defrt_setCh(uint8_t pCh)
+//uip_ipaddr_t *
+//uip_ds6_defrt_ch(void)
+{
+  uip_ds6_defrt_t *d;
+
+  for(d = list_head(defaultrouterlist);
+      d != NULL;
+      d = list_item_next(d)) {
+
+      //d->parentCh = 17;
+      d->parentCh = pCh;
+      //printf("d->parentCh %d\n", d->parentCh);
+      //return d->parentCh;
 
       //printf("2Defrt found, IP address ");
       //uip_debug_ipaddr_print(&d->ipaddr);
