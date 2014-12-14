@@ -165,6 +165,23 @@ static int blen;
     blen += snprintf(&buf[blen], sizeof(buf) - blen, __VA_ARGS__);      \
   } while(0)
 /*---------------------------------------------------------------------------*/
+/*static void updateRoutingTable(const uip_ipaddr_t senderAddr, uint8_t chValue) {
+  static uip_ds6_route_t *r;
+
+    for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+
+	if(senderAddr.u8[11] == ) {
+	printf("ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+    }
+}*/
+/*---------------------------------------------------------------------------*/
 static void readProbe(uint8_t checkValue) {
   struct lpbrList *l;
 
@@ -227,6 +244,7 @@ receiver(struct simple_udp_connection *c,
   msg = data;
 
   static uip_ds6_route_t *r;
+  static uip_ds6_nbr_t *nbr;
 
   if(msg->type == PROBERESULT) {
     //printf("LPBR RECEIVED PROBERESULT: from ");
@@ -237,6 +255,8 @@ receiver(struct simple_udp_connection *c,
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
+
+    //updateRoutingTable(sender_addr, msg->value);
   }
   else if(msg->type == CONFIRM_CH) {
     printf("RECEIVED CONFIRM CH FROM ");
@@ -249,7 +269,15 @@ receiver(struct simple_udp_connection *c,
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
 
-    /*for(r = uip_ds6_route_head(); r != NULL; 
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	printf("NBR: ");
+	uip_debug_ipaddr_print(&nbr->ipaddr);
+	printf(" nbr->newCh %d", nbr->newCh);
+	printf("\n");
+	}
+
+/*    for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -553,6 +581,31 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
 
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+	  //printf("\n\nTEST %d %d\n\n", r->ipaddr.u8[11], nbr->ipaddr.u8[11]);
+
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
+	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
+		  nbr->newCh = msg2.value;
+		  printf("NBR->NEWCH %d\n\n", nbr->newCh);
+		  //r->nbrCh = msg2.value;
+	    	  //printf("SAME %d ", r->nbrCh);
+	    	  //uip_debug_ipaddr_print(&r->ipaddr);
+	    	  //printf(" ");
+	    	  //uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	    	  //printf("\n");
+		  //break;
+	    }
+	    else {
+		printf("NBR->NEWCH %d\n\n", nbr->newCh);
+	    }
+	  }
+	}
+	//else 
+	  //r->nbrCh = r->nbrCh;
+
 	//?? roundabout way?
 	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
@@ -583,6 +636,20 @@ PROCESS_THREAD(chChange_process, ev, data)
 	etimer_set(&time, 4 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
+
+	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+    	  for(r = uip_ds6_route_head(); r != NULL; 
+	    r = uip_ds6_route_next(r)) {
+	    if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
+		r->nbrCh = nbr->newCh;
+		printf("NBR: ");
+		uip_debug_ipaddr_print(&nbr->ipaddr);
+		printf(" nbr->newCh %d", nbr->newCh);
+		printf("\n");
+	    }
+	  }
+	}*/
   }
   PROCESS_END();
 }

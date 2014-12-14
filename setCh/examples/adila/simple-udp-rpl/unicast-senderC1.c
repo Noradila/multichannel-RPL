@@ -483,7 +483,7 @@ PROCESS_THREAD(test1, ev, data)
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       }
       //else {
-      if(uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
+      /*if(uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	if(msg2.type == CONFIRM_CH) {
 	  msg2.addrPtr = uip_ds6_defrt_choose();
 	  //msg2.addrPtr = &sendTo1G;
@@ -493,7 +493,7 @@ PROCESS_THREAD(test1, ev, data)
 
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 	}
-      }
+      }*/
 
       //! QUICK HACK TO SEND LPBR ROUTING TABLE UPDATE
       /*else {
