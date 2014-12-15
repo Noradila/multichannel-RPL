@@ -139,6 +139,16 @@ send_packet(mac_callback_t sent, void *ptr)
     //! reading from routing table - it doesn't know where next
     uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 
+
+//ADILA EDIT 13/12/14
+//! NEED TO DO CHECKING SO THAT IT WON'T SEND IT THE DESTINATION IS UNKNOWN ff02::1a
+//! The all-RPL-nodes multicast address is a new address with a value of ff02::1a
+printf("\n\nTEST ");
+      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
+      uip_debug_ipaddr_print(&nH);
+printf("\n\n");
+//------------------
+
 #if SERIALIZE_ATTRIBUTES
     //size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
 
@@ -176,10 +186,11 @@ send_packet(mac_callback_t sent, void *ptr)
 	    }
 	}
 
-
-        /*for(r = uip_ds6_route_head(); r != NULL; 
+//! SHOULD READ THE NEXTHOP CHANNEL FROM HERE!
+        for(r = uip_ds6_route_head(); r != NULL; 
 	  r = uip_ds6_route_next(r)) {
 
+	  if(uip_ipaddr_cmp((&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr), &r->ipaddr)) {
 	  //if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
 	    //printf("\n\nSAME ");
 	    printf("IN BORDER-ROUTER-RDC ");
@@ -188,12 +199,12 @@ send_packet(mac_callback_t sent, void *ptr)
 	    //printf(" nH ");
 	    //uip_debug_ipaddr_print(&nH);
 	    printf("\n\n");
-
+	}
 	    //! get the transmitting channel from routing table
 	    //buf[3] = r->nbrCh;
 	    //break;
 	  //}
-        }*/
+        }
       }
       else {
 	buf[3] = 0;

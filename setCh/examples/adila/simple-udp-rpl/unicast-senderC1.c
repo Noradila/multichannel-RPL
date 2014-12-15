@@ -306,6 +306,9 @@ uint8_t q;
     printf("\n");
   }
 
+      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
+      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->srcipaddr);
+
       printf("Sending unicast to ");
       uip_debug_ipaddr_print(&sendTo1);
       printf("\n");
