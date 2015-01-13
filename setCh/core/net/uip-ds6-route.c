@@ -259,8 +259,8 @@ found_route_ch = r->nbrCh;
     uip_debug_ipaddr_print(uip_ds6_route_nexthop(found_route));
     printf("\n");
 */
-printf("FOUND ROUTE CHANGE TO NEXTHOP CHANNEL %d\n\n", found_route_ch);
-
+//printf("FOUND ROUTE CHANGE TO NEXTHOP CHANNEL %d\n\n", found_route_ch);
+cc2420_set_channel(found_route_ch);
 //-------------------
   } else {
     PRINTF("uip-ds6-route: No route found\n");
@@ -355,7 +355,10 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 #endif
 
 //QUICK INIT HACK ADILA EDIT 10/11/14
-r->nbrCh = cc2420_get_channel();
+if(r->nbrCh == 0) {
+  r->nbrCh = 26;
+}
+//r->nbrCh = cc2420_get_channel();
 //-------------------
 
   PRINTF("uip_ds6_route_add: adding route: ");
@@ -502,7 +505,11 @@ uip_ds6_defrt_add(uip_ipaddr_t *ipaddr, unsigned long interval)
   uip_ipaddr_copy(&d->ipaddr, ipaddr);
 
 //ADILA EDIT 03/11/14
-d->parentCh = cc2420_get_channel();
+//d->parentCh = cc2420_get_channel();
+if(d->parentCh == 0) {
+d->parentCh = 26;
+}
+//printf("\n\nINITIALISE D->PARENTCH %d\n\n", d->parentCh);
 //-------------------
 
   if(interval != 0) {
@@ -590,6 +597,10 @@ uip_ds6_defrt_choose(void)
       PRINT6ADDR(&d->ipaddr);
 
 //ADILA EDIT 03/11/14
+printf("Defrt found ");
+uip_debug_ipaddr_print(&d->ipaddr);
+printf(" %d\n", uip_ds6_defrt_ch());
+cc2420_set_channel(uip_ds6_defrt_ch());
 /*      printf("Defrt found, IP address ");
       uip_debug_ipaddr_print(&d->ipaddr);
       printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);

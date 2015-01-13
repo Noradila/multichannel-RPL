@@ -169,6 +169,7 @@ static void readProbe(uint8_t checkValue) {
   struct lpbrList *l;
 
   if(checkValue == 1) {
+    printf("-----------------------------------------------------------\n");
     printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
     checkValue = 0;
   }
@@ -226,6 +227,9 @@ receiver(struct simple_udp_connection *c,
   struct unicast_message *msg;
   msg = data;
 
+  static uip_ds6_route_t *r;
+  static uip_ds6_nbr_t *nbr;
+
   if(msg->type == PROBERESULT) {
     //printf("LPBR RECEIVED PROBERESULT: from ");
     //uip_debug_ipaddr_print(sender_addr);
@@ -241,6 +245,25 @@ receiver(struct simple_udp_connection *c,
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
+
+    for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+	printf("ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+    }
+
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	printf("NBR: ");
+	uip_debug_ipaddr_print(&nbr->ipaddr);
+	printf(" nbrCh %d", nbr->newCh);
+	printf("\n");
+	}
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -535,21 +558,33 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
 
-	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
-
 	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
 	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
 	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
 		  nbr->newCh = msg2.value;
+		  r->nbrCh = msg2.value;
 	    }
 	  }
 	}
 
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
+
+	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
+	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
+		  nbr->newCh = msg2.value;
+		  r->nbrCh = msg2.value;
+	    }
+	  }
+	}*/
+
 	//equals to 30 secs? (even though it's supposed to be 3 secs
-	//etimer_set(&time, 6 * CLOCK_SECOND);
-	etimer_set(&time, 4 * CLOCK_SECOND);
+	etimer_set(&time, 6 * CLOCK_SECOND);
+	//etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
   }

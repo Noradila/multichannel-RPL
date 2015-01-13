@@ -47,9 +47,9 @@
       se.sics.cooja.mspmote.SkyMoteType
       <identifier>sky2</identifier>
       <description>setCh/unicast-senderC1</description>
-      <source EXPORT="discard">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
+      <source EXPORT="discard">/home/adila/Desktop/0801-multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
       <commands EXPORT="discard">make unicast-senderC1.sky TARGET=sky</commands>
-      <firmware EXPORT="copy">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
+      <firmware EXPORT="copy">/home/adila/Desktop/0801-multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
       <moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>
@@ -164,11 +164,25 @@
       </interface_config>
       <motetype_identifier>sky2</motetype_identifier>
     </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>108.06384619967089</x>
+        <y>54.78930946388398</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>8</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
   </simulation>
   <plugin>
     se.sics.cooja.plugins.SimControl
     <width>280</width>
-    <z>2</z>
+    <z>1</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -181,10 +195,10 @@
       <skin>se.sics.cooja.plugins.skins.GridVisualizerSkin</skin>
       <skin>se.sics.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>se.sics.cooja.plugins.skins.UDGMVisualizerSkin</skin>
-      <viewport>1.3369245556472744 0.0 0.0 1.3369245556472744 135.06751598385205 136.69463728152107</viewport>
+      <viewport>2.6148848860297655 0.0 0.0 2.6148848860297655 92.42548184623547 122.73226276688217</viewport>
     </plugin_config>
     <width>400</width>
-    <z>3</z>
+    <z>2</z>
     <height>400</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -192,7 +206,7 @@
   <plugin>
     se.sics.cooja.plugins.LogListener
     <plugin_config>
-      <filter />
+      <filter>PROBE RESULT</filter>
       <formatted_time />
       <coloring />
     </plugin_config>
@@ -212,14 +226,15 @@
       <mote>4</mote>
       <mote>5</mote>
       <mote>6</mote>
+      <mote>7</mote>
       <showRadioRXTX />
       <showRadioChannels />
       <showRadioHW />
       <showLEDs />
-      <zoomfactor>500.0</zoomfactor>
+      <zoomfactor>1000.0</zoomfactor>
     </plugin_config>
     <width>1655</width>
-    <z>1</z>
+    <z>3</z>
     <height>244</height>
     <location_x>0</location_x>
     <location_y>789</location_y>

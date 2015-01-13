@@ -82,7 +82,8 @@ packet_sent(void *ptr, int status, int transmissions)
 //ADILA EDIT 10/11/14
 //reset channel here?
 printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
-cc2420_set_channel(26);
+//cc2420_set_channel(26);
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //-------------------
 
 
