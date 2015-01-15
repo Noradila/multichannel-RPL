@@ -238,6 +238,9 @@ receiver(struct simple_udp_connection *c,
 
   struct probeResult *pr;
 
+  uip_ipaddr_t sendTo1;
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
   if(msg->type == CH_CHANGE) {
     printf("%d: %d received CH_CHANGE from ", cc2420_get_channel(), msg->value);
     uip_debug_ipaddr_print(sender_addr);
@@ -282,6 +285,8 @@ receiver(struct simple_udp_connection *c,
   }
 
   else if(msg->type == GET_ACK) {
+
+    msg2.value = msg->value;
     q++;
     printf("%d: %d GET ACK BACK %d\n", cc2420_get_channel(), q, keepListNo);
 
@@ -292,6 +297,11 @@ receiver(struct simple_udp_connection *c,
 //? by so, would be able to retransmit confirm channel to the non ACK node
 
     if(q == keepListNo) {
+
+      msg2.type = CONFIRM_CH;
+      printf("Confirm change, tell LPBR the change to %d\n", msg2.value);
+      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+
       for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
 	if(pr->checkAck == 0) {
 	  //? not yet done!

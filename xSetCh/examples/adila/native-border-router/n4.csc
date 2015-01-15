@@ -47,9 +47,9 @@
       se.sics.cooja.mspmote.SkyMoteType
       <identifier>sky2</identifier>
       <description>setCh/unicast-senderC1</description>
-      <source EXPORT="discard">/home/adila/Desktop/0801-multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
+      <source EXPORT="discard">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.c</source>
       <commands EXPORT="discard">make unicast-senderC1.sky TARGET=sky</commands>
-      <firmware EXPORT="copy">/home/adila/Desktop/0801-multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
+      <firmware EXPORT="copy">/home/adila/Desktop/multichannel-RPL/setCh/examples/adila/simple-udp-rpl/unicast-senderC1.sky</firmware>
       <moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
       <moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>
@@ -140,7 +140,7 @@
   <plugin>
     se.sics.cooja.plugins.SimControl
     <width>280</width>
-    <z>2</z>
+    <z>0</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -156,7 +156,7 @@
       <viewport>2.9900213896163996 0.0 0.0 2.9900213896163996 75.88960437891193 138.0834080674806</viewport>
     </plugin_config>
     <width>400</width>
-    <z>0</z>
+    <z>2</z>
     <height>400</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -169,7 +169,7 @@
       <coloring />
     </plugin_config>
     <width>1255</width>
-    <z>3</z>
+    <z>1</z>
     <height>630</height>
     <location_x>400</location_x>
     <location_y>160</location_y>
@@ -189,7 +189,7 @@
       <zoomfactor>100000.0</zoomfactor>
     </plugin_config>
     <width>1655</width>
-    <z>1</z>
+    <z>3</z>
     <height>244</height>
     <location_x>0</location_x>
     <location_y>789</location_y>
