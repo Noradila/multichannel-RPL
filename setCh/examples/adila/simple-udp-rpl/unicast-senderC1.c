@@ -185,13 +185,13 @@ static void readProbeResult() {
     msg2.type = CONFIRM_CH;
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
 
-    process_post_synch(&test2, event_data_ready, &msg2);
+    //process_post_synch(&test2, event_data_ready, &msg2);
   }
   else {
     msg2.type = CONFIRM_CH;
     msg2.value = uip_ds6_if.addr_list[1].prevCh;
 
-    process_post_synch(&test2, event_data_ready, &msg2);
+    //process_post_synch(&test2, event_data_ready, &msg2);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -299,8 +299,8 @@ receiver(struct simple_udp_connection *c,
     if(q == keepListNo) {
 
       msg2.type = CONFIRM_CH;
-      printf("Confirm change, tell LPBR the change to %d\n", msg2.value);
-      simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+      //printf("Confirm change, tell LPBR the change to %d\n", msg2.value);
+      //simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
 
       for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
 	if(pr->checkAck == 0) {
@@ -495,10 +495,10 @@ PROCESS_THREAD(test1, ev, data)
 	  //printf("timer expired 0.15sec\n\n");
     	  //uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
     	  uip_ds6_if.addr_list[1].currentCh = changeTo;
-	  cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+	  //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 
-	  etimer_set(&time, 1 * CLOCK_SECOND);
-	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
+	  //etimer_set(&time, 1 * CLOCK_SECOND);
+	  //PROCESS_YIELD_UNTIL(etimer_expired(&time));
 	}
       }
 
@@ -520,12 +520,17 @@ PROCESS_THREAD(test1, ev, data)
 	//printf("timer expired 0.15sec\n\n");
 
     	uip_ds6_if.addr_list[1].currentCh = changeTo;
-	cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+	//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 
 
-	  etimer_set(&time, 1 * CLOCK_SECOND);
-	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
+	  //etimer_set(&time, 1 * CLOCK_SECOND);
+	  //PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
+
+    cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
+    etimer_set(&time, 2 * CLOCK_SECOND);
+    PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
     readProbeResult();
     }
@@ -545,7 +550,10 @@ PROCESS_THREAD(test1, ev, data)
       updateRoutingTable(msg2.addrPtr, msg2.value);
 
       //printf("SET 0.15S TIMER\n");
-      etimer_set(&time, 0.15 * CLOCK_SECOND);
+      printf("SET TIMER RANDOM IN 2 SEC\n");
+      //etimer_set(&time, 0.15 * CLOCK_SECOND);
+      etimer_set(&time, random_rand() % (2 * CLOCK_SECOND));
+      //etimer_set(&time, 1 * CLOCK_SECOND);
       PROCESS_YIELD_UNTIL(etimer_expired(&time));
       //printf("TIMER 0.15S EXPIRED, START PROBING\n\n");
 
@@ -573,6 +581,7 @@ PROCESS_THREAD(test1, ev, data)
       //! the last few packets might be still be sending
       cc2420_set_channel(changeTo);
       etimer_set(&time, 0.15 * CLOCK_SECOND);
+      //etimer_set(&time, 1 * CLOCK_SECOND);
       PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }//end if(msg->type == NBRPROBE)
 

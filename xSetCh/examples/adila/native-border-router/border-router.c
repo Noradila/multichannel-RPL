@@ -240,7 +240,7 @@ receiver(struct simple_udp_connection *c,
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+    /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("IN B-R ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -249,10 +249,10 @@ receiver(struct simple_udp_connection *c,
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-    }
+    }*/
   }
 
-  if(msg->type == CONFIRM_CH) {
+  else if(msg->type == CONFIRM_CH) {
     printf("Received %d from\n\n", msg->value);
   }
 
@@ -547,7 +547,7 @@ PROCESS_THREAD(chChange_process, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+    /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("IN B-R ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -556,7 +556,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-    }
+    }*/
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
