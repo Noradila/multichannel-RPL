@@ -204,8 +204,10 @@ printf("READPROBERESULT SIZE %d\n\n", sizeof(msg2));
     msg2.type = CONFIRM_CH;
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
 
+msg2.value2 = 0;
+
     //process_post_synch(&unicast_sender_process, event_data_ready, &msg2);
-    //process_post(&test1, event_data_ready, &msg2);
+    process_post(&test1, event_data_ready, &msg2);
 
 //confirmChFunction();
   }
@@ -581,6 +583,8 @@ y = 1;
 
 //for(x = 0; x <=y; x++) {
 printf("VALUE2 IS %d\n\n", y);
+
+
       for(x = 0; x <=y; x++) {
         //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
         for(r = uip_ds6_route_head(); r != NULL; 
@@ -589,6 +593,10 @@ printf("VALUE2 IS %d\n\n", y);
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
+if(y == 0) {
+printf("Y = %d\n\n", y);
+break;
+}
 
 
 	    msg2.value = changeTo;
@@ -653,6 +661,11 @@ printf("AFTER 0.15 OR 1\n\n");
 
         if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	  msg2.addrPtr = uip_ds6_defrt_choose();
+
+if(y == 0) {
+printf("Y = %d\n\n", y);
+break;
+}
 
 	  msg2.value = changeTo;
 	  //if(keepType == NBR_CH_CHANGE) {
