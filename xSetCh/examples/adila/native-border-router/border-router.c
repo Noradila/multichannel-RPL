@@ -73,6 +73,8 @@ static struct simple_udp_connection unicast_connection;
 static process_event_t event_data_ready;
 
 uint8_t a = 0;
+uip_ipaddr_t nextHopAddr;
+uip_ipaddr_t nH;
 
 struct lpbrList {
   struct lpbrList *next;
@@ -88,6 +90,7 @@ MEMB(lpbrList_mem, struct lpbrList, 50);
 enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
+STARTPROBE,
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
@@ -230,30 +233,61 @@ receiver(struct simple_udp_connection *c,
   static uip_ds6_route_t *r;
   static uip_ds6_nbr_t *nbr;
 
+//uip_ipaddr_t nH;
+
+if(msg->type == PROBERESULT) {
+
+//printf("RECEIVED BY LPBR\n\n");
   if(msg->type == PROBERESULT) {
-    //printf("LPBR RECEIVED PROBERESULT: from ");
-    //uip_debug_ipaddr_print(sender_addr);
-    //printf(" nbr ");
-    //uip_debug_ipaddr_print(&msg->address);
-    //printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
+    printf("LPBR RECEIVED PROBERESULT: from ");
+    uip_debug_ipaddr_print(sender_addr);
+    printf(" nbr %d ", ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5]) ;
+    uip_debug_ipaddr_print(&msg->address);
+    printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
 
-    /*for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("IN B-R ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }*/
+//uip_ipaddr_copy(&nextHopAddr, &msg->address);
+
+uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[7]);
+
+printf("RECONSTRUCT RECEIVER IP ");
+uip_debug_ipaddr_print(&nH);
+printf("\n\n");
+
+/*for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+ if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
+  printf("SAME ");
+  uip_debug_ipaddr_print(&nH);
+
+//r->nbrCh = msg->value;
+  printf(" update r->nbrCh %d ", r->nbrCh);
+  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+  printf("\n\n");
+ }*/
+}
   }
 
   else if(msg->type == CONFIRM_CH) {
-    printf("Received %d from\n\n", msg->value);
+    printf("CONFIRM CH Received %d from\n\n", msg->value);
+
+//printf("PART OF SENDER ADDR %d\n\n", sender_addr->u8[11]);
+
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+//printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
+ if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
+  nbr->newCh = msg->value;
+  printf("SAME ");
+  uip_debug_ipaddr_print(&nH);
+
+  printf(" update nbr->newCh %d ", nbr->newCh);
+  printf("\n\n");
+ }
+}
+
+
   }
 
   else {
@@ -523,7 +557,8 @@ PROCESS_THREAD(border_router_process, ev, data)
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
     //! QUICK HACK - should put timer here
-    if(a == 5) {
+    //if(a == 5) {
+    if(a == 7) {
       process_post_synch(&chChange_process, event_data_ready, NULL);
     }
     /* do anything here??? */
@@ -547,17 +582,6 @@ PROCESS_THREAD(chChange_process, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-    /*for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("IN B-R ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }*/
-
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
@@ -572,20 +596,8 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-
-	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
-	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
-		  nbr->newCh = msg2.value;
-		  r->nbrCh = msg2.value;
-	    }
-	  }
-	}
-
-	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
 	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
@@ -597,6 +609,8 @@ PROCESS_THREAD(chChange_process, ev, data)
 	    }
 	  }
 	}*/
+
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
 	//equals to 30 secs? (even though it's supposed to be 3 secs
 	etimer_set(&time, 6 * CLOCK_SECOND);

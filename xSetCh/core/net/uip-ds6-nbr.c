@@ -95,7 +95,10 @@ uip_ds6_nbr_add(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr,
     nbr->nscount = 0;
 
 //ADILA EDIT 14/12/14
-nbr->newCh = 26;
+if(nbr->newCh == 0) {
+  nbr->newCh = 26;
+}
+//nbr->newCh = 26;
 //-------------------
 
     PRINTF("Adding neighbor with ip addr ");

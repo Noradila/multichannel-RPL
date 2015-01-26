@@ -144,10 +144,10 @@ send_packet(mac_callback_t sent, void *ptr)
 //ADILA EDIT 13/12/14
 //! NEED TO DO CHECKING SO THAT IT WON'T SEND IT THE DESTINATION IS UNKNOWN ff02::1a
 //! The all-RPL-nodes multicast address is a new address with a value of ff02::1a
-//printf("\n\nTEST ");
-//      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
-//      uip_debug_ipaddr_print(&nH);
-//printf("\n\n");
+/*printf("\n\nTEST ");
+      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
+      uip_debug_ipaddr_print(&nH);
+printf("\n\n");*/
 //------------------
 
 #if SERIALIZE_ATTRIBUTES
@@ -181,6 +181,11 @@ send_packet(mac_callback_t sent, void *ptr)
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
 	  if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
+		printf("\n\nTEST ");
+      		uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
+      		uip_debug_ipaddr_print(&nH);
+		uip_debug_ipaddr_print(&nbr->ipaddr);
+		printf("\n\n");
 		  printf("NBR->NEWCH %d\n\n", nbr->newCh);
 		  buf[3] = nbr->newCh;
 		  break;
@@ -189,7 +194,7 @@ send_packet(mac_callback_t sent, void *ptr)
 
 //!!!!!!!!!!!!!!!!!!!!!!
 //! SHOULD READ THE NEXTHOP CHANNEL FROM HERE!
-        for(r = uip_ds6_route_head(); r != NULL; 
+        /*for(r = uip_ds6_route_head(); r != NULL; 
 	  r = uip_ds6_route_next(r)) {
 
 	  if(uip_ipaddr_cmp((&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr), &r->ipaddr)) {
@@ -206,7 +211,7 @@ send_packet(mac_callback_t sent, void *ptr)
 	    //buf[3] = r->nbrCh;
 	    //break;
 	  //}
-        }
+        }*/
       }
       else {
 	buf[3] = 0;

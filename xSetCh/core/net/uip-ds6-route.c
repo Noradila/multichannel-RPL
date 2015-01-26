@@ -345,7 +345,9 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 
 //QUICK INIT HACK ADILA EDIT 10/11/14
 //r->nbrCh = cc2420_get_channel();
-r->nbrCh = 26;
+if(r->nbrCh == 0) {
+  r->nbrCh = 26;
+}
 //-------------------
 
   PRINTF("uip_ds6_route_add: adding route: ");
