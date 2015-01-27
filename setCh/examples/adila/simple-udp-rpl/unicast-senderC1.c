@@ -320,7 +320,7 @@ msg2.value2 = 1;
     msg2.addrPtr = sender_addr;
     msg2.value = msg->value;
 
-    process_post_synch(&test1, event_data_ready, &msg2);
+    //process_post_synch(&test1, event_data_ready, &msg2);
   }
 
   else if(msg->type == GET_ACK) {
@@ -407,56 +407,6 @@ uint8_t q;
 
   etimer_set(&periodic_timer, SEND_INTERVAL);
   while(1) {
-/*    PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
-
-    if(msg->type == NBRPROBE) {
-
-      msg2.type = NBRPROBE;
-      msg2.addrPtr = msg->addrPtr;
-      msg2.value = msg->value;
-
-      changeTo = msg2.value;
-      uip_ipaddr_copy(&holdAddr, msg2.addrPtr);
-
-printf("IN NBRPROBE\n\n");
-      //etimer_set(&time, 0.15 * CLOCK_SECOND);
-      etimer_set(&time, 0.125 * CLOCK_SECOND);
-      PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-printf("AFTER 0.125s\n\n");
-      y = 1;
-      //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
-      msg2.paddingBuf[30] = " ";
-      for(x = 1; x <= 8; x++) {
-      msg2.type = NBRPROBE;
-	msg2.value = changeTo;
-	msg2.value2 = y;
-	msg2.addrPtr = &holdAddr;
-        msg2.paddingBuf[30] = " ";
-
-        //!cc2420_set_channel(msg2.value);
- 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
-	uip_debug_ipaddr_print(msg2.addrPtr);
-	printf("\n");
-
-	y++;
-	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-      }
-      //! the last few packets might be still be sending
-      //!cc2420_set_channel(changeTo);
-      etimer_set(&time, 0.15 * CLOCK_SECOND);
-      //etimer_set(&time, 1 * CLOCK_SECOND);
-      PROCESS_YIELD_UNTIL(etimer_expired(&time));
-    }//end if(msg->type == NBRPROBE)
-
- /*   if(msg->type == CONFIRM_CH) {
-      printf("CONFIRM CH\n\n");
-    msg2.type = CONFIRM_CH;
-    msg2.value = uip_ds6_if.addr_list[1].currentCh;
-
-    process_post_synch(&test1, event_data_ready, &msg2);
-    }*/
-
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
     etimer_reset(&periodic_timer);
@@ -556,34 +506,19 @@ PROCESS_THREAD(test1, ev, data)
     if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
     //if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
 
-/*if(msg->type == CONFIRM_CH) {
-etimer_set(&time, 0.15 * CLOCK_SECOND);
-PROCESS_YIELD_UNTIL(etimer_expired(&time));
-printf("IN 3 MSG TYPES\n\n");
-break;
-}*/
       //msg2.type = NBR_CH_CHANGE;
       msg2.type = msg->type;
       msg2.value = msg->value;
       changeTo = msg2.value;
       keepType = msg2.type;
 
-	msg2.value2 = msg->value2;
-	y = msg2.value2;
+      msg2.value2 = msg->value2;
+      y = msg2.value2;
 
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       msg2.paddingBuf[30] = " ";
 
-/*if(msg->type == NBR_CH_CHANGE) {
-y = 1;
-}*/
-/*if(msg->type == CONFIRM_CH) {
-//y = 0;
-}*/
-
-//for(x = 0; x <=y; x++) {
-printf("VALUE2 IS %d\n\n", y);
-
+      printf("VALUE2 IS %d\n\n", y);
 
       for(x = 0; x <=y; x++) {
         //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
@@ -592,13 +527,6 @@ printf("VALUE2 IS %d\n\n", y);
 
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-
-//!test for CONFIRM_CH
-/*if(y == 0) {
-printf("Y = %d\n\n", y);
-break;
-}*/
-
 
 	    msg2.value = changeTo;
             msg2.paddingBuf[30] = " ";
@@ -632,7 +560,7 @@ break;
 	    //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	    if((y == 1 && x == 0) || (y == 0)) {
+	    if((y == 1 && x == 0)) {
 	    //if(x == 0) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
 	    }
@@ -649,6 +577,10 @@ break;
 		//printf("WAIT 1 FOR PROBING TO FINISH\n\n");
 	      //etimer_set(&time, 1 * CLOCK_SECOND);
 		//printf("END 1s\n\n");
+	    }
+	    if(y == 0) {
+	printf("START 1\n\n");
+	      etimer_set(&time, 1 * CLOCK_SECOND);
 	    }
 	    PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
@@ -693,7 +625,7 @@ break;
 
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	  if(y == 1 && x == 0) {
+	  if((y == 1 && x == 0)) {
 	  //if(x == 0) {
 	    etimer_set(&time, 0.15 * CLOCK_SECOND);
 	  }
@@ -709,6 +641,10 @@ break;
 		//printf("WAIT 1 FOR PROBING TO FINISH\n\n");
 	      //etimer_set(&time, 1 * CLOCK_SECOND);
 		//printf("END 1s\n\n");
+	  }
+	  if(y == 0) {
+	printf("START 1\n\n");
+	    etimer_set(&time, 1 * CLOCK_SECOND);
 	  }
 	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
@@ -786,90 +722,6 @@ printf("AFTER 0.125s\n\n");
       PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }//end if(msg->type == NBRPROBE)
 
-/*    if(msg->type == CONFIRM_CH) {
-
-//printf("IN CONFIRM_CH\n\n");
-      msg2.type = CONFIRM_CH;
-      //msg2.type = msg->type;
-      msg2.value = msg->value;
-
-      changeTo = msg2.value;
-      keepType = msg2.type;
-
-      //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
-      for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-
-	//! check to ensure it doesn't repeat the same nexthop neighbour
-	if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-
-	  msg2.type = CONFIRM_CH;
-	  //msg2.type = keepType;
-	  msg2.value = changeTo;
-
-msg2.paddingBuf[30] = " ";
-
-	  printf("%d Sending CONFIRM_CH %d to tree neighbour ", r->nbrCh, msg2.value);
-	  //!cc2420_set_channel(r->nbrCh);
-	  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	  printf(" %d getchannel\n", cc2420_get_channel());	
-
-	  msg2.addrPtr = uip_ds6_route_nexthop(r);
-	  //! keep nextHop address so that it won't send to the same address again
-	  uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
-
-//!cc2420_set_channel(r->nbrCh);
-
-	  //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
-	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-
-	  etimer_set(&time, 0.15 * CLOCK_SECOND);
-	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-	  //printf("timer expired 0.15sec\n\n");
-
-	  //!cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
-	  etimer_set(&time, 0.30 * CLOCK_SECOND);
-	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
-	}
-      }
-
-      //# LPBR should be included in CONFIRM_CH but for simplicity, it is ignored
-      //# because once it gets the message, it needs to change into the sender channel
-      //if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
-	msg2.addrPtr = uip_ds6_defrt_choose();
-	msg2.type = CONFIRM_CH;
-	//msg2.type = keepType;
-	msg2.value = changeTo;
-
-msg2.paddingBuf[30] = " ";
-
-	printf("%d Sending CONFIRM_CH %d %d to parent ", uip_ds6_defrt_ch(), msg2.value, changeTo);
-	//!cc2420_set_channel(uip_ds6_defrt_ch());
-	uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-	printf("\n");
-
-	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-
-	etimer_set(&time, 0.15 * CLOCK_SECOND);
-	PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-	//printf("timer expired 0.15sec\n\n");
-
-	//!cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
-	etimer_set(&time, 0.30 * CLOCK_SECOND);
-	PROCESS_YIELD_UNTIL(etimer_expired(&time));
-      //}
-
-      //! revert back to previous channel
-      if(changeTo == uip_ds6_if.addr_list[1].prevCh) {
-	uip_ds6_if.addr_list[1].currentCh = uip_ds6_if.addr_list[1].prevCh;
-      }
-	
-    }
-*/
     if(msg->type == GET_ACK) {
       
       msg2.addrPtr = msg->addrPtr;
