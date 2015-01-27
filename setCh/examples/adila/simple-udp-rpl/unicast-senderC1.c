@@ -323,7 +323,7 @@ msg2.value2 = 1;
     //process_post_synch(&test1, event_data_ready, &msg2);
   }
 
-  else if(msg->type == GET_ACK) {
+/*  else if(msg->type == GET_ACK) {
 
     msg2.value = msg->value;
     q++;
@@ -349,7 +349,7 @@ msg2.value2 = 1;
       }
     }
   }
-
+*/
   else {
   printf("Data received on port %d from port %d with length %d\n",
          receiver_port, sender_port, datalen);
@@ -548,7 +548,7 @@ PROCESS_THREAD(test1, ev, data)
 	      printf("CONFIRM CH SENDING!!");
 	    }
 
-
+	    keepType = msg2.type;
 //!	    cc2420_set_channel(r->nbrCh);
 	    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	    printf("\n");	
@@ -618,7 +618,7 @@ break;
 	    printf("CONFIRM CH SENDING!!");
 	  }
 
-
+	  keepType = msg2.type;
 //!	  cc2420_set_channel(uip_ds6_defrt_ch());
 	  uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 	  printf("\n");
