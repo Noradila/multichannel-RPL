@@ -338,7 +338,7 @@ msg2.value2 = 1;
     if(q == keepListNo) {
 
       msg2.type = CONFIRM_CH;
-      //printf("Confirm change, tell LPBR the change to %d\n", msg2.value);
+      printf("Confirm change, tell LPBR the change to %d\n", msg2.value);
       //simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
 
       for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
@@ -593,10 +593,11 @@ printf("VALUE2 IS %d\n\n", y);
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
-if(y == 0) {
+//!test for CONFIRM_CH
+/*if(y == 0) {
 printf("Y = %d\n\n", y);
 break;
-}
+}*/
 
 
 	    msg2.value = changeTo;
@@ -613,11 +614,11 @@ break;
 	      printf("%d Sending STARTPROBE %d to tree neighbour ", r->nbrCh, msg2.value);
 	    }
 
-	    /*if(y == 0) {
+	    if(y == 0) {
 	      msg2.type == CONFIRM_CH;
 	    //if(keepType == CONFIRM_CH) {
 	      printf("CONFIRM CH SENDING!!");
-	    }*/
+	    }
 
 
 //!	    cc2420_set_channel(r->nbrCh);
@@ -631,7 +632,7 @@ break;
 	    //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	    if(y == 1 && x == 0) {
+	    if((y == 1 && x == 0) || (y == 0)) {
 	    //if(x == 0) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
 	    }
@@ -662,10 +663,10 @@ printf("AFTER 0.15 OR 1\n\n");
         if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	  msg2.addrPtr = uip_ds6_defrt_choose();
 
-if(y == 0) {
+/*if(y == 0) {
 printf("Y = %d\n\n", y);
 break;
-}
+}*/
 
 	  msg2.value = changeTo;
 	  //if(keepType == NBR_CH_CHANGE) {
@@ -680,10 +681,10 @@ break;
             printf("%d Sending STARTPROBE %d %d to parent ", uip_ds6_defrt_ch(), msg2.value, changeTo);
 	  }
 
-	  /*if(y == 0) {
+	  if(y == 0) {
 	    msg2.type == CONFIRM_CH;
 	    printf("CONFIRM CH SENDING!!");
-	  }*/
+	  }
 
 
 //!	  cc2420_set_channel(uip_ds6_defrt_ch());
@@ -731,10 +732,11 @@ startprobefunction(msg2.value);
 //process_post_synch(&test1, event_data_ready, &msg2);
 }*/
 
-      etimer_set(&time, 1 * CLOCK_SECOND);
+//? is the timer needed?
+/*      etimer_set(&time, 1 * CLOCK_SECOND);
       PROCESS_YIELD_UNTIL(etimer_expired(&time));
       printf("FINISH NBR_CH_CHANGE AND STARTPROBE\n\n");
-
+*/
 if(keepType == NBR_CH_CHANGE || keepType == STARTPROBE) {
 //if(keepType != CONFIRM_CH) {
       readProbeResult();

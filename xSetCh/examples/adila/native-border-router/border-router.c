@@ -274,7 +274,8 @@ printf("\n\n");
 
 //printf("PART OF SENDER ADDR %d\n\n", sender_addr->u8[11]);
 
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+//! updates LPBR RT
+/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
  if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
@@ -285,7 +286,7 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
   printf(" update nbr->newCh %d ", nbr->newCh);
   printf("\n\n");
  }
-}
+}*/
 
 
   }
