@@ -97,6 +97,7 @@ STARTPROBE,
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
+RECONFIRM_CH,
 	GET_ACK
 };
 
@@ -211,12 +212,12 @@ msg2.value2 = 0;
 
 //confirmChFunction();
   }
-  else {
+  /*else {
     msg2.type = CONFIRM_CH;
     msg2.value = uip_ds6_if.addr_list[1].prevCh;
 
     //process_post_synch(&test2, event_data_ready, &msg2);
-  }
+  }*/
 }
 /*---------------------------------------------------------------------------*/
 static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
@@ -536,14 +537,14 @@ PROCESS_THREAD(test1, ev, data)
  	      msg2.type = NBR_CH_CHANGE;
 	      printf("%d Sending channel change %d to tree neighbour ", r->nbrCh, msg2.value);
 	    }
-	    if(y == 1 && x ==1) {
+	    else if(y == 1 && x ==1) {
 	    //if(x == 1) {
 	      msg2.type = STARTPROBE;
 	      printf("%d Sending STARTPROBE %d to tree neighbour ", r->nbrCh, msg2.value);
 	    }
 
-	    if(y == 0) {
-	      msg2.type == CONFIRM_CH;
+	    else {
+	      msg2.type = CONFIRM_CH;
 	    //if(keepType == CONFIRM_CH) {
 	      printf("CONFIRM CH SENDING!!");
 	    }
@@ -560,31 +561,19 @@ PROCESS_THREAD(test1, ev, data)
 	    //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	    if((y == 1 && x == 0)) {
-	    //if(x == 0) {
+	    if((y == 1 && x == 0) || y == 0) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
 	    }
-	    if(y == 1 && x == 1) {
-	    //if(x == 1) {
-	      //etimer_set(&time, 0.15 * CLOCK_SECOND);
-	      etimer_set(&time, 1 * CLOCK_SECOND);
-	      //PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-	//+ no need to wait as it will be switched off automatically
-	      //printf("CHANGE TO LISTENING CH\n\n");
-	      //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
-		//printf("WAIT 1 FOR PROBING TO FINISH\n\n");
-	      //etimer_set(&time, 1 * CLOCK_SECOND);
-		//printf("END 1s\n\n");
-	    }
-	    if(y == 0) {
-	printf("START 1\n\n");
+	    else if(y == 1 && x == 1) {
 	      etimer_set(&time, 1 * CLOCK_SECOND);
 	    }
+	    /*else {
+	      printf("START 1\n\n");
+	      etimer_set(&time, 1 * CLOCK_SECOND);
+	    }*/
 	    PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-printf("AFTER 0.15 OR 1\n\n");
+            printf("AFTER 0.15 OR 1\n\n");
 
     	    //uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
     	    uip_ds6_if.addr_list[1].currentCh = changeTo;
@@ -595,26 +584,20 @@ printf("AFTER 0.15 OR 1\n\n");
         if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	  msg2.addrPtr = uip_ds6_defrt_choose();
 
-/*if(y == 0) {
-printf("Y = %d\n\n", y);
-break;
-}*/
-
 	  msg2.value = changeTo;
-	  //if(keepType == NBR_CH_CHANGE) {
 	  if(y == 1 && x == 0) {
 	  //if(x == 0) {
  	    msg2.type = NBR_CH_CHANGE;
             printf("%d Sending channel change %d %d to parent ", uip_ds6_defrt_ch(), msg2.value, changeTo);
 	  }
-	  if(y == 1 && x ==1) {
+	  else if(y == 1 && x ==1) {
 	  //if(x == 1) {
 	    msg2.type = STARTPROBE;
             printf("%d Sending STARTPROBE %d %d to parent ", uip_ds6_defrt_ch(), msg2.value, changeTo);
 	  }
 
-	  if(y == 0) {
-	    msg2.type == CONFIRM_CH;
+	  else {
+	    msg2.type = CONFIRM_CH;
 	    printf("CONFIRM CH SENDING!!");
 	  }
 
@@ -625,61 +608,29 @@ break;
 
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-	  if((y == 1 && x == 0)) {
+	  if((y == 1 && x == 0) || y == 0) {
 	  //if(x == 0) {
 	    etimer_set(&time, 0.15 * CLOCK_SECOND);
 	  }
-	  if(y == 1 && x == 1) {
-	  //if(x == 1) {
-	    //etimer_set(&time, 0.15 * CLOCK_SECOND);
+	  else if(y == 1 && x == 1) {
 	      etimer_set(&time, 1 * CLOCK_SECOND);
-	    //PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-	      //printf("CHANGE TO LISTENING CH\n\n");
-	      //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
-		//printf("WAIT 1 FOR PROBING TO FINISH\n\n");
-	      //etimer_set(&time, 1 * CLOCK_SECOND);
-		//printf("END 1s\n\n");
 	  }
-	  if(y == 0) {
-	printf("START 1\n\n");
+	  /*else {
+	    printf("START 1\n\n");
 	    etimer_set(&time, 1 * CLOCK_SECOND);
-	  }
+	  }*/
 	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-printf("AFTER 0.15 OR 1\n\n");
+          printf("AFTER 0.15 OR 1\n\n");
     	  uip_ds6_if.addr_list[1].currentCh = changeTo;
 	  //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
         }//END IF
-
-        //printf("NODE SET CHANNEL??? %d %d msg value %d\n\n", changeTo, msg2.value, x);
-        //!cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
       }//END FOR X==1
 
-/*if(keepType == NBR_CH_CHANGE) {
-printf("END NBR_CH_CHANGE\n\n");
-
-    msg2.type = STARTPROBE;
-    msg2.value = changeTo;
-
-startprobefunction(msg2.value);
-
-//process_post_synch(&test1, event_data_ready, &msg2);
-}*/
-
-//? is the timer needed?
-/*      etimer_set(&time, 1 * CLOCK_SECOND);
-      PROCESS_YIELD_UNTIL(etimer_expired(&time));
-      printf("FINISH NBR_CH_CHANGE AND STARTPROBE\n\n");
-*/
 if(keepType == NBR_CH_CHANGE || keepType == STARTPROBE) {
 //if(keepType != CONFIRM_CH) {
       readProbeResult();
 }
-/*if(keepType != CONFIRM_CH) {
-confirmChFunction();
-}*/
     }
 
     if(msg->type == NBRPROBE) {
