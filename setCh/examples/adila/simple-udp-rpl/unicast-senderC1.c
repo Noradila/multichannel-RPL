@@ -77,7 +77,7 @@ static uip_ipaddr_t holdAddr;
 uint8_t x;
 uint8_t y;
 
-static uint8_t noOfTreeNbr;
+uint8_t noOfEntry = 0;
 
   uip_ipaddr_t nextHopAddr;
 
@@ -183,6 +183,17 @@ static void checkAckProbeResultTable() {
   }
 }
 /*---------------------------------------------------------------------------*/
+uint8_t howManyInRT() {
+  static uip_ds6_route_t *r;
+  noOfEntry = 0;
+  for(r = uip_ds6_route_head(); r != NULL; 
+    r = uip_ds6_route_next(r)) {
+    noOfEntry++;
+    //printf("\n\nENTRY %d\n\n", noOfEntry);
+  }
+  return noOfEntry;
+}
+/*---------------------------------------------------------------------------*/
 static void readProbeResult() {
   struct probeResult *pr;
   struct unicast_message msg2;
@@ -254,6 +265,52 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
     uip_ipaddr_copy(&pr->pAddr, prAddr);
     list_add(probeResult_table, pr);
   }
+}
+/*---------------------------------------------------------------------------*/
+
+static void loopFunction(const uip_ipaddr_t *routeNextHop, struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
+
+  struct unicast_message msg2;
+  struct probeResult *pr;
+  //struct simple_udp_connection *c;
+
+  msg2.value = msg->value;
+  msg2.paddingBuf[30] = " ";
+  if(y == 1 && x == 0) {
+    msg2.type = NBR_CH_CHANGE;
+    printf("%d Sending channel change %d to tree neighbour ", rNbrCh, msg2.value);
+  }
+  else if(y == 1 && x ==1) {
+    msg2.type = STARTPROBE;
+    printf("%d Sending STARTPROBE %d to tree neighbour ", rNbrCh, msg2.value);
+  }
+
+  else {
+    for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+      //printf("%d: TO SEND CONFIRM CH: ", cc2420_get_channel());
+      /*uip_debug_ipaddr_print(&pr->pAddr);
+      printf(" ");
+      printf("CHANNEL %d PROBED %d ACK %d\n", pr->chNum, pr->rxValue, pr->checkAck);*/
+
+      if(uip_ipaddr_cmp(&pr->pAddr, routeNextHop)) {
+        //! if checkAck == 0, do retransmission from CONFIRM_CH
+        if((pr->checkAck) == 0) {
+          msg2.type = CONFIRM_CH;
+          printf("CONFIRM CH SENDING!!");
+        }
+      }
+    }
+  }
+
+  keepType = msg2.type;
+//!	    cc2420_set_channel(r->nbrCh);
+  uip_debug_ipaddr_print(routeNextHop);
+  printf("\n");	
+
+  msg2.addrPtr = routeNextHop;
+
+  //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
+  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -461,6 +518,9 @@ PROCESS_THREAD(test1, ev, data)
   static struct ctimer timer;
   struct probeResult *pr;
 
+  //noOfEntry = 0;
+uint8_t newVal;
+
   PROCESS_BEGIN();
 
   while(1) {
@@ -481,6 +541,8 @@ PROCESS_THREAD(test1, ev, data)
 
       //printf("VALUE2 IS %d\n\n", y);
 
+
+
       for(x = 0; x <=y; x++) {
         //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
         for(r = uip_ds6_route_head(); r != NULL; 
@@ -489,7 +551,13 @@ PROCESS_THREAD(test1, ev, data)
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
-	    msg2.value = changeTo;
+            msg2.value = changeTo;
+            msg2.paddingBuf[30] = " ";
+            uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+            loopFunction(uip_ds6_route_nexthop(r), &msg2, y, x, r->nbrCh);
+//uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+
+	    /*msg2.value = changeTo;
             msg2.paddingBuf[30] = " ";
 	    if(y == 1 && x == 0) {
  	      msg2.type = NBR_CH_CHANGE;
@@ -503,9 +571,9 @@ PROCESS_THREAD(test1, ev, data)
 	    else {
   	     for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
               //printf("%d: TO SEND CONFIRM CH: ", cc2420_get_channel());
-              /*uip_debug_ipaddr_print(&pr->pAddr);
-              printf(" ");
-              printf("CHANNEL %d PROBED %d ACK %d\n", pr->chNum, pr->rxValue, pr->checkAck);*/
+              //uip_debug_ipaddr_print(&pr->pAddr);
+              //printf(" ");
+              //printf("CHANNEL %d PROBED %d ACK %d\n", pr->chNum, pr->rxValue, pr->checkAck);
 
 	      if(uip_ipaddr_cmp(&pr->pAddr, uip_ds6_route_nexthop(r))) {
                //! if checkAck == 0, do retransmission from CONFIRM_CH
@@ -527,7 +595,7 @@ PROCESS_THREAD(test1, ev, data)
 	    uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
 
 	    //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
-	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);*/
 
 	    if((y == 1 && x == 0)) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
