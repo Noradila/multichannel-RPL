@@ -100,8 +100,7 @@ enum {
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
-	GET_ACK,
-	RETX
+	GET_ACK
 };
 
 struct unicast_message {
@@ -173,7 +172,7 @@ static void checkAckProbeResultTable() {
   struct unicast_message msg2;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("%d: PROBE RESULT: ", cc2420_get_channel());
+    printf("%d: CHECKACK PROBE RESULT: ", cc2420_get_channel());
     uip_debug_ipaddr_print(&pr->pAddr);
     printf(" ");
     printf("CHANNEL %d PROBED %d ACK %d\n", pr->chNum, pr->rxValue, pr->checkAck);
@@ -191,6 +190,8 @@ static void checkAckProbeResultTable() {
       }
       msg2.type = CONFIRM_CH;
       msg2.value2 = 0; //y==0, for() run only once in test1
+
+printf("\n\nRECALLING?\n\n");
       process_post(&test1, event_data_ready, &msg2);
       break;
     }
@@ -795,19 +796,6 @@ printf("AFTER 0.125s\n\n");
       printf("\n");
 
       simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-    }
-
-    if(msg->type == RETX) {
-      //etimer_set(&time, 1 * CLOCK_SECOND);
-      //PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-      printf("IN RETX\n\n");
-      for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-	printf("%d: CHECK PROBE RESULT: ", cc2420_get_channel());
-	uip_debug_ipaddr_print(&pr->pAddr);
-	printf(" ");
-	printf("CHANNEL %d PROBED %d ACK %d\n", pr->chNum, pr->rxValue, pr->checkAck);
-	}
     }
 
     /*if(msg->type == CONFIRM_CH) {
