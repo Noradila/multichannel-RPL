@@ -90,12 +90,12 @@ MEMB(lpbrList_mem, struct lpbrList, 50);
 enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
-STARTPROBE,
+	STARTPROBE,
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
-RECONFIRM_CH,
-	GET_ACK
+	GET_ACK,
+	RETX
 };
 
 struct unicast_message {
