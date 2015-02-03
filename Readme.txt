@@ -81,12 +81,12 @@ call function: keepProbeResult(sender_addr, newChannel, 0 (notACK packet))
 probeResult_table is updated.
 
 PROBERESULT TABLE:
----------------------------------------------------------------------------------
-NBR Address	|	New Channel	|	Probe Received	|	Ack	|
----------------------------------------------------------------------------------
-fe80::		|	msg->value	|	x++		|	1	|
-...		|	...		|	...		|	0	|
----------------------------------------------------------------------------------
+-------------------------------------------------------------------------
+NBR Address	|	New Channel	|	Probe Received	|Ack	|
+-------------------------------------------------------------------------
+fe80::		|	msg->value	|	x++		|1	|
+...		|	...		|	...		|0	|
+-------------------------------------------------------------------------
 
 ********STARTPROBE 1 second delay EXPIRES
 
@@ -103,12 +103,12 @@ msg.value2 = rxValue;
 call function: keepLpbrList(sender_addr, &msg->address, chNum, rxValue);
 
 LPBR LIST TABLE:
--------------------------------------------------------------------------------------------------
-Route through	|Nexthop	|Channel	|Probe Received	|Battery	|Sent	|Recv	|
--------------------------------------------------------------------------------------------------
-aaaa::		|fe80::		|chNum		|rxValue	|TBA		|TBA	|TBA	|
-...		|...		|...		|		|		|	|	|
--------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------
+Route through	|Nexthop|Channel|Probe Received	|Battery|Sent	|Recv	|
+-------------------------------------------------------------------------
+aaaa::		|fe80::	|chNum	|rxValue	|TBA	|TBA	|TBA	|
+...		|...	|...	|		|	|	|	|
+-------------------------------------------------------------------------
 
 **9. After sending PROBERESULT, still in readProbeResult().
 The function calculates the number of probe messages received for all nodes.
