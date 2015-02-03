@@ -601,7 +601,7 @@ uip_ds6_defrt_choose(void)
 printf("Defrt found ");
 uip_debug_ipaddr_print(&d->ipaddr);
 printf(" %d\n", uip_ds6_defrt_ch());
-//!cc2420_set_channel(uip_ds6_defrt_ch());
+//@cc2420_set_channel(uip_ds6_defrt_ch());
 /*      printf("Defrt found, IP address ");
       uip_debug_ipaddr_print(&d->ipaddr);
       printf("  OWNCH %d PREVCH %d", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);

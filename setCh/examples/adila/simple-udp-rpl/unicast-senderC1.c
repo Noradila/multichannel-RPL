@@ -307,9 +307,8 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
   }
 
   keepType = msg2.type;
-//!	    cc2420_set_channel(r->nbrCh);
+  //@cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
-  //uip_debug_ipaddr_print(routeNextHop);
   printf("\n");	
 
   //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
@@ -340,7 +339,7 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
   }
 
   keepType = msg2.type;
-//!	    cc2420_set_channel(r->nbrCh);
+  //@cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
   printf("\n");	
 
@@ -595,7 +594,11 @@ PROCESS_THREAD(test1, ev, data)
             printf("AFTER 0.15 OR 1\n\n");
 
     	    //uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
-    	    uip_ds6_if.addr_list[1].currentCh = changeTo;
+	    if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
+	      printf("SET CURRENTCH TO NEWCH\n\n");
+    	      uip_ds6_if.addr_list[1].currentCh = changeTo;
+	    }
+	    //£ no need set_channel() as the radio will turn off and on to the new ch
 	    //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 	  }//END IF
 
@@ -624,10 +627,14 @@ PROCESS_THREAD(test1, ev, data)
 	  }
 	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-          printf("AFTER 0.15 OR 1\n\n");
-    	  uip_ds6_if.addr_list[1].currentCh = changeTo;
-	  //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+          printf("AFTER 0.15 OR 1 x %d y %d\n\n", x, y);
 
+	  if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
+	    printf("SET CURRENTCH TO NEWCH\n\n");
+    	    uip_ds6_if.addr_list[1].currentCh = changeTo;
+	  }
+	  //£ no need set_channel() as the radio will turn off and on to the new ch
+	  //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
         }//END IF
 
       }//END FOR X==1
@@ -669,7 +676,7 @@ PROCESS_THREAD(test1, ev, data)
 	msg2.addrPtr = &holdAddr;
         msg2.paddingBuf[30] = " ";
 
-        //!cc2420_set_channel(msg2.value);
+        //@cc2420_set_channel(msg2.value);
  	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
