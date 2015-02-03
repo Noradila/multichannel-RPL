@@ -256,6 +256,7 @@ printf("RECONSTRUCT RECEIVER IP ");
 uip_debug_ipaddr_print(&nH);
 printf("\n\n");
 
+//?updates the NBR TABLE so that the nexthop is of the correct channel
 /*for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
  if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
   printf("SAME ");
@@ -275,7 +276,7 @@ printf("\n\n");
 //printf("PART OF SENDER ADDR %d\n\n", sender_addr->u8[11]);
 
 //! updates LPBR RT
-/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
  if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
@@ -283,10 +284,12 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
   printf("SAME ");
   uip_debug_ipaddr_print(&nH);
 
+  uip_debug_ipaddr_print(&nbr->ipaddr);
+
   printf(" update nbr->newCh %d ", nbr->newCh);
   printf("\n\n");
  }
-}*/
+}
 
 
   }
