@@ -149,6 +149,7 @@ static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
 /*---------------------------------------------------------------------------*/
 static void removeProbe() {
   struct probeResult *pr, *r;
+
   r = NULL;
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(r == NULL) {
@@ -161,18 +162,6 @@ static void removeProbe() {
     return;
   }
   r = pr;
-
-/*pr = list_head(probeResult_table);
-while(pr != NULL) {
- //pr = list_head(probeResult_table);
- list_remove(probeResult_table, pr);
- memb_free(&probeResult_mem, pr);
- pr = pr->next;
-}*/
-  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    list_remove(probeResult_table, pr);
-    memb_free(&probeResult_mem, pr);
-  }*/
 
   /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     printf("READ FROM REMOVEPROBE pr->pAddr ");
@@ -270,17 +259,23 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
-      if(chN == pr->chNum) {
-	pr->rxValue = (pr->rxValue) + 1;
-	return;
+      if(chN != 1) {
+        if(chN == pr->chNum) {
+	  pr->rxValue = (pr->rxValue) + 1;
+	  return;
+        }
+        if(chN == 0) {
+	  pr->checkAck = getAck;
+	  return;
+        }
+        else {
+	  pr->checkAck = 0;
+        }
       }
-      if(chN == 0) {
-	pr->checkAck = getAck;
-	return;
-      }
-      else {
-	pr->checkAck = 0;
-      }
+      //?keep track of sent/received if chN == 1 (chN == 0 indicates GET_ACK received)
+      /*else { 
+        pr->rxValue = (pr->rxValue) + 1;
+      }*/
     }
   }
 
@@ -454,6 +449,12 @@ receiver(struct simple_udp_connection *c,
   else {
   printf("Data received on port %d from port %d with length %d\n",
          receiver_port, sender_port, datalen);
+
+//printf("TEST ");
+//uip_debug_ipaddr_print(sender_addr);
+//printf("\n\n");
+
+  //keepProbeResult(sender_addr, 1, 0);
   }
 }
 /*---------------------------------------------------------------------------*/
