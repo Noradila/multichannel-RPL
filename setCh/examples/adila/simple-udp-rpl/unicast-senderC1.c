@@ -148,12 +148,38 @@ static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
 }
 /*---------------------------------------------------------------------------*/
 static void removeProbe() {
-  struct probeResult *pr;
-
+  struct probeResult *pr, *r;
+  r = NULL;
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    if(r == NULL) {
+      pr = pr->next;
+    }
+    else {
+      r->next = pr->next;
+    }
+    pr->next = NULL;
+    return;
+  }
+  r = pr;
+
+/*pr = list_head(probeResult_table);
+while(pr != NULL) {
+ //pr = list_head(probeResult_table);
+ list_remove(probeResult_table, pr);
+ memb_free(&probeResult_mem, pr);
+ pr = pr->next;
+}*/
+  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     list_remove(probeResult_table, pr);
     memb_free(&probeResult_mem, pr);
-  }
+  }*/
+
+  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    printf("READ FROM REMOVEPROBE pr->pAddr ");
+    uip_debug_ipaddr_print(&pr->pAddr);
+    printf(" pr->chNum %d pr->rxValue %d", pr->chNum, pr->rxValue);
+    printf("\n");
+  }*/
 }
 /*---------------------------------------------------------------------------*/
 static void checkAckProbeResultTable(uint8_t theChannel) {
@@ -634,6 +660,9 @@ PROCESS_THREAD(test1, ev, data)
       if(keepType == CONFIRM_CH) {
 	printf("\n\nFINISH CONFIRM_CH\n\n");
 	checkAckProbeResultTable(changeTo);
+
+removeProbe();
+//call removeProbe()
       }
     }
 
