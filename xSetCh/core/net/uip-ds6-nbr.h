@@ -76,7 +76,7 @@ typedef struct uip_ds6_nbr {
   uint8_t state;
 
 //ADILA EDIT 14/12/14
-uint8_t newCh;
+uint8_t nbrCh;
 //-------------------
 #if UIP_CONF_IPV6_QUEUE_PKT
   struct uip_packetqueue_handle packethandle;

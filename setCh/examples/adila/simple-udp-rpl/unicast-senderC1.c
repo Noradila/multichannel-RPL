@@ -307,15 +307,15 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
     printf("%d Sending STARTPROBE %d to tree neighbour ", rNbrCh, msg2.value);
   }
   else if(y == 0 && x == 0) {
-    for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
       if(uip_ipaddr_cmp(&pr->pAddr, msg2.addrPtr)) {
         //! if checkAck == 0, do retransmission from CONFIRM_CH
-        if((pr->checkAck) == 0) {
+        if((pr->checkAck) == 0) {*/
           msg2.type = CONFIRM_CH;
           printf("CONFIRM CH SENDING!!");
-        }
+        /*}
       }
-    }
+    }*/
   }
 
   keepType = msg2.type;
@@ -349,15 +349,15 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
   }
 
   else if(y == 0 && x == 0) {
-    for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
       if(uip_ipaddr_cmp(&pr->pAddr, msg2.addrPtr)) {
         //! if checkAck == 0, do retransmission from CONFIRM_CH
-        if((pr->checkAck) == 0) {
+        if((pr->checkAck) == 0) {*/
           msg2.type = CONFIRM_CH;
           printf("CONFIRM CH SENDING!!");
-        }
+        /*}
       }
-    }
+    }*/
   }
 
   keepType = msg2.type;

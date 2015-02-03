@@ -186,8 +186,8 @@ printf("\n\n");*/
       		uip_debug_ipaddr_print(&nH);
 		uip_debug_ipaddr_print(&nbr->ipaddr);
 		printf("\n\n");
-		  printf("NBR->NEWCH %d\n\n", nbr->newCh);
-		  buf[3] = nbr->newCh;
+		  printf("NBR->NBRCH %d\n\n", nbr->nbrCh);
+		  buf[3] = nbr->nbrCh;
 		  break;
 	    }
 	}

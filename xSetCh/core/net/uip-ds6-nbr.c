@@ -95,8 +95,8 @@ uip_ds6_nbr_add(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr,
     nbr->nscount = 0;
 
 //ADILA EDIT 14/12/14
-if(nbr->newCh == 0) {
-  nbr->newCh = 26;
+if(nbr->nbrCh == 0) {
+  nbr->nbrCh = 26;
 }
 //nbr->newCh = 26;
 //-------------------

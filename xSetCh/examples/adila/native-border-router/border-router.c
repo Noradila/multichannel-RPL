@@ -250,7 +250,7 @@ if(msg->type == PROBERESULT) {
 
 //uip_ipaddr_copy(&nextHopAddr, &msg->address);
 
-uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[7]);
+/*uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[7]);
 
 printf("RECONSTRUCT RECEIVER IP ");
 uip_debug_ipaddr_print(&nH);
@@ -280,15 +280,22 @@ for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
  if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
-  nbr->newCh = msg->value;
+  nbr->nbrCh = msg->value;
   printf("SAME ");
-  uip_debug_ipaddr_print(&nH);
+  //uip_debug_ipaddr_print(&nH);
 
   uip_debug_ipaddr_print(&nbr->ipaddr);
 
-  printf(" update nbr->newCh %d ", nbr->newCh);
+  printf(" update nbr->nbrCh %d ", nbr->nbrCh);
   printf("\n\n");
  }
+}
+
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+printf("NBR TABLE ");
+uip_debug_ipaddr_print(&nbr->ipaddr);
+printf(" channel %d\n", nbr->nbrCh);
 }
 
 
@@ -315,7 +322,7 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
 	printf("NBR: ");
 	uip_debug_ipaddr_print(&nbr->ipaddr);
-	printf(" nbrCh %d", nbr->newCh);
+	printf(" nbrCh %d", nbr->nbrCh);
 	printf("\n");
 	}
   }
@@ -608,7 +615,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 
 	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
 	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
-		  nbr->newCh = msg2.value;
+		  nbr->nbrCh = msg2.value;
 		  r->nbrCh = msg2.value;
 	    }
 	  }
