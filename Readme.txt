@@ -171,3 +171,8 @@ fe80::		|msg->value	|	|	|	|	|	|
 fe80::		|msg->value	|	|	|	|	|	|
 -------------------------------------------------------------------------
 
+14. Back to checkAckProbeResultTable()
+
+call function: removeProbe();
+Removes all entries in probeResult_table as it is no longer needed.
+

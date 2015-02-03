@@ -182,12 +182,6 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     //! if checkAck == 0, do retransmission from CONFIRM_CH
     if((pr->checkAck) == 0) {
-      /*if((sum/divide) >= ((sum/divide)/2)) {
-        msg2.value = uip_ds6_if.addr_list[1].currentCh;
-      }
-      else {
-	msg2.value = uip_ds6_if.addr_list[1].prevCh;
-      }*/
       msg2.type = CONFIRM_CH;
       msg2.type = theChannel;
       msg2.value2 = 0; //y==0, for() run only once in test1
@@ -211,8 +205,10 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     printf(" channel %d\n", msg2.value);
 
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+    //printf("BACKIN CHECKACKPROBERESULTTABLE REMOVE TABLE\n\n");
+    removeProbe();
   }
-  //printf("\n\n%d CONFIRMTOLPBR IS %d\n\n", theChannel, confirmToLPBR);
 }
 /*---------------------------------------------------------------------------*/
 static void readProbeResult() {
@@ -288,7 +284,6 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
-
 static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
 
   struct unicast_message msg2;
@@ -307,15 +302,8 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
     printf("%d Sending STARTPROBE %d to tree neighbour ", rNbrCh, msg2.value);
   }
   else if(y == 0 && x == 0) {
-    /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-      if(uip_ipaddr_cmp(&pr->pAddr, msg2.addrPtr)) {
-        //! if checkAck == 0, do retransmission from CONFIRM_CH
-        if((pr->checkAck) == 0) {*/
-          msg2.type = CONFIRM_CH;
-          printf("CONFIRM CH SENDING!!");
-        /*}
-      }
-    }*/
+    msg2.type = CONFIRM_CH;
+    printf("CONFIRM CH SENDING!!");
   }
 
   keepType = msg2.type;
@@ -323,8 +311,6 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
   uip_debug_ipaddr_print(msg2.addrPtr);
   //uip_debug_ipaddr_print(routeNextHop);
   printf("\n");	
-
-  //msg2.addrPtr = routeNextHop;
 
   //? change to the neighbour channel cc2420_set_channel(r->nbrCh)
   simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
@@ -349,15 +335,8 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
   }
 
   else if(y == 0 && x == 0) {
-    /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-      if(uip_ipaddr_cmp(&pr->pAddr, msg2.addrPtr)) {
-        //! if checkAck == 0, do retransmission from CONFIRM_CH
-        if((pr->checkAck) == 0) {*/
-          msg2.type = CONFIRM_CH;
-          printf("CONFIRM CH SENDING!!");
-        /*}
-      }
-    }*/
+    msg2.type = CONFIRM_CH;
+    printf("CONFIRM CH SENDING!!");
   }
 
   keepType = msg2.type;
@@ -413,7 +392,6 @@ receiver(struct simple_udp_connection *c,
     //printf("RECEIVED STARTPROBE\n\n");
 
     msg2.type = NBRPROBE;
-    //msg2.value = msg->value;
     msg2.addrPtr = sender_addr;
 
     process_post_synch(&test1, event_data_ready, &msg2);
@@ -662,7 +640,7 @@ PROCESS_THREAD(test1, ev, data)
 	printf("\n\nFINISH CONFIRM_CH\n\n");
 	checkAckProbeResultTable(changeTo);
 
-removeProbe();
+//removeProbe();
 //call removeProbe()
       }
     }
