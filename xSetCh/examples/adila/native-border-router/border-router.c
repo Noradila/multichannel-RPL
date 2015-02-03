@@ -82,6 +82,10 @@ struct lpbrList {
   uip_ipaddr_t nbrAddr;
   uint8_t chNum;
   uint8_t rxValue;
+
+  //uint8_t batteryLevel;
+  //uint8_t pktSent;
+  //uint8_t pktRecv;
 };
 
 LIST(lpbrList_table);
