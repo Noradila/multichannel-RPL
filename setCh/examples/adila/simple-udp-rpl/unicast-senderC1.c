@@ -123,14 +123,18 @@ AUTOSTART_PROCESSES(&unicast_sender_process, &test1);
 /*---------------------------------------------------------------------------*/
 static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
   static uip_ds6_route_t *r;
+  uip_ipaddr_t nextHopIP;
 
   for(r = uip_ds6_route_head(); r != NULL; 
     r = uip_ds6_route_next(r)) {
 
-    if(uip_ipaddr_cmp(uip_ds6_route_nexthop(r), addr)) {
+    uip_ipaddr_copy(&nextHopIP, uip_ds6_route_nexthop(r));
+
+    if(uip_ipaddr_cmp(&r->ipaddr, addr) || (nextHopIP.u8[11] == addr->u8[11])) {
+    //if(uip_ipaddr_cmp(uip_ds6_route_nexthop(r), addr)) {
       r->nbrCh = msgValue;
 
-      /*printf("%d UPDATE OWN ROUTING TABLE ", msgValue);
+      /*printf("%d UPDATE OWN ROUTING TABLE %d %d ", msgValue, r->ipaddr.u8[11], addr->u8[11]);
       uip_debug_ipaddr_print(&r->ipaddr);
       printf(" via ");
       uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
@@ -138,8 +142,16 @@ static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
     }
   }
 
-  if(uip_ipaddr_cmp(addr, uip_ds6_defrt_choose())) {
+  uip_ipaddr_copy(&nextHopIP, uip_ds6_defrt_choose());
+
+  if(nextHopIP.u8[11] == addr->u8[11]) {
+  //if(uip_ipaddr_cmp(addr, uip_ds6_defrt_choose())) {
     uip_ds6_defrt_setCh(msgValue);
+
+printf("PARENT! ");
+uip_debug_ipaddr_print(&nextHopIP);
+uip_debug_ipaddr_print(addr);
+printf(" addr \n");
 
     /*printf("%d PARENT UPDATE OWN ROUTING TABLE ", msgValue);
     uip_debug_ipaddr_print(uip_ds6_defrt_choose());
@@ -200,9 +212,9 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     msg2.addrPtr = &sendTo1;
     msg2.paddingBuf[30] = " ";
 
-    printf("Sending CONFIRM_CH to ");
+    /*printf("Sending CONFIRM_CH to ");
     uip_debug_ipaddr_print(msg2.addrPtr);
-    printf(" channel %d\n", msg2.value);
+    printf(" channel %d\n", msg2.value);*/
 
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
@@ -308,7 +320,7 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
 
   keepType = msg2.type;
   //@
-  //cc2420_set_channel(rNbrCh);
+  cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
   printf("\n");	
 
@@ -341,7 +353,7 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
 
   keepType = msg2.type;
   //@
-  //cc2420_set_channel(rNbrCh);
+  cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
   printf("\n");	
 
@@ -593,20 +605,21 @@ PROCESS_THREAD(test1, ev, data)
 uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
 if(nextHopAddr.u8[11] == r->ipaddr.u8[11]) {
 
-printf("NEXTHOP IS %d and %d ", nextHopAddr.u8[11], r->ipaddr.u8[11]);
+/*printf("NEXTHOP IS %d and %d ", nextHopAddr.u8[11], r->ipaddr.u8[11]);
 uip_debug_ipaddr_print(&nextHopAddr);
 uip_debug_ipaddr_print(&r->ipaddr);
 printf("\n");
-}
+}*/
 
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
-	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
+	  //if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
             msg2.value = changeTo;
             msg2.paddingBuf[30] = " ";
-	    msg2.addrPtr = uip_ds6_route_nexthop(r);
-            uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
-            //loopFunction2(&msg2, y, x, r->nbrCh);
+	    //msg2.addrPtr = uip_ds6_route_nexthop(r);
+	    msg2.addrPtr = &r->ipaddr;
+            //uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+            loopFunction2(&msg2, y, x, r->nbrCh);
 
 	    if((y == 1 && x == 0)) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
@@ -637,29 +650,15 @@ printf("\n");
 //      for(x = 0; x <=y; x++) {
         if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1)) {
 	  uip_ipaddr_copy(&toParent, uip_ds6_defrt_choose());
+
+	  uip_ip6addr_u8(&toParent, 0xaa, 0xaa, toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
+
 	  msg2.addrPtr = &toParent;
           msg2.paddingBuf[30] = " ";
 
 	  newVal = uip_ds6_defrt_ch();
 	  msg2.value = changeTo;
-          //loopFunction(&msg2, y, x, newVal);
-
-printf("BEFORE RECONSTRUCT TOPARENT ");
-uip_debug_ipaddr_print(&toParent);
-printf("\n");
-
-//uip_ip6addr_u8(&toParent, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11]);
-
-uip_ip6addr_u8(&toParent, 0xaa, 0xaa, toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
-
-//uip_ip6addr();
-
-printf("RECONSTRUCT TOPARENT ");
-//printf("[0] %0x %0x %0x %0x %0x %0x %0x %0x\n", toParent.u8[0], toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7]);
-uip_debug_ipaddr_print(&toParent);
-//printf("[0] %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", toParent.u8[0], toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
-//uip_debug_ipaddr_print(&toParent);
-printf("\n");
+          loopFunction(&msg2, y, x, newVal);
 
 	  if((y == 1 && x == 0)) {
 	    etimer_set(&time, 0.15 * CLOCK_SECOND);
@@ -722,7 +721,7 @@ printf("\n");
         msg2.paddingBuf[30] = " ";
 
 	//@
-        //cc2420_set_channel(msg2.value);
+        cc2420_set_channel(msg2.value);
  	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
@@ -763,7 +762,7 @@ printf("\n");
       printf("\n");
 
       //@
-      //cc2420_set_channel(changeTo);
+      cc2420_set_channel(changeTo);
       simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
     }
   }//end while(1)
