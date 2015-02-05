@@ -383,7 +383,8 @@ powercycle_turn_radio_on(void)
 //-------------------
     on();
 
-    //!cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    //@
+    cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     //printf("Radio ON set channel to currentCh %d\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
 //printf("26\n\n");

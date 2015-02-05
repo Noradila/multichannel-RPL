@@ -83,7 +83,8 @@ packet_sent(void *ptr, int status, int transmissions)
 //reset channel here?
 printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
-//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//@
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //-------------------
 
 
@@ -113,7 +114,8 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
       //ADILA EDIT 1/12/14
       if(data[3] != 0) {
         printf("DATA[3] IS %d\n", data[3]);
-        //cc2420_set_channel(data[3]);
+	//@
+        cc2420_set_channel(data[3]);
       }
 
       packetbuf_clear();
