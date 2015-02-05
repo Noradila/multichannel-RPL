@@ -364,6 +364,8 @@ receiver(struct simple_udp_connection *c,
 
   struct probeResult *pr;
 
+  static uip_ds6_route_t *r;
+
   if(msg->type == CH_CHANGE) {
     printf("%d: %d received CH_CHANGE from ", cc2420_get_channel(), msg->value);
     uip_debug_ipaddr_print(sender_addr);
@@ -373,6 +375,21 @@ receiver(struct simple_udp_connection *c,
     msg2.value = msg->value;
 
     msg2.value2 = 1;
+
+printf("PARENT IS ");
+uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+printf("\n");
+
+    for(r = uip_ds6_route_head(); r != NULL; 
+	r = uip_ds6_route_next(r)) {
+	printf("ROUTE: ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" via ");
+	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
+	printf(" nbrCh %d", r->nbrCh);
+	printf("\n");
+    }
 
     process_post_synch(&test1, event_data_ready, &msg2);
   }//end if(msg->type == CH_CHANGE)
@@ -573,6 +590,15 @@ PROCESS_THREAD(test1, ev, data)
         for(r = uip_ds6_route_head(); r != NULL; 
 	  r = uip_ds6_route_next(r)) {
 
+uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+if(nextHopAddr.u8[11] == r->ipaddr.u8[11]) {
+
+printf("NEXTHOP IS %d and %d ", nextHopAddr.u8[11], r->ipaddr.u8[11]);
+uip_debug_ipaddr_print(&nextHopAddr);
+uip_debug_ipaddr_print(&r->ipaddr);
+printf("\n");
+}
+
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
 
@@ -580,7 +606,7 @@ PROCESS_THREAD(test1, ev, data)
             msg2.paddingBuf[30] = " ";
 	    msg2.addrPtr = uip_ds6_route_nexthop(r);
             uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
-            loopFunction2(&msg2, y, x, r->nbrCh);
+            //loopFunction2(&msg2, y, x, r->nbrCh);
 
 	    if((y == 1 && x == 0)) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
@@ -616,7 +642,24 @@ PROCESS_THREAD(test1, ev, data)
 
 	  newVal = uip_ds6_defrt_ch();
 	  msg2.value = changeTo;
-          loopFunction(&msg2, y, x, newVal);
+          //loopFunction(&msg2, y, x, newVal);
+
+printf("BEFORE RECONSTRUCT TOPARENT ");
+uip_debug_ipaddr_print(&toParent);
+printf("\n");
+
+//uip_ip6addr_u8(&toParent, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11]);
+
+uip_ip6addr_u8(&toParent, 0xaa, 0xaa, toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
+
+//uip_ip6addr();
+
+printf("RECONSTRUCT TOPARENT ");
+//printf("[0] %0x %0x %0x %0x %0x %0x %0x %0x\n", toParent.u8[0], toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7]);
+uip_debug_ipaddr_print(&toParent);
+//printf("[0] %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", toParent.u8[0], toParent.u8[1], toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
+//uip_debug_ipaddr_print(&toParent);
+printf("\n");
 
 	  if((y == 1 && x == 0)) {
 	    etimer_set(&time, 0.15 * CLOCK_SECOND);
