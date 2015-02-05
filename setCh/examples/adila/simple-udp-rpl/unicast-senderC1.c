@@ -308,7 +308,7 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
 
   keepType = msg2.type;
   //@
-  cc2420_set_channel(rNbrCh);
+  //cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
   printf("\n");	
 
@@ -341,7 +341,7 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
 
   keepType = msg2.type;
   //@
-  cc2420_set_channel(rNbrCh);
+  //cc2420_set_channel(rNbrCh);
   uip_debug_ipaddr_print(msg2.addrPtr);
   printf("\n");	
 
@@ -679,7 +679,7 @@ PROCESS_THREAD(test1, ev, data)
         msg2.paddingBuf[30] = " ";
 
 	//@
-        cc2420_set_channel(msg2.value);
+        //cc2420_set_channel(msg2.value);
  	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
@@ -720,7 +720,7 @@ PROCESS_THREAD(test1, ev, data)
       printf("\n");
 
       //@
-      cc2420_set_channel(changeTo);
+      //cc2420_set_channel(changeTo);
       simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
     }
   }//end while(1)
