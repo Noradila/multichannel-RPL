@@ -165,6 +165,13 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p)
     queuebuf_free(p->buf);
     memb_free(&metadata_memb, p->ptr);
     memb_free(&packet_memb, p);
+
+//ADILA EDIT 09/02/14
+if((list_length(n->queued_packet_list)) == 0) {
+printf("empty Q %d\n", list_length(n->queued_packet_list));
+}
+//-------------------
+
     PRINTF("csma: free_queued_packet, queue length %d\n",
         list_length(n->queued_packet_list));
     if(list_head(n->queued_packet_list) != NULL) {
@@ -347,6 +354,10 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_push(n->queued_packet_list, q);
 	  } else {
 	    list_add(n->queued_packet_list, q);
+
+//ADILA EDIT
+printf("Q %d\n\n", list_length(n->queued_packet_list));
+//----------
 	  }
 
 	  /* If q is the first packet in the neighbor's queue, send asap */
@@ -366,7 +377,7 @@ send_packet(mac_callback_t sent, void *ptr)
       list_remove(neighbor_list, n);
       memb_free(&neighbor_memb, n);
     }
-    PRINTF("csma: could not allocate packet, dropping packet\n");
+    printf("csma: could not allocate packet, dropping packet\n");
   } else {
     PRINTF("csma: could not allocate neighbor, dropping packet\n");
   }

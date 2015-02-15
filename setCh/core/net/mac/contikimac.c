@@ -381,10 +381,12 @@ powercycle_turn_radio_on(void)
 //printf("ON CHANNEL IS %d\n", uip_ds6_if.addr_list[1].currentCh);
 //printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
 //-------------------
+    //@
+    //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     on();
 
     //@
-    cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    //"cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     //printf("Radio ON set channel to currentCh %d\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
 //printf("26\n\n");
@@ -530,6 +532,20 @@ powercycle(struct rtimer *t, void *ptr)
       PT_YIELD(&pt);
 #endif
     }
+
+//ADILA EDIT 09/02/15
+/*else {
+   printf("\n\nNOT RECEIVING NOT PENDING\n\n");
+ if(we_are_sending == 0 && we_are_receiving_burst == 0) {
+  if(!NETSTACK_RADIO.receiving_packet() && !NETSTACK_RADIO.pending_packet()) {
+   printf("\n\nNOT RECEIVING NOT PENDING\n\n");
+  }
+  else {
+    printf("\n\nRECEIVING OR PENDING\n\n");
+  }
+ }
+}*/
+//-------------------
   }
 
   PT_END(&pt);
@@ -578,6 +594,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
   struct hdr *chdr;
 #endif /* WITH_CONTIKIMAC_HEADER */
 
+//ADILA 09/02/15
+  static uip_ds6_route_t *r;
+//--------------
+
   /* Exit if RDC and radio were explicitly turned off */
    if(!contikimac_is_on && !contikimac_keep_radio_on) {
     PRINTF("contikimac: radio is turned off\n");
@@ -602,7 +622,19 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
     }
   } else {
 #if UIP_CONF_IPV6
-    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+
+//!!ADILA TAKE NOTE
+//PUT RT, READ CHANNEL TO CHANGE TO
+
+        for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {
+printf("CMAC %d recv %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
+//uip_debug_ipaddr_print(r->ipaddr);
+//printf("\n");
+
+	}
+//    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+    printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],
@@ -728,6 +760,11 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
      contikimac_is_on when we are done. */
   contikimac_was_on = contikimac_is_on;
   contikimac_is_on = 1;
+
+//! ADILA TAKE NOT
+//CHANGE RADIO CHANNEL HERE (RESET?)
+printf("FINISHED SENDING?\n\n");
+//----------------
 
 #if !RDC_CONF_HARDWARE_CSMA
     /* Check if there are any transmissions by others. */

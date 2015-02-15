@@ -54,8 +54,8 @@
 #define XMAC_CONF_ANNOUNCEMENTS          0
 
 #ifndef QUEUEBUF_CONF_NUM
-//#define QUEUEBUF_CONF_NUM                8
-#define QUEUEBUF_CONF_NUM                15
+#define QUEUEBUF_CONF_NUM                8
+//#define QUEUEBUF_CONF_NUM                15
 #endif
 
 #else /* WITH_UIP6 */

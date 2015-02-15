@@ -111,6 +111,8 @@ struct unicast_message {
 	uip_ipaddr_t *addrPtr; 
 
 	char paddingBuf[30];
+
+uint8_t value3;
 };
 
 uint16_t dag_id[] = {0x1111, 0x1100, 0, 0, 0, 0, 0, 0x0011};
