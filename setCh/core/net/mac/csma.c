@@ -169,6 +169,10 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p)
 //ADILA EDIT 09/02/14
 if((list_length(n->queued_packet_list)) == 0) {
 printf("empty Q %d\n", list_length(n->queued_packet_list));
+//Reset to listening channel when queue is empty
+//Not really require as the radio will be switched off when
+//the queue is empty
+//@cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 }
 //-------------------
 
@@ -356,7 +360,7 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_add(n->queued_packet_list, q);
 
 //ADILA EDIT
-printf("Q %d\n\n", list_length(n->queued_packet_list));
+//printf("Q %d\n\n", list_length(n->queued_packet_list));
 //----------
 	  }
 
