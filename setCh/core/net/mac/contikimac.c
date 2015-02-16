@@ -56,6 +56,9 @@
 
 //ADILA EDIT 10/11/14
 #include "net/uip-ds6.h"
+
+//adila edit
+volatile uint8_t holdChannel = 0;
 //-------------------
 
 /* TX/RX cycles are synchronized with neighbor wake periods */
@@ -382,7 +385,8 @@ powercycle_turn_radio_on(void)
 //printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
 //-------------------
     //@
-    //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    //set_channel(uip_ds6_if.addr_list[1].currentCh);
     on();
 
     //@
@@ -597,6 +601,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 //ADILA 09/02/15
   static uip_ds6_route_t *r;
 uip_ipaddr_t toParent;
+
 //--------------
 
   /* Exit if RDC and radio were explicitly turned off */
@@ -637,17 +642,31 @@ uip_ipaddr_t toParent;
 //printf("\n");
 
 if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
-printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
+//printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
+//cc2420_set_channel(r->nbrCh);
+//cc2420_set_channel(21);
+//set_channel(r->nbrCh);
+holdChannel = r->nbrCh;
+//printf("HOLDCH %d %d\n\n", holdChannel, r->nbrCh);
 }
 	}
 
 if((uip_ds6_defrt_choose()->u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
-printf("PARENT %d %d ", uip_ds6_defrt_choose()->u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
-uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-printf("\n");
+//printf("PARENT %d %d ch %d ", uip_ds6_defrt_choose()->u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], uip_ds6_defrt_ch());
+//uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+//printf("\n");
+
+//cc2420_set_channel(21);
+//cc2420_set_channel(uip_ds6_defrt_choose());
+//set_channel(uip_ds6_defrt_choose());
+holdChannel = uip_ds6_defrt_choose();
+
+//printf("HOLDCH %d %d\n\n", holdChannel, uip_ds6_defrt_choose());
 }
+//cc2420_set_channel(holdCh);
 //    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-    printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+    printf("%d %d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+holdChannel, cc2420_get_channel(),
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],
@@ -767,6 +786,8 @@ printf("\n");
   collisions = 0;
 
   got_strobe_ack = 0;
+
+//cc2420_set_channel(holdChannel);
 
   /* Set contikimac_is_on to one to allow the on() and off() functions
      to control the radio. We restore the old value of

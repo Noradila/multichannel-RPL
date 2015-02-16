@@ -148,11 +148,11 @@ static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
   //if(uip_ipaddr_cmp(addr, uip_ds6_defrt_choose())) {
     uip_ds6_defrt_setCh(msgValue);
 
-printf("PARENT! ");
+/*printf("PARENT! ");
 uip_debug_ipaddr_print(&nextHopIP);
 uip_debug_ipaddr_print(addr);
 printf(" addr \n");
-
+*/
     /*printf("%d PARENT UPDATE OWN ROUTING TABLE ", msgValue);
     uip_debug_ipaddr_print(uip_ds6_defrt_choose());
     printf(" nbrCh %d\n", uip_ds6_defrt_ch());*/
