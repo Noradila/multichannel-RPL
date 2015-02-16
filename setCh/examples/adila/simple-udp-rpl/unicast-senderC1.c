@@ -410,9 +410,9 @@ printf("\n");
   }//end if(msg->type == CH_CHANGE)
 
   else if(msg->type == NBR_CH_CHANGE) {
-    //printf("%d: %d received NBR_CH_CHANGE from ", cc2420_get_channel(), msg->value);
-    //uip_debug_ipaddr_print(sender_addr);
-    //printf("\n");
+    printf("%d: %d received NBR_CH_CHANGE from ", cc2420_get_channel(), msg->value);
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n");
 
     msg2.value = msg->value;
     msg2.addrPtr = sender_addr;
