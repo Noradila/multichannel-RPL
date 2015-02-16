@@ -291,6 +291,10 @@ on(void)
   if(contikimac_is_on && radio_is_on == 0) {
     radio_is_on = 1;
     NETSTACK_RADIO.on();
+
+//ADILA EDIT 10/11/14
+//printf("RADION ON\n\n");
+//-------------------
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -352,6 +356,11 @@ powercycle_turn_radio_off(void)
 #endif /* CONTIKIMAC_CONF_COMPOWER */
   
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
+//ADILA EDIT 10/11/14
+//cc2420_set_channel(27);
+//printf("OFF!!\n\n");
+//-------------------
+
     off();
 #if CONTIKIMAC_CONF_COMPOWER
     if(was_on && !radio_is_on) {
@@ -375,6 +384,12 @@ powercycle_turn_radio_on(void)
     //@
     cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     on();
+
+    //@
+    //"cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    //printf("Radio ON set channel to currentCh %d\n", uip_ds6_if.addr_list[1].currentCh);
+//cc2420_set_channel(26);
+//printf("26\n\n");
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -581,7 +596,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
 //ADILA 09/02/15
   static uip_ds6_route_t *r;
-
+uip_ipaddr_t toParent;
 //--------------
 
   /* Exit if RDC and radio were explicitly turned off */
@@ -609,31 +624,31 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
   } else {
 #if UIP_CONF_IPV6
 
-  for(r = uip_ds6_route_head(); r != NULL; 
-    r = uip_ds6_route_next(r)) {
+//!!ADILA TAKE NOTE
+//PUT RT, READ CHANNEL TO CHANGE TO
+/*	  uip_ipaddr_copy(&toParent, uip_ds6_defrt_choose());
+
+	  uip_ip6addr_u8(&toParent, 0xaa, 0xaa, toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
+*/
+        for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {
 //printf("CMAC %d recv %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
 //uip_debug_ipaddr_print(r->ipaddr);
 //printf("\n");
 
-    if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
-      printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
-      cc2420_set_channel(r->nbrCh);
-      //cc2420_set_channel(21);
-      //printf("r->nbrCh %d\n\n", r->nbrCh);
-    }
-  }
+if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
+cc2420_set_channel(r->nbrCh);
+}
+	}
 
-  if((uip_ds6_defrt_choose()->u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
-    printf("PARENT %d %d ch %d ", uip_ds6_defrt_choose()->u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], uip_ds6_defrt_ch());
-    //uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-    //printf("\n");
+if((uip_ds6_defrt_choose()->u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+printf("PARENT %d %d ch %d ", uip_ds6_defrt_choose()->u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], uip_ds6_defrt_ch());
+uip_debug_ipaddr_print(uip_ds6_defrt_choose());
+printf("\n");
 
-    //cc2420_set_channel(21);
-    cc2420_set_channel(uip_ds6_defrt_choose());
-
-    //printf("defrtCh %d\n\n", uip_ds6_defrt_choose());
-  }
-
+cc2420_set_channel(uip_ds6_defrt_ch());
+}
 //    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
     printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
 cc2420_get_channel(),
@@ -757,8 +772,6 @@ cc2420_get_channel(),
 
   got_strobe_ack = 0;
 
-//cc2420_set_channel(holdChannel);
-
   /* Set contikimac_is_on to one to allow the on() and off() functions
      to control the radio. We restore the old value of
      contikimac_is_on when we are done. */
@@ -767,7 +780,6 @@ cc2420_get_channel(),
 
 //! ADILA TAKE NOT
 //CHANGE RADIO CHANNEL HERE (RESET?)
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //printf("FINISHED SENDING?\n\n");
 //----------------
 
