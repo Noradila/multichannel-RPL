@@ -111,7 +111,7 @@ typedef struct uip_ds6_route {
   uip_ipaddr_t ipaddr;
 
 //ADILA EDIT 03/11/14
-uint8_t nbrCh;
+//uint8_t nbrCh;
 //-------------------
 
 #ifdef UIP_DS6_ROUTE_STATE_TYPE

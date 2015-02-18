@@ -93,6 +93,13 @@ uip_ds6_nbr_add(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr,
     stimer_set(&nbr->reachable, 0);
     stimer_set(&nbr->sendns, 0);
     nbr->nscount = 0;
+
+//ADILA EDIT 18/02/15
+if(nbr->nbrCh == 0) {
+  nbr->nbrCh = 26;
+}
+//-------------------
+
     PRINTF("Adding neighbor with ip addr ");
     PRINT6ADDR(ipaddr);
     PRINTF(" link addr ");

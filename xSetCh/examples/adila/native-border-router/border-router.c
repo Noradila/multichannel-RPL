@@ -320,7 +320,7 @@ printf(" channel %d\n", nbr->nbrCh);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
+	//printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
     }
 
@@ -613,7 +613,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
 	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	printf(" nbrCh %d", r->nbrCh);
+	//printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
 
 	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;

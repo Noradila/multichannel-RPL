@@ -291,10 +291,6 @@ on(void)
   if(contikimac_is_on && radio_is_on == 0) {
     radio_is_on = 1;
     NETSTACK_RADIO.on();
-
-//ADILA EDIT 10/11/14
-//printf("RADION ON\n\n");
-//-------------------
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -356,11 +352,6 @@ powercycle_turn_radio_off(void)
 #endif /* CONTIKIMAC_CONF_COMPOWER */
   
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
-//ADILA EDIT 10/11/14
-//cc2420_set_channel(27);
-//printf("OFF!!\n\n");
-//-------------------
-
     off();
 #if CONTIKIMAC_CONF_COMPOWER
     if(was_on && !radio_is_on) {
@@ -374,22 +365,10 @@ static void
 powercycle_turn_radio_on(void)
 {
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
-//ADILA EDIT 10/11/14
-//if it's FWD PKT, DON'T RESET CH?
-//cc2420_set_channel(27);
-//printf("27 ");
-//printf("ON CHANNEL IS %d\n", uip_ds6_if.addr_list[1].currentCh);
-//printf("SET TO LISTENING CHANNEL HERE %d\n\n", uip_ds6_if.addr_list[1].prevCh);
-//-------------------
+    //ADILA EDIT 10/11/14
     //@
     //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     on();
-
-    //@
-    //"cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-    //printf("Radio ON set channel to currentCh %d\n", uip_ds6_if.addr_list[1].currentCh);
-//cc2420_set_channel(26);
-//printf("26\n\n");
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -596,7 +575,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
 //ADILA 09/02/15
   static uip_ds6_route_t *r;
-uip_ipaddr_t toParent;
+//uip_ipaddr_t toParent;
 //--------------
 
   /* Exit if RDC and radio were explicitly turned off */

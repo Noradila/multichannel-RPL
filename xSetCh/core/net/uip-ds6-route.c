@@ -221,7 +221,7 @@ uip_ds6_route_lookup(uip_ipaddr_t *addr)
   uint8_t longestmatch;
 
 //ADILA EDIT 10/11/14
-uint8_t found_route_ch;
+//uint8_t found_route_ch;
 //-------------------
 
   PRINTF("uip-ds6-route: Looking up route for ");
@@ -240,7 +240,7 @@ uint8_t found_route_ch;
       found_route = r;
 
 //ADILA EDIT 10/11/14
-found_route_ch = r->nbrCh;
+//found_route_ch = r->nbrCh;
 //-------------------
     }
   }
@@ -345,9 +345,9 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 
 //QUICK INIT HACK ADILA EDIT 10/11/14
 //r->nbrCh = cc2420_get_channel();
-if(r->nbrCh == 0) {
+/*if(r->nbrCh == 0) {
   r->nbrCh = 26;
-}
+}*/
 //-------------------
 
   PRINTF("uip_ds6_route_add: adding route: ");

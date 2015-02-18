@@ -432,9 +432,9 @@ printf("\n");
 
   else if(msg->type == NBRPROBE) {
 //printf("Q3 %d\n\n", list_length(n->queued_packet_list));
-    printf("%d %d / %d: %d received %d NBRPROBE from ", NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet(), cc2420_get_channel(), msg->value, msg->value2);
-    uip_debug_ipaddr_print(sender_addr);
-    printf("\n");
+    //printf("%d %d / %d: %d received %d NBRPROBE from ", NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet(), cc2420_get_channel(), msg->value, msg->value2);
+    //uip_debug_ipaddr_print(sender_addr);
+    //printf("\n");
 
     keepProbeResult(sender_addr, msg->value, 0);
   }
@@ -558,7 +558,7 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
       //uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
       //uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->srcipaddr);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+    /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -567,7 +567,7 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-    }
+    }*/
 
       printf("Sending unicast to ");
       uip_debug_ipaddr_print(&sendTo1);
@@ -607,6 +607,8 @@ PROCESS_THREAD(test1, ev, data)
   uint8_t newVal;
   uip_ipaddr_t toParent;
 
+  static uip_ds6_nbr_t *nbr;
+
   PROCESS_BEGIN();
 
   while(1) {
@@ -626,6 +628,86 @@ PROCESS_THREAD(test1, ev, data)
       //msg2.paddingBuf[30] = " ";
 
       //printf("VALUE2 IS %d\n\n", y);
+
+      //for(x = 0; x <=y; x++) {
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_defrt_choose()) && (!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1))){
+		printf("par\n\n");
+	  }
+	  else {
+
+          for(r = uip_ds6_route_head(); r != NULL; 
+	    r = uip_ds6_route_next(r)) {
+
+	    if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
+		printf("nbr %d r %d\n\n", nbr->ipaddr.u8[13], r->ipaddr.u8[13]);
+
+/*             msg2.value = changeTo;
+             msg2.paddingBuf[30] = " ";
+	     //msg2.addrPtr = uip_ds6_route_nexthop(r);
+	     msg2.addrPtr = &r->ipaddr;
+             //uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
+             loopFunction2(&msg2, y, x, r->nbrCh);
+
+	     if((y == 1 && x == 0)) {
+	       etimer_set(&time, 0.15 * CLOCK_SECOND);
+	       //etimer_set(&time, 0);
+	     }
+	     else if(y == 1 && x == 1) {
+	       etimer_set(&time, 1 * CLOCK_SECOND);
+	     }
+	     else if(y == 0 && x == 0) {
+	       etimer_set(&time, 0.5 * CLOCK_SECOND);
+	     }
+	     PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+             printf("AFTER 0.15 OR 1\n\n");
+
+    	    //uip_ds6_if.addr_list[1].prevCh = cc2420_get_channel();	
+	     if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
+	      //printf("SET CURRENTCH TO NEWCH\n\n");
+    	       uip_ds6_if.addr_list[1].currentCh = changeTo;
+	     }
+	    }
+	  }
+	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_defrt_choose()) && (!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1))){
+
+//printf("par\n\n");
+
+	  msg2.addrPtr = &toParent;
+          msg2.paddingBuf[30] = " ";
+
+	  newVal = uip_ds6_defrt_ch();
+	  msg2.value = changeTo;
+          loopFunction(&msg2, y, x, newVal);
+
+	  if((y == 1 && x == 0)) {
+	    etimer_set(&time, 0.15 * CLOCK_SECOND);
+	    //etimer_set(&time, 0);
+	  }
+	  else if(y == 1 && x == 1) {
+	      etimer_set(&time, 1 * CLOCK_SECOND);
+	  }
+	  else if(y == 0 && x == 0) {
+	    etimer_set(&time, 0.5 * CLOCK_SECOND);
+	  }
+	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+          printf("AFTER 0.15 OR 1 x %d y %d\n\n", x, y);
+
+	  if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
+	    //printf("SET CURRENTCH TO NEWCH\n\n");
+    	    uip_ds6_if.addr_list[1].currentCh = changeTo;
+	  }
+	  //£ no need set_channel() as the radio will turn off and on to the new ch
+	  //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+        }//END IF*/
+	  }
+	}
+      }  
+}
 
       for(x = 0; x <=y; x++) {
         //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum

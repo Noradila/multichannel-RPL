@@ -54,10 +54,6 @@
 
 #include <string.h>
 
-//ADILA EDIT 10/11/14
-//#include "net/uip-ds6.h"
-//-------------------
-
 /* TX/RX cycles are synchronized with neighbor wake periods */
 #ifdef CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
 #define WITH_PHASE_OPTIMIZATION      CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
@@ -365,11 +361,6 @@ static void
 powercycle_turn_radio_on(void)
 {
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
-
-//ADILA EDIT 10/11/14
-//printf("TURN ON RADIO\n\n");
-//-------------------
-
     on();
   }
 }
@@ -561,11 +552,6 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
   struct hdr *chdr;
 #endif /* WITH_CONTIKIMAC_HEADER */
 
-//ADILA 09/02/15
-//  static uip_ds6_route_t *r;
-//  static uip_ds6_nbr_t *nbr;
-//--------------
-
   /* Exit if RDC and radio were explicitly turned off */
    if(!contikimac_is_on && !contikimac_keep_radio_on) {
     PRINTF("contikimac: radio is turned off\n");
@@ -601,23 +587,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
 */
 
-/*        for(r = uip_ds6_route_head(); r != NULL; 
-	  r = uip_ds6_route_next(r)) {
-printf("CMAC %d recv %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
-//uip_debug_ipaddr_print(r->ipaddr);
-//printf("\n");
-
-	}
-
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-//printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
-  printf("NBR ");
-  uip_debug_ipaddr_print(&nbr->ipaddr);
-  printf(" nbr->nbrCh %d ", nbr->nbrCh);
-  printf("\n\n");
-}
-*/
+//ADILA EDIT 16/02/15
     printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
@@ -627,7 +597,7 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
-
+//------------------
 
 
 #else /* UIP_CONF_IPV6 */
