@@ -151,6 +151,13 @@ dis_input(void)
   rpl_instance_t *end;
 
   /* DAG Information Solicitation */
+
+//ADILA EDIT
+printf("Received DIS ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf("\n");
+//----------
+
   PRINTF("RPL: Received a DIS from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF("\n");
@@ -194,6 +201,12 @@ dis_output(uip_ipaddr_t *addr)
     addr = &tmpaddr;
   }
 
+//ADILA EDIT
+printf("Sending DIS ");
+uip_debug_ipaddr_print(addr);
+printf("\n");
+//----------
+
   PRINTF("RPL: Sending a DIS to ");
   PRINT6ADDR(addr);
   PRINTF("\n");
@@ -228,6 +241,31 @@ dio_input(void)
   uip_ipaddr_copy(&from, &UIP_IP_BUF->srcipaddr);
 
   /* DAG Information Object */
+
+//ADILA EDIT
+printf("Received DIO ");
+uip_debug_ipaddr_print(&from);
+printf("\n");
+
+//printf("FROM 11:%x 12:%x 13:%x 6:%x\n\n", from.u8[11], from.u8[12], from.u8[13], from.u8[6]);
+
+//----------
+
+//ADILA EDIT
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+if(nbr->ipaddr.u8[13] == from.u8[13]) {
+printf("ALREADY IN NBR TABLE!! ");
+uip_debug_ipaddr_print(&from);
+printf("\n");
+}
+else {
+printf("NOT YET IN NBR TABLE!\n");
+uip_debug_ipaddr_print(&from);
+printf("\n");
+}
+}
+//----------
   PRINTF("RPL: Received a DIO from ");
   PRINT6ADDR(&from);
   PRINTF("\n");
@@ -548,6 +586,11 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 #else /* RPL_LEAF_ONLY */
   /* Unicast requests get unicast replies! */
   if(uc_addr == NULL) {
+
+//ADILA EDIT
+printf("Sending DIO multicast\n\n");
+//---------
+
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
         (unsigned)instance->current_dag->rank);
     uip_create_linklocal_rplnodes_mcast(&addr);
@@ -593,6 +636,13 @@ dao_input(void)
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
 
   /* Destination Advertisement Object */
+
+//ADILA EDIT
+printf("Received DAO ");
+uip_debug_ipaddr_print(&dao_sender_addr);
+printf("\n");
+//----------
+
   PRINTF("RPL: Received a DAO from ");
   PRINT6ADDR(&dao_sender_addr);
   PRINTF("\n");
@@ -822,6 +872,14 @@ dao_output_target(rpl_parent_t *parent, uip_ipaddr_t *prefix, uint8_t lifetime)
   buffer[pos++] = 0; /* path control - ignored */
   buffer[pos++] = 0; /* path seq - ignored */
   buffer[pos++] = lifetime;
+
+//ADILA EDIT
+printf("Sending DAO ");
+uip_debug_ipaddr_print(prefix);
+printf(" to ");
+uip_debug_ipaddr_print(rpl_get_parent_ipaddr(parent));
+printf("\n");
+//----------
 
   PRINTF("RPL: Sending DAO with prefix ");
   PRINT6ADDR(prefix);

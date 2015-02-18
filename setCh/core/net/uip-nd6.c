@@ -400,6 +400,16 @@ uip_nd6_na_input(void)
   uint8_t is_solicited;
   uint8_t is_override;
 
+//ADILA EDIT
+printf("Received NA ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf("to");
+uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+printf("with target address");
+uip_debug_ipaddr_print((uip_ipaddr_t *) (&UIP_ND6_NA_BUF->tgtipaddr));
+printf("\n");
+//----------
+
   PRINTF("Received NA from");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF("to");

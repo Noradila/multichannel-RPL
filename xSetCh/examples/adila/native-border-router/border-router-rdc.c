@@ -140,6 +140,7 @@ send_packet(mac_callback_t sent, void *ptr)
     uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 
 
+//printf("1:%x 2:%x 3:%x 4:%x 5:%x 6:%x 7:%x\n\n", ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 //!!!!!!!!!!!!!!!!!!
 //ADILA EDIT 13/12/14
 //! NEED TO DO CHECKING SO THAT IT WON'T SEND IT THE DESTINATION IS UNKNOWN ff02::1a
@@ -180,8 +181,10 @@ printf("\n\n");*/
 	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
-	  if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
+if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]) {
+	  //if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
 		printf("\n\nTEST ");
+//printf("11:%x 12:%x 13:%x 14:%x 15:%x \n\n", nbr->ipaddr.u8[11], nbr->ipaddr.u8[12], nbr->ipaddr.u8[13], nbr->ipaddr.u8[14], nbr->ipaddr.u8[15]);
       		uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
       		uip_debug_ipaddr_print(&nH);
 		uip_debug_ipaddr_print(&nbr->ipaddr);

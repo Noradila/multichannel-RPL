@@ -147,6 +147,17 @@ void
 uip_nd6_ns_input(void)
 {
   uint8_t flags;
+
+//ADILA EDIT
+printf("Received NS ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf(" to ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+printf(" with target address");
+uip_debug_ipaddr_print((uip_ipaddr_t *) (&UIP_ND6_NS_BUF->tgtipaddr));
+printf("\n");
+//----------
+
   PRINTF("Received NS from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF(" to ");
@@ -316,6 +327,16 @@ create_na:
   PRINTF(" with target address ");
   PRINT6ADDR(&UIP_ND6_NA_BUF->tgtipaddr);
   PRINTF("\n");
+
+//ADILA EDIT
+printf("Sending NA ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+printf(" from ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf(" with target address ");
+uip_debug_ipaddr_print(&UIP_ND6_NA_BUF->tgtipaddr);
+printf("\n");
+//----------
   return;
 
 discard:
@@ -386,6 +407,18 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
   PRINTF("with target address");
   PRINT6ADDR(tgt);
   PRINTF("\n");
+
+//ADILA EDIT
+uip_ipaddr_t testIP;
+printf("Sending NS ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+printf(" from ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf(" with target address ");
+uip_debug_ipaddr_print(tgt);
+printf("\n");
+//----------
+
   return;
 }
 
@@ -399,6 +432,16 @@ uip_nd6_na_input(void)
   uint8_t is_router;
   uint8_t is_solicited;
   uint8_t is_override;
+
+//ADILA EDIT
+printf("Received NA ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf("to");
+uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+printf("with target address");
+uip_debug_ipaddr_print((uip_ipaddr_t *) (&UIP_ND6_NA_BUF->tgtipaddr));
+printf("\n");
+//----------
 
   PRINTF("Received NA from");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);

@@ -55,6 +55,10 @@
 
 #include <stdio.h>
 
+//ADILA EDIT 10/11/14
+#include "net/uip-ds6.h"
+//-------------------
+
 #define DEBUG 0
 #if DEBUG
 #include <stdio.h>
@@ -167,13 +171,14 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p)
     memb_free(&packet_memb, p);
 
 //ADILA EDIT 09/02/14
-/*if((list_length(n->queued_packet_list)) == 0) {
+if((list_length(n->queued_packet_list)) == 0) {
 printf("empty Q %d\n", list_length(n->queued_packet_list));
-//Reset to listening channel when queue is empty
+////Reset to listening channel when queue is empty
 //Not really require as the radio will be switched off when
 //the queue is empty
-//@cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-}*/
+//@
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+}
 //-------------------
 
     PRINTF("csma: free_queued_packet, queue length %d\n",

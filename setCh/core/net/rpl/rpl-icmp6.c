@@ -228,6 +228,13 @@ dio_input(void)
   uip_ipaddr_copy(&from, &UIP_IP_BUF->srcipaddr);
 
   /* DAG Information Object */
+
+//ADILA EDIT
+printf("Received DIO ");
+uip_debug_ipaddr_print(&from);
+printf("\n");
+//----------
+
   PRINTF("RPL: Received a DIO from ");
   PRINT6ADDR(&from);
   PRINTF("\n");
@@ -548,6 +555,9 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 #else /* RPL_LEAF_ONLY */
   /* Unicast requests get unicast replies! */
   if(uc_addr == NULL) {
+//ADILA EDIT
+printf("Sending m DIO\n");
+//
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
         (unsigned)instance->current_dag->rank);
     uip_create_linklocal_rplnodes_mcast(&addr);

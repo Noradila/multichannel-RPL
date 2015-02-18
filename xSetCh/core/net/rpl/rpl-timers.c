@@ -129,6 +129,11 @@ handle_dio_timer(void *ptr)
 {
   rpl_instance_t *instance;
 
+//ADILA EDIT
+uip_ds6_nbr_t *nbr;
+  uip_ipaddr_t nH;
+//----------
+
   instance = (rpl_instance_t *)ptr;
 
   PRINTF("RPL: DIO Timer triggered\n");
@@ -149,6 +154,33 @@ handle_dio_timer(void *ptr)
       instance->dio_totsend++;
 #endif /* RPL_CONF_STATS */
       dio_output(instance, NULL);
+
+//ADILA EDIT
+/*start_time = clock_seconds();
+printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
+
+if(start_time > 60) {
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+printf("RPL-TIMER NBR TABLE: ");
+uip_debug_ipaddr_print(&nbr->ipaddr);
+uip_ipaddr_copy(&nH, &nbr->ipaddr);
+uip_debug_ipaddr_print(&nH);
+uip_ip6addr_u8(&nH, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, nH.u8[8], nH.u8[9], nH.u8[10], nH.u8[11], nH.u8[12], nH.u8[13], nH.u8[14], nH.u8[15]);
+uip_debug_ipaddr_print(&nH);
+printf("\n");
+
+dio_output(instance, &nH);
+//dio_output(instance, &nbr->ipaddr);
+}//for()
+}//if(start_time > 20)
+else {
+printf("MULTICAST DIO\n\n");
+
+dio_output(instance, NULL);
+}//else (start_time)
+//---------*/
+
     } else {
       PRINTF("RPL: Supressing DIO transmission (%d >= %d)\n",
              instance->dio_counter, instance->dio_redundancy);

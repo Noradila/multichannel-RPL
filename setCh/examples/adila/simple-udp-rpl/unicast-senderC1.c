@@ -465,9 +465,9 @@ if(noOfEntry == keepListNo) {
     msg2.addrPtr = &sendTo1G;
     msg2.paddingBuf[30] = " ";
 
-    printf("Sending CONFIRM_CH to ");
-    uip_debug_ipaddr_print(msg2.addrPtr);
-    printf(" channel %d\n", msg2.value);
+    //printf("Sending CONFIRM_CH to ");
+    //uip_debug_ipaddr_print(msg2.addrPtr);
+    //printf(" channel %d\n", msg2.value);
 
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 }
