@@ -669,8 +669,15 @@ tcpip_ipv6_output(void)
        * interface should be used."*/
        if(uip_ds6_is_my_addr(&UIP_IP_BUF->srcipaddr)){
           uip_nd6_ns_output(&UIP_IP_BUF->srcipaddr, NULL, &nbr->ipaddr);
+
+//ADILA EDIT 19/02/15
+//uip_nd6_ns_output(&UIP_IP_BUF->srcipaddr, &nbr->ipaddr, &nbr->ipaddr);
+//-------------------
         } else {
           uip_nd6_ns_output(NULL, NULL, &nbr->ipaddr);
+//ADILA EDIT 19/02/15
+//uip_nd6_ns_output(&UIP_IP_BUF->srcipaddr, &nbr->ipaddr, &nbr->ipaddr);
+//-------------------
         }
 
         stimer_set(&nbr->sendns, uip_ds6_if.retrans_timer / 1000);

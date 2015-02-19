@@ -52,6 +52,7 @@
 #include "net/uip-ds6-nbr.h"
 
 #define DEBUG DEBUG_NONE
+#define DEBUG 1
 #include "net/uip-debug.h"
 
 #ifdef UIP_CONF_DS6_NEIGHBOR_STATE_CHANGED

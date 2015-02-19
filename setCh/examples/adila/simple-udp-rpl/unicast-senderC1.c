@@ -101,7 +101,8 @@ enum {
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
-	GET_ACK
+	GET_ACK,
+CCH
 };
 
 struct unicast_message {
@@ -131,12 +132,12 @@ for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
  nbr = nbr_table_next(ds6_neighbors,nbr)) {
  if(addr->u8[13] == nbr->ipaddr.u8[13]) {
   nbr->nbrCh = msgValue;
-  printf("SAME ");
+  //printf("SAME ");
 
-  uip_debug_ipaddr_print(&nbr->ipaddr);
+  //uip_debug_ipaddr_print(&nbr->ipaddr);
 
-  printf(" update nbr->nbrCh %d ", nbr->nbrCh);
-  printf("\n\n");
+  //printf(" update nbr->nbrCh %d ", nbr->nbrCh);
+  //printf("\n\n");
  }
 }
 
@@ -410,21 +411,6 @@ receiver(struct simple_udp_connection *c,
 
     msg2.value2 = 1;
 
-/*printf("PARENT IS ");
-uip_debug_ipaddr_print(uip_ds6_defrt_choose());
-printf("\n");
-
-    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }
-*/
     process_post_synch(&test1, event_data_ready, &msg2);
   }//end if(msg->type == CH_CHANGE)
 
@@ -492,10 +478,11 @@ if(noOfEntry == keepListNo) {
 //!!!!!!!! SEND TO ALL NBR
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
-/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
-    msg2.type = CONFIRM_CH;
+    //msg2.type = CONFIRM_CH;
+    msg2.type = CCH;
     msg2.value = changeTo;
     msg2.addrPtr = &nbr->ipaddr;
     msg2.paddingBuf[30] = " ";
@@ -503,9 +490,22 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("SEND ALL\n");
 
 simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-}*/
+}
 }
   }
+
+else if(msg->type == CCH) {
+//printf("\n\nCCH ");
+//uip_debug_ipaddr_print(sender_addr);
+//printf("\n\n");
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+if(sender_addr->u8[13] ==  nbr->ipaddr.u8[13]) {
+//printf("\n\nCCH %d\n\n", msg->value);
+nbr->nbrCh = msg->value;
+}
+}
+}
 
   else {
   printf("Data received on port %d from port %d with length %d\n",
@@ -607,7 +607,7 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
 
 for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
-printf("NBR TABLE ");
+//printf("NBR TABLE ");
 uip_debug_ipaddr_print(&nbr->ipaddr);
 printf(" channel %d\n", nbr->nbrCh);
 }
@@ -657,6 +657,39 @@ PROCESS_THREAD(test1, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
+/*if(msg->type == CONFIRM_CH) {
+      msg2.type = msg->type;
+      msg2.value = msg->value;
+      changeTo = msg2.value;
+      keepType = msg2.type;
+
+      msg2.value2 = msg->value2;
+      y = msg2.value2;
+
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+printf("CCH ");
+uip_debug_ipaddr_print(&nbr->ipaddr);
+printf(" channel %d\n", nbr->nbrCh);
+
+etimer_set(&time, 0.15 * CLOCK_SECOND);
+PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+}
+
+}*/
+
+/*if(msg->type == NBR_CH_CHANGE) {
+      msg2.type = msg->type;
+      msg2.value = msg->value;
+      changeTo = msg2.value;
+      keepType = msg2.type;
+
+      msg2.value2 = msg->value2;
+      y = msg2.value2;
+}*/
+
     if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
 
       msg2.type = msg->type;
@@ -697,14 +730,17 @@ msg2.addrPtr = &nextHopAddr;
             //uip_ipaddr_copy(&nextHopAddr, uip_ds6_route_nexthop(r));
             loopFunction2(&msg2, y, x, r->nbrCh);
 
-	    if((y == 1 && x == 0)) {
+	    //if((y == 1 && x == 0)) {
+	    if(keepType == NBR_CH_CHANGE) {
 	      etimer_set(&time, 0.15 * CLOCK_SECOND);
 	      //etimer_set(&time, 0);
 	    }
-	    else if(y == 1 && x == 1) {
+	    //else if(y == 1 && x == 1) {
+	    if(keepType == STARTPROBE) {
 	      etimer_set(&time, 1 * CLOCK_SECOND);
 	    }
-	    else if(y == 0 && x == 0) {
+	    //else if(y == 0 && x == 0) {
+	    else if(keepType == CONFIRM_CH) {
 	      etimer_set(&time, 0.5 * CLOCK_SECOND);
 	    }
 	    PROCESS_YIELD_UNTIL(etimer_expired(&time));
@@ -737,15 +773,19 @@ msg2.addrPtr = &nextHopAddr;
 	  msg2.value = changeTo;
           loopFunction(&msg2, y, x, newVal);
 
-	  if((y == 1 && x == 0)) {
-	    etimer_set(&time, 0.15 * CLOCK_SECOND);
-	    //etimer_set(&time, 0);
-	  }
-	  else if(y == 1 && x == 1) {
+	  //if((y == 1 && x == 0)) {
+	  if(keepType == NBR_CH_CHANGE) {
+	      etimer_set(&time, 0.15 * CLOCK_SECOND);
+	      //etimer_set(&time, 0);
+	    }
+	    //else if(y == 1 && x == 1) {
+	  if(keepType == STARTPROBE) {
 	      etimer_set(&time, 1 * CLOCK_SECOND);
-	  }
-	  else if(y == 0 && x == 0) {
-	    etimer_set(&time, 0.5 * CLOCK_SECOND);
+	    }
+	    //else if(y == 0 && x == 0) {
+	  else if(keepType == CONFIRM_CH) {
+	      etimer_set(&time, 0.5 * CLOCK_SECOND);
+	    //}
 	  }
 	  PROCESS_YIELD_UNTIL(etimer_expired(&time));
 

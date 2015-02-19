@@ -583,7 +583,11 @@ uip_ds6_dad(uip_ds6_addr_t *addr)
 {
   /* send maxdadns NS for DAD  */
   if(addr->dadnscount < uip_ds6_if.maxdadns) {
-    uip_nd6_ns_output(NULL, NULL, &addr->ipaddr);
+    //uip_nd6_ns_output(NULL, NULL, &addr->ipaddr);
+
+//ADILA EDIT 19/02/15
+//uip_nd6_ns_output(NULL, &addr->ipaddr, &addr->ipaddr);
+//-------------------
     addr->dadnscount++;
     timer_set(&addr->dadtimer,
               uip_ds6_if.retrans_timer / 1000 * CLOCK_SECOND);

@@ -359,8 +359,12 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
 
   if(dest == NULL) {
     uip_create_solicited_node(tgt, &UIP_IP_BUF->destipaddr);
+//ADILA EDIT
+//uip_ipaddr_copy(&UIP_IP_BUF->destipaddr, tgt);
+//----------
   } else {
     uip_ipaddr_copy(&UIP_IP_BUF->destipaddr, dest);
+
   }
   UIP_ICMP_BUF->type = ICMP6_NS;
   UIP_ICMP_BUF->icode = 0;
@@ -410,6 +414,7 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
 
 //ADILA EDIT
 uip_ipaddr_t testIP;
+printf("13:%x 14:%x 15:%x\n\n", UIP_IP_BUF->destipaddr.u8[13], UIP_IP_BUF->destipaddr.u8[14], UIP_IP_BUF->destipaddr.u8[15]);
 printf("Sending NS ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
 printf(" from ");

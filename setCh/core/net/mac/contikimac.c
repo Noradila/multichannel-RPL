@@ -609,15 +609,23 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
 	  uip_ip6addr_u8(&toParent, 0xaa, 0xaa, toParent.u8[2], toParent.u8[3], toParent.u8[4], toParent.u8[5], toParent.u8[6], toParent.u8[7], toParent.u8[8], toParent.u8[9], toParent.u8[10], toParent.u8[11], toParent.u8[12], toParent.u8[13], toParent.u8[14], toParent.u8[15]);
 */
-        for(r = uip_ds6_route_head(); r != NULL; 
-	  r = uip_ds6_route_next(r)) {
+
+  static uip_ds6_nbr_t *nbr;
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+/*        for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {*/
+
+
 //printf("CMAC %d recv %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
 //uip_debug_ipaddr_print(r->ipaddr);
 //printf("\n");
 
-if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+if((nbr->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+//if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
 //printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
-cc2420_set_channel(r->nbrCh);
+//cc2420_set_channel(r->nbrCh);
+cc2420_set_channel(nbr->nbrCh);
 }
 	}
 

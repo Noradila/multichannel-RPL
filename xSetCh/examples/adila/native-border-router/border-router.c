@@ -98,7 +98,8 @@ enum {
 	NBRPROBE,
 	PROBERESULT,
 	CONFIRM_CH,
-	GET_ACK
+	GET_ACK,
+CCH
 };
 
 struct unicast_message {
