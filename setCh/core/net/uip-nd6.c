@@ -149,7 +149,7 @@ uip_nd6_ns_input(void)
   uint8_t flags;
 
 //ADILA EDIT
-printf("NA\n\n");
+//printf("NS\n\n");
 //----------
 
   PRINTF("Received NS from ");
@@ -386,14 +386,14 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
   UIP_STAT(++uip_stat.nd6.sent);
 
 //ADILA EDIT
-  printf("Sending NS to ");
+/*  printf("Sending NS to ");
   uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
   printf(" from ");
   uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
   printf(" with target address");
   uip_debug_ipaddr_print(tgt);
   printf("\n");
-//----------
+//----------*/
 
   PRINTF("Sending NS to");
   PRINT6ADDR(&UIP_IP_BUF->destipaddr);

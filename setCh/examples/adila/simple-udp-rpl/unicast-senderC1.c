@@ -325,15 +325,15 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
 
   if(y == 1 && x == 0) {
     msg2.type = NBR_CH_CHANGE;
-    printf("%d Sending channel change %d to tree neighbour ", rNbrCh, msg2.value);
+    //printf("%d Sending channel change %d to tree neighbour ", rNbrCh, msg2.value);
   }
   else if(y == 1 && x == 1) {
     msg2.type = STARTPROBE;
-    printf("%d Sending STARTPROBE %d to tree neighbour ", rNbrCh, msg2.value);
+    //printf("%d Sending STARTPROBE %d to tree neighbour ", rNbrCh, msg2.value);
   }
   else if(y == 0 && x == 0) {
     msg2.type = CONFIRM_CH;
-    printf("CONFIRM CH SENDING!!");
+    //printf("CONFIRM CH SENDING!!");
   }
 
   keepType = msg2.type;
@@ -357,11 +357,11 @@ static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uin
 
   if(y == 1 && x == 0) {
     msg2.type = NBR_CH_CHANGE;
-    printf("%d Sending channel change %d to tree neighbour2 ", rNbrCh, msg2.value);
+    //printf("%d Sending channel change %d to tree neighbour2 ", rNbrCh, msg2.value);
   }
   else if(y == 1 && x == 1) {
     msg2.type = STARTPROBE;
-    printf("%d Sending STARTPROBE %d to tree neighbour2 ", rNbrCh, msg2.value);
+    //printf("%d Sending STARTPROBE %d to tree neighbour2 ", rNbrCh, msg2.value);
   }
 
   else if(y == 0 && x == 0) {
@@ -519,6 +519,22 @@ nbr->nbrCh = msg->value;
   }
 }
 /*---------------------------------------------------------------------------*/
+
+static void whatNext(struct unicast_message *msg) {
+
+struct unicast_message msg2;
+
+      msg2.type = STARTPROBE;
+      msg2.value = msg->value;
+      //changeTo = msg2.value;
+      //keepType = msg2.type;
+
+      msg2.value2 = msg->value2;
+
+process_post(&test1, event_data_ready, &msg2);
+}
+
+/*---------------------------------------------------------------------------*/
 static void
 set_global_address(void)
 {
@@ -581,30 +597,6 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
       static unsigned int message_number;
       char buf[20];
 
-      //readProbe();
-
-  /*struct probeResult *pr;
-
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
-    printf("BEFORE SENDING %d READPROBE pktRx %d, chNum %d, ip ", pr->checkAck, pr->rxValue, pr->chNum);
-    uip_debug_ipaddr_print(&pr->pAddr);
-    printf("\n");
-  }*/
-
-      //uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
-      //uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->srcipaddr);
-
-    /*for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-	printf("ROUTE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
-	printf(" nbrCh %d", r->nbrCh);
-	printf("\n");
-    }*/
-
 for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("NBR TABLE ");
@@ -657,6 +649,20 @@ PROCESS_THREAD(test1, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
+/*if(msg->type == NBR_CH_CHANGE) {
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {
+if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
+printf("SAME\n\n");
+}
+}//RT
+
+}//NT
+}//IF
+*/
 /*if(msg->type == CONFIRM_CH) {
       msg2.type = msg->type;
       msg2.value = msg->value;
@@ -690,7 +696,92 @@ simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       y = msg2.value2;
 }*/
 
-    if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
+
+
+if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
+//if(msg->type == NBR_CH_CHANGE) {
+
+      msg2.type = msg->type;
+      msg2.value = msg->value;
+      changeTo = msg2.value;
+      keepType = msg2.type;
+
+      msg2.value2 = msg->value2;
+
+/*for(r = uip_ds6_route_head(); r != NULL; 
+ r = uip_ds6_route_next(r)) {
+
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+  }
+
+}*/
+
+
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+    if(nbr->ipaddr.u8[13] != 1) {
+      if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1) && (uip_ipaddr_cmp(uip_ds6_defrt_choose(), &nbr->ipaddr))) {
+        msg2.type = keepType;
+        msg2.addrPtr = &nbr->ipaddr;
+msg2.value = 1;
+	//printf("PAR\n\n");
+      }
+    else {
+    for(r = uip_ds6_route_head(); r != NULL; 
+	  r = uip_ds6_route_next(r)) {
+      if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
+	//printf("SAME\n\n");
+        msg2.type = keepType;
+        msg2.addrPtr = &nbr->ipaddr;
+msg2.value = 1;
+      }
+     }//for RT
+     }//else
+     //msg2.type = keepType;
+
+if(msg2.value == 1) {
+     msg2.value = changeTo;
+     msg2.paddingBuf[30] = " ";
+     //msg2.addrPtr = uip_ds6_route_nexthop(r);
+     //msg2.addrPtr = &r->ipaddr;
+     printf("Send NBRCH ");
+     //uip_debug_ipaddr_print(msg2.addrPtr);
+     printf("\n\n");
+     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+}
+     if(msg2.type == NBR_CH_CHANGE) {
+	//printf("0.15\n\n");
+     etimer_set(&time, 0.15 * CLOCK_SECOND);
+     }
+     if(msg2.type == STARTPROBE) {
+	printf("1\n\n");
+     etimer_set(&time, 1 * CLOCK_SECOND);
+     }
+     PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+   }//if
+  }//NT
+
+if(keepType == NBR_CH_CHANGE) {
+//keepType = STARTPROBE;
+//msg2.type = STARTPROBE;
+
+      msg2.value = changeTo;
+      //keepType = msg2.type;
+
+      msg2.value2 = msg->value2;
+
+whatNext(&msg2);
+//process_post_synch(&test1, event_data_ready, &msg2);
+//printf("x\n\n");
+}
+}//
+
+    if(msg->type == CONFIRM_CH) {
+    //if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
 
       msg2.type = msg->type;
       msg2.value = msg->value;
@@ -703,8 +794,9 @@ simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       //msg2.paddingBuf[30] = " ";
 
-      //printf("VALUE2 IS %d\n\n", y);
 
+//////////////////////////
+/*
       for(x = 0; x <=y; x++) {
         //! sending to ALL TREE NBR and PARENT should be done within 1 seconds maximum
         for(r = uip_ds6_route_head(); r != NULL; 
@@ -721,7 +813,7 @@ printf("\n");
 
 	  //! check to ensure it doesn't repeat the same nexthop neighbour
 	  //if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-
+/*
             msg2.value = changeTo;
             msg2.paddingBuf[30] = " ";
 	    //msg2.addrPtr = uip_ds6_route_nexthop(r);
@@ -851,7 +943,7 @@ msg2.addrPtr = &nextHopAddr;
 
 	//@
         //cc2420_set_channel(msg2.value);
- 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
+ 	//printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
 
