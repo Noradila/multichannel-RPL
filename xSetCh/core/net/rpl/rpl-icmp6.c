@@ -252,7 +252,7 @@ printf("\n");
 //----------
 
 //ADILA EDIT
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 if(nbr->ipaddr.u8[13] == from.u8[13]) {
 printf("ALREADY IN NBR TABLE!! ");
@@ -264,7 +264,7 @@ printf("NOT YET IN NBR TABLE!\n");
 uip_debug_ipaddr_print(&from);
 printf("\n");
 }
-}
+}*/
 //----------
   PRINTF("RPL: Received a DIO from ");
   PRINT6ADDR(&from);
