@@ -249,6 +249,13 @@ static void readProbeResult() {
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    printf("keeprobe c %d r %d ack %d ", pr->chNum, pr->rxValue, pr->checkAck);
+    uip_debug_ipaddr_print(&pr->pAddr);
+    printf("\n\n");
+  }
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+if(pr->chNum != 0) {
     printf("Sending PROBERESULT to ");
     uip_debug_ipaddr_print(&sendTo1);
     printf("\n");
@@ -263,6 +270,7 @@ static void readProbeResult() {
 
     sum = sum + pr->rxValue;
     divide++;
+}
   }
 
   keepListNo = divide;
@@ -285,7 +293,11 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
-      if(chN != 1) {
+      if(chN != 1 && getAck != 2) {
+	if(pr->chNum == 0) {
+	  pr->chNum = chN;
+	  return;
+	}
         if(chN == pr->chNum) {
 	  pr->rxValue = (pr->rxValue) + 1;
 	  return;
@@ -405,6 +417,11 @@ receiver(struct simple_udp_connection *c,
     printf("%d: %d received CH_CHANGE from ", cc2420_get_channel(), msg->value);
     uip_debug_ipaddr_print(sender_addr);
     printf("\n");  
+
+for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_next(ds6_neighbors,nbr)) {
+keepProbeResult(&nbr->ipaddr, 0, 2);
+}
 
     msg2.type = NBR_CH_CHANGE;
     msg2.value = msg->value;

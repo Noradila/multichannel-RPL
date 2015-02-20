@@ -77,6 +77,7 @@ typedef struct uip_ds6_nbr {
 
 //ADILA EDIT 18/02/15
 uint8_t nbrCh;
+//uint8_t ackRecv;
 //-------------------
 
 #if UIP_CONF_IPV6_QUEUE_PKT
