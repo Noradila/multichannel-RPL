@@ -296,6 +296,7 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
       if(chN != 1 && getAck != 2) {
 	if(pr->chNum == 0) {
 	  pr->chNum = chN;
+	  pr->rxValue = 1;
 	  return;
 	}
         if(chN == pr->chNum) {
@@ -319,7 +320,7 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
 
   pr = memb_alloc(&probeResult_mem);
   if(pr != NULL) {
-    pr->rxValue = 1;
+    pr->rxValue = 0;
     pr->chNum = chN;
     uip_ipaddr_copy(&pr->pAddr, prAddr);
     list_add(probeResult_table, pr);
