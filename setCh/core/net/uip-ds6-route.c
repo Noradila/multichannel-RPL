@@ -221,7 +221,7 @@ uip_ds6_route_lookup(uip_ipaddr_t *addr)
   uint8_t longestmatch;
 
 //ADILA EDIT 10/11/14
-uint8_t found_route_ch;
+//uint8_t found_route_ch;
 //-------------------
 
   PRINTF("uip-ds6-route: Looking up route for ");
@@ -240,7 +240,7 @@ uint8_t found_route_ch;
       found_route = r;
 
 //ADILA EDIT 10/11/14
-found_route_ch = r->nbrCh;
+//found_route_ch = r->nbrCh;
 //-------------------
     }
   }
@@ -360,9 +360,9 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 #endif
 
 //QUICK INIT HACK ADILA EDIT 10/11/14
-if(r->nbrCh == 0) {
+/*if(r->nbrCh == 0) {
   r->nbrCh = 26;
-}
+}*/
 //r->nbrCh = cc2420_get_channel();
 //-------------------
 
@@ -511,9 +511,9 @@ uip_ds6_defrt_add(uip_ipaddr_t *ipaddr, unsigned long interval)
 
 //ADILA EDIT 03/11/14
 //d->parentCh = cc2420_get_channel();
-if(d->parentCh == 0) {
+/*if(d->parentCh == 0) {
 d->parentCh = 26;
-}
+}*/
 //printf("\n\nINITIALISE D->PARENTCH %d\n\n", d->parentCh);
 //-------------------
 
@@ -644,7 +644,7 @@ uip_ds6_defrt_periodic(void)
 }
 /*---------------------------------------------------------------------------*/
 //ADILA EDIT 05/11/14
-uip_ipaddr_t *
+/*uip_ipaddr_t *
 uip_ds6_defrt_ch(void)
 {
   uip_ds6_defrt_t *d;
@@ -666,7 +666,7 @@ uip_ds6_defrt_ch(void)
 }
 /*---------------------------------------------------------------------------*/
 //ADILA EDIT 05/11/14
-uip_ipaddr_t *
+/*uip_ipaddr_t *
 uip_ds6_defrt_setCh(uint8_t pCh)
 //uip_ipaddr_t *
 //uip_ds6_defrt_ch(void)

@@ -629,13 +629,13 @@ cc2420_set_channel(nbr->nbrCh);
 }
 	}
 
-if((uip_ds6_defrt_choose()->u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+/*if((uip_ds6_defrt_choose()->u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
 //printf("PARENT %d %d ch %d ", uip_ds6_defrt_choose()->u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], uip_ds6_defrt_ch());
 uip_debug_ipaddr_print(uip_ds6_defrt_choose());
 printf("\n");
 
 cc2420_set_channel(uip_ds6_defrt_ch());
-}
+}*/
 //    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
     printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
 cc2420_get_channel(),
