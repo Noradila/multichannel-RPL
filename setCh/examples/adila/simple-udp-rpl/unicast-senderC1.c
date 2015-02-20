@@ -141,7 +141,7 @@ for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
  }
 }
 
-  for(r = uip_ds6_route_head(); r != NULL; 
+/*  for(r = uip_ds6_route_head(); r != NULL; 
     r = uip_ds6_route_next(r)) {
 
     uip_ipaddr_copy(&nextHopIP, uip_ds6_route_nexthop(r));
@@ -155,7 +155,7 @@ for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
       printf(" via ");
       uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
       printf(" nbrCh %d\n", r->nbrCh);*/
-    }
+/*    }
   }
 
   uip_ipaddr_copy(&nextHopIP, uip_ds6_defrt_choose());
@@ -172,7 +172,7 @@ printf(" addr \n");
     /*printf("%d PARENT UPDATE OWN ROUTING TABLE ", msgValue);
     uip_debug_ipaddr_print(uip_ds6_defrt_choose());
     printf(" nbrCh %d\n", uip_ds6_defrt_ch());*/
-  }
+//  }
 }
 /*---------------------------------------------------------------------------*/
 static void removeProbe() {
@@ -314,7 +314,7 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
-static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
+/*static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
 
   struct unicast_message msg2;
   struct probeResult *pr;
@@ -346,7 +346,7 @@ static void loopFunction(struct unicast_message *msg, uint8_t y, uint8_t x, uint
   simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 }
 /*---------------------------------------------------------------------------*/
-static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
+/*static void loopFunction2(struct unicast_message *msg, uint8_t y, uint8_t x, uint8_t rNbrCh) {
 
   struct unicast_message msg2;
   struct probeResult *pr;
@@ -427,7 +427,7 @@ receiver(struct simple_udp_connection *c,
   }//end if(msg->type == NBR_CH_CHANGE)
 
   else if(msg->type == STARTPROBE) {
-    //printf("RECEIVED STARTPROBE\n\n");
+    printf("RECEIVED STARTPROBE\n\n");
 
     msg2.type = NBRPROBE;
     msg2.addrPtr = sender_addr;
@@ -437,9 +437,9 @@ receiver(struct simple_udp_connection *c,
 
   else if(msg->type == NBRPROBE) {
 //printf("Q3 %d\n\n", list_length(n->queued_packet_list));
-    //printf("%d %d / %d: %d received %d NBRPROBE from ", NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet(), cc2420_get_channel(), msg->value, msg->value2);
-    //uip_debug_ipaddr_print(sender_addr);
-    //printf("\n");
+    printf("%d %d / %d: %d received %d NBRPROBE from ", NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet(), cc2420_get_channel(), msg->value, msg->value2);
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n");
 
     keepProbeResult(sender_addr, msg->value, 0);
   }
@@ -476,7 +476,7 @@ if(noOfEntry == keepListNo) {
 
 
 //!!!!!!!! SEND TO ALL NBR
-    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+/*    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
 
 for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
@@ -490,7 +490,7 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("SEND ALL\n");
 
 simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-}
+}*/
 }
   }
 
@@ -649,57 +649,7 @@ PROCESS_THREAD(test1, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-/*if(msg->type == NBR_CH_CHANGE) {
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-for(r = uip_ds6_route_head(); r != NULL; 
-	  r = uip_ds6_route_next(r)) {
-if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
-printf("SAME\n\n");
-}
-}//RT
-
-}//NT
-}//IF
-*/
-/*if(msg->type == CONFIRM_CH) {
-      msg2.type = msg->type;
-      msg2.value = msg->value;
-      changeTo = msg2.value;
-      keepType = msg2.type;
-
-      msg2.value2 = msg->value2;
-      y = msg2.value2;
-
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-printf("CCH ");
-uip_debug_ipaddr_print(&nbr->ipaddr);
-printf(" channel %d\n", nbr->nbrCh);
-
-etimer_set(&time, 0.15 * CLOCK_SECOND);
-PROCESS_YIELD_UNTIL(etimer_expired(&time));
-
-simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-}
-
-}*/
-
-/*if(msg->type == NBR_CH_CHANGE) {
-      msg2.type = msg->type;
-      msg2.value = msg->value;
-      changeTo = msg2.value;
-      keepType = msg2.type;
-
-      msg2.value2 = msg->value2;
-      y = msg2.value2;
-}*/
-
-
-
-if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
-//if(msg->type == NBR_CH_CHANGE) {
+    if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
 
       msg2.type = msg->type;
       msg2.value = msg->value;
@@ -708,77 +658,65 @@ if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
 
       msg2.value2 = msg->value2;
 
-/*for(r = uip_ds6_route_head(); r != NULL; 
- r = uip_ds6_route_next(r)) {
+      for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+        nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
-  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+        if(nbr->ipaddr.u8[13] != 1) {
+          if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1) && 
+            (uip_ipaddr_cmp(uip_ds6_defrt_choose(), &nbr->ipaddr))) {
+            msg2.type = keepType;
+            msg2.addrPtr = &nbr->ipaddr;
+          }
+          else {
+            for(r = uip_ds6_route_head(); r != NULL; 
+	      r = uip_ds6_route_next(r)) {
+              if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
+                msg2.type = keepType;
+                msg2.addrPtr = &nbr->ipaddr;
+                msg2.value = 1;
+              }
+            }//for RT
+          }//else
 
-  }
+          if(msg2.value == 1) {
+            msg2.value = changeTo;
+            msg2.paddingBuf[30] = " ";
+            printf("Send NBRCH ");
+            //uip_debug_ipaddr_print(msg2.addrPtr);
+            printf("\n\n");
+            simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+          }
+          if(msg2.type == NBR_CH_CHANGE) {
+	    //printf("0.15\n\n");
+            etimer_set(&time, 0.15 * CLOCK_SECOND);
+          }
+          if(msg2.type == STARTPROBE) {
+	    printf("1\n\n");
+            etimer_set(&time, 1 * CLOCK_SECOND);
+          }
+          PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-}*/
+          if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
+	    //printf("SET CURRENTCH TO NEWCH\n\n");
+    	    uip_ds6_if.addr_list[1].currentCh = changeTo;
+	  }
 
+       }//if
+     }//NT
 
-  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-    nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-    if(nbr->ipaddr.u8[13] != 1) {
-      if(!uip_ipaddr_cmp(uip_ds6_defrt_choose(), &sendTo1) && (uip_ipaddr_cmp(uip_ds6_defrt_choose(), &nbr->ipaddr))) {
-        msg2.type = keepType;
-        msg2.addrPtr = &nbr->ipaddr;
-msg2.value = 1;
-	//printf("PAR\n\n");
-      }
-    else {
-    for(r = uip_ds6_route_head(); r != NULL; 
-	  r = uip_ds6_route_next(r)) {
-      if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]) {
-	//printf("SAME\n\n");
-        msg2.type = keepType;
-        msg2.addrPtr = &nbr->ipaddr;
-msg2.value = 1;
-      }
-     }//for RT
-     }//else
-     //msg2.type = keepType;
-
-if(msg2.value == 1) {
-     msg2.value = changeTo;
-     msg2.paddingBuf[30] = " ";
-     //msg2.addrPtr = uip_ds6_route_nexthop(r);
-     //msg2.addrPtr = &r->ipaddr;
-     printf("Send NBRCH ");
-     //uip_debug_ipaddr_print(msg2.addrPtr);
-     printf("\n\n");
-     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-}
-     if(msg2.type == NBR_CH_CHANGE) {
-	//printf("0.15\n\n");
-     etimer_set(&time, 0.15 * CLOCK_SECOND);
+     if(keepType == STARTPROBE) {
+	printf("FINISH STARTPROBE");
+	readProbeResult();
      }
-     if(msg2.type == STARTPROBE) {
-	printf("1\n\n");
-     etimer_set(&time, 1 * CLOCK_SECOND);
-     }
-     PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-   }//if
-  }//NT
-
-if(keepType == NBR_CH_CHANGE) {
-//keepType = STARTPROBE;
-//msg2.type = STARTPROBE;
-
+     else if(keepType == NBR_CH_CHANGE) {
+      msg2.type = STARTPROBE;
       msg2.value = changeTo;
-      //keepType = msg2.type;
-
       msg2.value2 = msg->value2;
 
-whatNext(&msg2);
-//process_post_synch(&test1, event_data_ready, &msg2);
-//printf("x\n\n");
-}
-}//
+      whatNext(&msg2);
+      }
+    }
 
     if(msg->type == CONFIRM_CH) {
     //if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
@@ -790,6 +728,21 @@ whatNext(&msg2);
 
       msg2.value2 = msg->value2;
       y = msg2.value2;
+
+      for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+        nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+        msg2.type = keepType;
+        msg2.value = changeTo;
+        msg2.paddingBuf[30] = " ";
+        msg2.addrPtr = &nbr->ipaddr;
+        printf("CONFIRM CH SENDING!!\n");
+
+        simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+        etimer_set(&time, 0.5 * CLOCK_SECOND);
+        PROCESS_YIELD_UNTIL(etimer_expired(&time));
+      }
 
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
       //msg2.paddingBuf[30] = " ";
@@ -943,7 +896,7 @@ msg2.addrPtr = &nextHopAddr;
 
 	//@
         //cc2420_set_channel(msg2.value);
- 	//printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
+ 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 	uip_debug_ipaddr_print(msg2.addrPtr);
 	printf("\n");
 
