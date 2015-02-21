@@ -71,24 +71,25 @@ struct probeResult {
 LIST(probeResult_table);
 MEMB(probeResult_mem, struct probeResult, 5);
 
-uint8_t currentVal;
+//uint8_t currentVal;
 uint8_t changeTo;
 static uip_ipaddr_t holdAddr;
 uint8_t x;
 uint8_t y;
 
-uint8_t noOfEntry = 0;
+//uint8_t noOfEntry = 0;
 
-  uip_ipaddr_t nextHopAddr;
+//uip_ipaddr_t nextHopAddr;
 
 uint8_t keepType;
-extern uint8_t keepListNo = 0;
-extern uint8_t nbrNo = 0;
+//extern uint8_t keepListNo = 0;
+//extern uint8_t nbrNo = 0;
 
 uint8_t sum;
 uint8_t divide;
 
-uip_ipaddr_t toParent;
+//uip_ipaddr_t toParent;
+  uip_ipaddr_t sendTo1;
 
 static struct simple_udp_connection unicast_connection;
 
@@ -103,6 +104,7 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
+SENTRECV
 };
 
 struct unicast_message {
@@ -123,8 +125,8 @@ PROCESS(test1, "test");
 AUTOSTART_PROCESSES(&unicast_sender_process, &test1);
 /*---------------------------------------------------------------------------*/
 static void updateRoutingTable(uip_ipaddr_t *addr, uint8_t msgValue) {
-  static uip_ds6_route_t *r;
-  uip_ipaddr_t nextHopIP;
+  //static uip_ds6_route_t *r;
+  //uip_ipaddr_t nextHopIP;
 
   static uip_ds6_nbr_t *nbr;
 
@@ -169,7 +171,7 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
   struct unicast_message msg2;
   uint8_t confirmToLPBR = 0;
 
-  uip_ipaddr_t sendTo1;
+  //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
@@ -210,14 +212,14 @@ static void readProbeResult() {
   sum = 0;
   divide = 0;
 
-  uip_ipaddr_t sendTo1;
+  //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     printf("keeprobe c %d r %d ack %d ", pr->chNum, pr->rxValue, pr->checkAck);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n\n");
-  }
+  }*/
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
    if(pr->chNum != 0) {
@@ -236,10 +238,10 @@ static void readProbeResult() {
     sum = sum + pr->rxValue;
     divide++;
    }
-   nbrNo ++;
+   //nbrNo++;
   }
 
-  keepListNo = divide;
+  //keepListNo = divide;
   msg2.type = CONFIRM_CH;
   //msg2.value2 = 0;
 
@@ -301,22 +303,59 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
 }
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
-static void keepSentRecv(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
+/*static void keepSentRecv(const uip_ipaddr_t *prAddr, uint8_t pktSent, uint8_t pktRecv) {
   struct probeResult *pr;
+  struct unicast_message msg2;
 
+  //uip_ipaddr_t sendTo1G;
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
+//rxValue is received; chNum is sent
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
-      if(chN != 1 && getAck != 2) {
-//if sent ++
-//if recv ++
+      if(pktSent == 1) {
+	pr->chNum = pr->chNum + 1;
+	return;
+      }
+      if(pktRecv == 1) {
+	pr->rxValue = pr->rxValue + 1;
+	return;
+      }
+
+      //has sent 10 packets
+      if(pr->chNum == 10 || pr->rxValue == 10) {
+	
+        msg2.type = SENTRECV;
+	if(pr->chNum == 10) {
+          msg2.value = pr->chNum;
+	}
+	else {
+	  msg2.value = pr->rxValue;
+	}
+        msg2.addrPtr = &sendTo1;
+        msg2.paddingBuf[30] = " ";
+
+        printf("Sending SENTRECV to ");
+        uip_debug_ipaddr_print(msg2.addrPtr);
+        printf(" sent %d\n", msg2.value);
+
+        simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
+
+	if(pr->chNum == 10) {
+          pr->chNum = 0;
+	}
+	else {
+	  pr->rxValue = 0;
+	}
+	return;
       }
     }
   }
 
   pr = memb_alloc(&probeResult_mem);
   if(pr != NULL) {
-    pr->rxValue = 0;
-    pr->chNum = chN;
+    pr->rxValue = pktRecv;
+    pr->chNum = pktSent;
     uip_ipaddr_copy(&pr->pAddr, prAddr);
     list_add(probeResult_table, pr);
   }
@@ -341,8 +380,8 @@ receiver(struct simple_udp_connection *c,
 
   static uip_ds6_nbr_t *nbr;
 
-  uip_ipaddr_t sendTo1G;
-  uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+  //uip_ipaddr_t sendTo1G;
+  //uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   if(msg->type == CH_CHANGE) {
     printf("%d: %d received CH_CHANGE from ", cc2420_get_channel(), msg->value);
@@ -405,9 +444,11 @@ receiver(struct simple_udp_connection *c,
 
   else if(msg->type == GET_ACK) {
     msg2.value = msg->value;
-
-    noOfEntry++;
-    printf("%d: GET ACK BACK %d/%d nbr %d\n", cc2420_get_channel(), noOfEntry, keepListNo, nbrNo);
+    printf("Received GET ACK from ");
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n");
+    //noOfEntry++;
+    //printf("%d: GET ACK BACK %d/%d nbr %d\n", cc2420_get_channel(), noOfEntry, keepListNo, nbrNo);
 
     keepProbeResult(sender_addr, 0, 1);
 
@@ -429,6 +470,8 @@ receiver(struct simple_udp_connection *c,
   else {
   printf("Data received on port %d from port %d with length %d\n",
          receiver_port, sender_port, datalen);
+
+  //keepSentRecv(sender_addr, 0, 1);
 
 //printf("TEST ");
 //uip_debug_ipaddr_print(sender_addr);
@@ -466,18 +509,18 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
   static struct etimer send_timer;
   uip_ipaddr_t *addr;
 
-  uip_ipaddr_t sendTo1;
+  //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  static uip_ds6_route_t *r;
+  //static uip_ds6_route_t *r;
 
-  struct unicast_message *msg;
-  struct unicast_message msg2;
-  msg = data;
+  //struct unicast_message *msg;
+  //struct unicast_message msg2;
+  //msg = data;
 
   static struct etimer time;
 
-  static uip_ds6_nbr_t *nbr;
+  //static uip_ds6_nbr_t *nbr;
 
   PROCESS_BEGIN();
 
@@ -500,12 +543,14 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
     static unsigned int message_number;
     char buf[20];
 
-    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    /*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
       nbr = nbr_table_next(ds6_neighbors,nbr)) {
       //printf("NBR TABLE ");
       uip_debug_ipaddr_print(&nbr->ipaddr);
       printf(" channel %d\n", nbr->nbrCh);
-    }
+    }*/
+
+    //keepSentRecv(&sendTo1, 1, 0);
 
     printf("Sending unicast to ");
     uip_debug_ipaddr_print(&sendTo1);
@@ -533,22 +578,22 @@ PROCESS_THREAD(test1, ev, data)
 
   static uip_ds6_route_t *r;
 
-  uip_ipaddr_t sendTo1;
+  //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xfe80, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  uip_ipaddr_t sendTo1G;
-  uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+  //uip_ipaddr_t sendTo1G;
+  //uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   static struct ctimer timer;
   struct probeResult *pr;
 
-  uint8_t newVal;
-  uip_ipaddr_t toParent;
+  //uint8_t newVal;
+  //uip_ipaddr_t toParent;
 
   static uip_ds6_nbr_t *nbr;
 
 uint8_t ww = 0;
-uint8_t m = 0;
+uint8_t delayTime = 0;
   PROCESS_BEGIN();
 
   while(1) {
@@ -605,20 +650,20 @@ uint8_t m = 0;
 	    //if(keepType == NBR_CH_CHANGE) {
 	      msg2.type = NBR_CH_CHANGE;
 	      printf("%d Sending NBR CH CHANGE %d to tree neighbour ", nbr->nbrCh, msg2.value);
-	      m = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
+	      delayTime = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
 	    }
 	    else if(x == 1) {
 	    //if(keepType == STARTPROBE) {
 	      msg2.type = STARTPROBE;
 	      printf("%d Sending STARTPROBE %d to tree neighbour ", nbr->nbrCh, msg2.value);
-	      m = 1;
+	      delayTime = 1;
 	    }
 
             uip_debug_ipaddr_print(msg2.addrPtr);
             printf("\n");
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
 
-	    etimer_set(&time, m * CLOCK_SECOND);
+	    etimer_set(&time, delayTime * CLOCK_SECOND);
 	    PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
 	    if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
@@ -630,6 +675,7 @@ uint8_t m = 0;
       }//END FOR X==1
 
       if(keepType == NBR_CH_CHANGE || keepType == STARTPROBE) {
+      //if(keepType == STARTPROBE) {
         readProbeResult();
       }
 

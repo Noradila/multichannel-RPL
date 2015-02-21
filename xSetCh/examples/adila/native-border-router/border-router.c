@@ -99,6 +99,7 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
+SENTRECV
 };
 
 struct unicast_message {
@@ -519,6 +520,8 @@ PROCESS_THREAD(border_router_process, ev, data)
   static struct etimer et;
   rpl_dag_t *dag;
 
+static struct  etimer changeChTimer;
+
   PROCESS_BEGIN();
   prefix_set = 0;
 
@@ -568,16 +571,28 @@ PROCESS_THREAD(border_router_process, ev, data)
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
+etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   while(1) {
-    a++;
+//    a++;
     etimer_set(&et, CLOCK_SECOND * 2);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
+//etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+//PROCESS_YIELD_UNTIL(etimer_expired(&changeChTimer));
+PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
+if(etimer_expired(&changeChTimer)) {
+process_post_synch(&chChange_process, event_data_ready, NULL);
+//etimer_stop(&changeChTimer);
+
+}
+//PROCESS_YIELD_UNTIL(etimer_expired(&changeChTimer));
+
+//etimer_stop(&changeChTimer);
     //! QUICK HACK - should put timer here
     //if(a == 5) {
-    if(a == 7) {
-      process_post_synch(&chChange_process, event_data_ready, NULL);
-    }
+//    if(a == 7) {
+//      process_post_synch(&chChange_process, event_data_ready, NULL);
+//    }
     /* do anything here??? */
   }
 

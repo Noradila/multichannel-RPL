@@ -417,7 +417,7 @@ uip_nd6_na_input(void)
   uint8_t is_override;
 
 //ADILA EDIT
-printf("RA\n");
+printf("RECV NA\n");
 //printf("Received NA ");
 //uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 //printf("to");
