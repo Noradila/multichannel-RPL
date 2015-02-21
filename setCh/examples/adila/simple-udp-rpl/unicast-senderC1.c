@@ -298,6 +298,28 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+static void keepSentRecv(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
+  struct probeResult *pr;
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
+      if(chN != 1 && getAck != 2) {
+//if sent ++
+//if recv ++
+      }
+    }
+  }
+
+  pr = memb_alloc(&probeResult_mem);
+  if(pr != NULL) {
+    pr->rxValue = 0;
+    pr->chNum = chN;
+    uip_ipaddr_copy(&pr->pAddr, prAddr);
+    list_add(probeResult_table, pr);
+  }
+}
+/*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
          const uip_ipaddr_t *sender_addr,
@@ -701,6 +723,8 @@ uint8_t m = 0;
 
       printf("FINISHED CONFIRM_CH\n\n");
       //checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
+      removeProbe(); //should be here?
+
   //struct probeResult *pr;
 
   /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
