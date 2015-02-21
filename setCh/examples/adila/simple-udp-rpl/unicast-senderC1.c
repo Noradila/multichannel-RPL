@@ -57,7 +57,7 @@
 //#define SEND_INTERVAL		(60 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(310 * CLOCK_SECOND)
 #define SEND_INTERVAL		(450 * CLOCK_SECOND)
-//#define SEND_INTERVAL		(600 * CLOCK_SECOND)
+//#define SEND_INTERVAL		(1500 * CLOCK_SECOND)
 #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 //#define SEND_TIME		(20 * CLOCK_SECOND)
 
@@ -751,7 +751,7 @@ uint8_t delayTime = 0;
       msg2.value2 = msg->value2;
       y = msg2.value2;
 
-      if(y == 1) {
+      /*if(y == 1) {
         msg2.addrPtr = msg->addrPtr;
 	msg2.type = CONFIRM_CH;
 	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
@@ -766,7 +766,7 @@ uint8_t delayTime = 0;
 	break;
       }
 
-      else {
+      else {*/
       for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
         nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
@@ -788,10 +788,10 @@ uint8_t delayTime = 0;
 	etimer_set(&time, 0.5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
-      }
+      //}
 
       //printf("FINISHED CONFIRM_CH\n\n");
-      checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
+      //checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
       //removeProbe(); //should be here?
 
   //struct probeResult *pr;

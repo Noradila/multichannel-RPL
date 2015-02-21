@@ -543,9 +543,9 @@ PROCESS_THREAD(border_router_process, ev, data)
     //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
-    if(etimer_expired(&changeChTimer)) {
+    //if(etimer_expired(&changeChTimer)) {
       process_post_synch(&chChange_process, event_data_ready, NULL);
-    }
+    //}
     /* do anything here??? */
   }
 
