@@ -177,25 +177,27 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     if((pr->checkAck) == 0 && (pr->pAddr.u8[13] != 1)) {
       msg2.type = CONFIRM_CH;
       msg2.value = theChannel;
+      msg2.addrPtr = &pr->pAddr;
+      msg2.value2 = 1;
       //msg2.value2 = 0; //y==0, for() run only once in test1
 
       process_post(&test1, event_data_ready, &msg2);
       break;
     }
-    else {
-      confirmToLPBR = 1;
+    else if(pr->pAddr.u8[13] == 1) {
+      confirmToLPBR = 1; //no need to sent to LPBR again since it is in NT
     }
   }
 
-  if(confirmToLPBR == 1) {
+  if(confirmToLPBR == 0) {
     msg2.type = CONFIRM_CH;
     msg2.value = theChannel;
     msg2.addrPtr = &sendTo1;
     msg2.paddingBuf[30] = " ";
 
-    /*printf("Sending CONFIRM_CH to ");
+    printf("Sending CONFIRM_CH to ");
     uip_debug_ipaddr_print(msg2.addrPtr);
-    printf(" channel %d\n", msg2.value);*/
+    printf(" channel %d\n", msg2.value);
 
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
     removeProbe();
@@ -410,7 +412,7 @@ receiver(struct simple_udp_connection *c,
     keepProbeResult(sender_addr, 0, 1);
 
     //if(noOfEntry == keepListNo) {
-    if(noOfEntry == nbrNo) {
+/*    if(noOfEntry == nbrNo) {
       msg2.type = CONFIRM_CH;
       msg2.value = changeTo;
       msg2.addrPtr = &sendTo1G;
@@ -421,7 +423,7 @@ receiver(struct simple_udp_connection *c,
       //printf(" channel %d\n", msg2.value);
 
       simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
-    }
+    }*/
   }
 
   else {
@@ -700,8 +702,22 @@ uint8_t m = 0;
       msg2.value2 = msg->value2;
       y = msg2.value2;
 
+      if(y == 1) {
+        msg2.addrPtr = msg->addrPtr;
+	msg2.type = CONFIRM_CH;
+	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
+	uip_debug_ipaddr_print(msg2.addrPtr);
+	printf("\n");
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
+	
+	etimer_set(&time, 0.5 * CLOCK_SECOND);
+	PROCESS_YIELD_UNTIL(etimer_expired(&time));
+      }
+
+      else {
       for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
         nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
 	//msg2.type = keepType;
         msg2.value = changeTo;
         msg2.paddingBuf[30] = " ";
@@ -720,10 +736,11 @@ uint8_t m = 0;
 	etimer_set(&time, 0.5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
+      }
 
-      printf("FINISHED CONFIRM_CH\n\n");
-      //checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
-      removeProbe(); //should be here?
+      //printf("FINISHED CONFIRM_CH\n\n");
+      checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
+      //removeProbe(); //should be here?
 
   //struct probeResult *pr;
 
