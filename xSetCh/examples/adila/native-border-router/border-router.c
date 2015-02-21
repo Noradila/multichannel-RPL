@@ -240,11 +240,6 @@ receiver(struct simple_udp_connection *c,
   static uip_ds6_route_t *r;
   static uip_ds6_nbr_t *nbr;
 
-//uip_ipaddr_t nH;
-
-if(msg->type == PROBERESULT) {
-
-//printf("RECEIVED BY LPBR\n\n");
   if(msg->type == PROBERESULT) {
     printf("LPBR RECEIVED PROBERESULT: from ");
     uip_debug_ipaddr_print(sender_addr);
@@ -254,58 +249,29 @@ if(msg->type == PROBERESULT) {
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
-
-//uip_ipaddr_copy(&nextHopAddr, &msg->address);
-
-/*uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[7]);
-
-printf("RECONSTRUCT RECEIVER IP ");
-uip_debug_ipaddr_print(&nH);
-printf("\n\n");
-
-//?updates the NBR TABLE so that the nexthop is of the correct channel
-/*for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
- if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
-  printf("SAME ");
-  uip_debug_ipaddr_print(&nH);
-
-//r->nbrCh = msg->value;
-  printf(" update r->nbrCh %d ", r->nbrCh);
-  uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-  printf("\n\n");
- }*/
-}
   }
 
   else if(msg->type == CONFIRM_CH) {
     printf("CONFIRM CH Received %d from\n\n", msg->value);
 
-//printf("PART OF SENDER ADDR %d\n\n", sender_addr->u8[11]);
+    //! updates LPBR RT
+    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+      nbr = nbr_table_next(ds6_neighbors,nbr)) {
+      if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
+        nbr->nbrCh = msg->value;
+        printf("UPDATE NBR TABLE: ");
+        uip_debug_ipaddr_print(&nbr->ipaddr);
+        printf(" nbr->nbrCh %d ", nbr->nbrCh);
+        printf("\n");
+      }
+    }
 
-//! updates LPBR RT
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-//printf("NBR OF SENDER ADDR %d\n\n", nbr->ipaddr.u8[11]);
- if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
-  nbr->nbrCh = msg->value;
-  printf("SAME ");
-  //uip_debug_ipaddr_print(&nH);
-
-  uip_debug_ipaddr_print(&nbr->ipaddr);
-
-  printf(" update nbr->nbrCh %d ", nbr->nbrCh);
-  printf("\n\n");
- }
-}
-
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-printf("NBR TABLE ");
-uip_debug_ipaddr_print(&nbr->ipaddr);
-printf(" channel %d\n", nbr->nbrCh);
-}
-
-
+    /*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+      nbr = nbr_table_next(ds6_neighbors,nbr)) {
+      printf("NBR TABLE ");
+      uip_debug_ipaddr_print(&nbr->ipaddr);
+      printf(" channel %d\n", nbr->nbrCh);
+    }*/
   }
 
   else {
@@ -314,7 +280,7 @@ printf(" channel %d\n", nbr->nbrCh);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
+    /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 	printf("ROUTE: ");
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -323,15 +289,15 @@ printf(" channel %d\n", nbr->nbrCh);
 	//printf(" newCh %d probeRecv %d checkCh %d", r->newCh, r->probeRecv, r->checkCh);
 	//printf(" nbrCh %d", r->nbrCh);
 	printf("\n");
-    }
+    }*/
 
-	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-	printf("NBR: ");
-	uip_debug_ipaddr_print(&nbr->ipaddr);
-	printf(" nbrCh %d", nbr->nbrCh);
-	printf("\n");
-	}
+    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+      nbr = nbr_table_next(ds6_neighbors,nbr)) {
+      printf("NBR: ");
+      uip_debug_ipaddr_print(&nbr->ipaddr);
+      printf(" nbrCh %d", nbr->nbrCh);
+      printf("\n");
+    }
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -520,7 +486,7 @@ PROCESS_THREAD(border_router_process, ev, data)
   static struct etimer et;
   rpl_dag_t *dag;
 
-static struct  etimer changeChTimer;
+  static struct  etimer changeChTimer;
 
   PROCESS_BEGIN();
   prefix_set = 0;
@@ -571,28 +537,15 @@ static struct  etimer changeChTimer;
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
-etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   while(1) {
-//    a++;
     etimer_set(&et, CLOCK_SECOND * 2);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
-//etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
-//PROCESS_YIELD_UNTIL(etimer_expired(&changeChTimer));
-PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
-if(etimer_expired(&changeChTimer)) {
-process_post_synch(&chChange_process, event_data_ready, NULL);
-//etimer_stop(&changeChTimer);
-
-}
-//PROCESS_YIELD_UNTIL(etimer_expired(&changeChTimer));
-
-//etimer_stop(&changeChTimer);
-    //! QUICK HACK - should put timer here
-    //if(a == 5) {
-//    if(a == 7) {
-//      process_post_synch(&chChange_process, event_data_ready, NULL);
-//    }
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
+    if(etimer_expired(&changeChTimer)) {
+      process_post_synch(&chChange_process, event_data_ready, NULL);
+    }
     /* do anything here??? */
   }
 
