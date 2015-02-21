@@ -192,11 +192,95 @@
       </interface_config>
       <motetype_identifier>sky2</motetype_identifier>
     </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>63.093292096196556</x>
+        <y>-49.67892617807608</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>10</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>72.2067327325252</x>
+        <y>-18.432843996377912</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>11</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>39.00777041447088</x>
+        <y>-24.29148440544632</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>12</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>126.887376550497</x>
+        <y>-56.83948667804858</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>13</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>114.51913568690813</x>
+        <y>-19.083804041829957</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>14</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        se.sics.cooja.interfaces.Position
+        <x>52.02697132351179</x>
+        <y>-82.22692845067834</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        se.sics.cooja.mspmote.interfaces.MspMoteID
+        <id>15</id>
+      </interface_config>
+      <motetype_identifier>sky2</motetype_identifier>
+    </mote>
   </simulation>
   <plugin>
     se.sics.cooja.plugins.SimControl
     <width>280</width>
-    <z>1</z>
+    <z>2</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -209,7 +293,7 @@
       <skin>se.sics.cooja.plugins.skins.GridVisualizerSkin</skin>
       <skin>se.sics.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>se.sics.cooja.plugins.skins.UDGMVisualizerSkin</skin>
-      <viewport>0.8484496996448342 0.0 0.0 0.8484496996448342 143.48541406767094 230.2805794081257</viewport>
+      <viewport>1.5361925927505604 0.0 0.0 1.5361925927505604 122.07655202957537 269.3163984105624</viewport>
     </plugin_config>
     <width>400</width>
     <z>3</z>
@@ -221,11 +305,10 @@
     se.sics.cooja.plugins.LogListener
     <plugin_config>
       <filter />
-      <formatted_time />
       <coloring />
     </plugin_config>
     <width>1255</width>
-    <z>2</z>
+    <z>1</z>
     <height>551</height>
     <location_x>400</location_x>
     <location_y>160</location_y>
@@ -242,11 +325,17 @@
       <mote>6</mote>
       <mote>7</mote>
       <mote>8</mote>
+      <mote>9</mote>
+      <mote>10</mote>
+      <mote>11</mote>
+      <mote>12</mote>
+      <mote>13</mote>
+      <mote>14</mote>
       <showRadioRXTX />
       <showRadioChannels />
       <showRadioHW />
       <showLEDs />
-      <zoomfactor>100000.0</zoomfactor>
+      <zoomfactor>500.0</zoomfactor>
     </plugin_config>
     <width>1655</width>
     <z>0</z>

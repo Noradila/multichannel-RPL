@@ -57,7 +57,9 @@
 //#define SEND_INTERVAL		(60 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(310 * CLOCK_SECOND)
 #define SEND_INTERVAL		(450 * CLOCK_SECOND)
+//#define SEND_INTERVAL		(600 * CLOCK_SECOND)
 #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
+//#define SEND_TIME		(20 * CLOCK_SECOND)
 
 struct probeResult {
   struct probeResult *next;
@@ -650,7 +652,8 @@ uint8_t delayTime = 0;
 	    //if(keepType == NBR_CH_CHANGE) {
 	      msg2.type = NBR_CH_CHANGE;
 	      printf("%d Sending NBR CH CHANGE %d to tree neighbour ", nbr->nbrCh, msg2.value);
-	      delayTime = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
+	      delayTime = 1;
+	      //delayTime = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
 	    }
 	    else if(x == 1) {
 	    //if(keepType == STARTPROBE) {
@@ -758,6 +761,9 @@ uint8_t delayTime = 0;
 	
 	etimer_set(&time, 0.5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+	y = 0;
+	break;
       }
 
       else {

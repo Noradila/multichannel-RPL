@@ -539,8 +539,8 @@ PROCESS_THREAD(border_router_process, ev, data)
 
   etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   while(1) {
-    etimer_set(&et, CLOCK_SECOND * 2);
-    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+    //etimer_set(&et, CLOCK_SECOND * 2);
+    //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
     if(etimer_expired(&changeChTimer)) {

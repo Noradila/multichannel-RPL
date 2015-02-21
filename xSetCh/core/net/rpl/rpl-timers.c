@@ -159,15 +159,15 @@ uip_ds6_nbr_t *nbr;
       dio_output(instance, NULL);
 
 //ADILA EDIT
-start_time = clock_seconds();
-printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
+//start_time = clock_seconds();
+//printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
 
 //if(start_time > 360) {
 for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 printf("RPL-TIMER NBR TABLE: ");
 uip_debug_ipaddr_print(&nbr->ipaddr);
-dio_output(instance, &nbr->ipaddr);
+//dio_output(instance, &nbr->ipaddr);
 }//for()
 //}//if(start_time > 20)
 //else {
