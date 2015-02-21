@@ -99,7 +99,6 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
-CCH
 };
 
 struct unicast_message {

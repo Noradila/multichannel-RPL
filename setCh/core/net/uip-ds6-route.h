@@ -111,7 +111,7 @@ typedef struct uip_ds6_route {
   uip_ipaddr_t ipaddr;
 
 //ADILA EDIT 03/11/14
-uint8_t nbrCh;
+//uint8_t nbrCh;
 //-------------------
 
 #ifdef UIP_DS6_ROUTE_STATE_TYPE
@@ -130,7 +130,7 @@ typedef struct uip_ds6_defrt {
   uint8_t isinfinite;
 
 //ADILA EDIT 03/11/14
-uint8_t parentCh;
+//uint8_t parentCh;
 //-------------------
 } uip_ds6_defrt_t;
 
@@ -145,9 +145,9 @@ uip_ipaddr_t *uip_ds6_defrt_choose(void);
 void uip_ds6_defrt_periodic(void);
 
 //ADILA EDIT 05/11/14
-uip_ipaddr_t *uip_ds6_defrt_ch(void);
+/*uip_ipaddr_t *uip_ds6_defrt_ch(void);
 uip_ipaddr_t *uip_ds6_defrt_setCh(uint8_t pCh);
-//-------------------
+//-------------------*/
 
 /** @} */
 
