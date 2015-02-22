@@ -8,42 +8,33 @@ xSetCh is for the LPBR
 
 1. LPBR sends CH_CHANGE to entries in its Routing Table. Each node is given 60 seconds before it times out and send CH_CHANGE to the next node.
 
-2. Node receives CH_CHANGE. It calls test1 process (to be renamed)
-Uses a for loop where: 
-x = 0; y = 1 is NBR_CH_CHANGE delay 0.15 second
-x = 1; y = 1 is STARTPROBE delay 1 second because it needs to wait for NBRPROBE to finish
-x = 0; y = 0 is CONFIRM_CH delay 0.5 second
+2. Node receives CH_CHANGE. It calls keepProbeResult(ip, channel, getAck) where it keeps the list of neighbours, channel, probe result and ACK for telling the neighbours about the final change.
+Only ACK will be used by other neighbours that are not tree neighbours.
 
-for loop is used because the codes for those 3 messages are exactly the same but only the delay is difference.
+It calls test1 process (to be renamed)
+Uses a for loop where: 
+x = 0 is NBR_CH_CHANGE delay 1 second
+x = 1 is STARTPROBE delay 1 second because it needs to wait for NBRPROBE to finish
+
+for loop is used because the codes for those 2 messages are exactly the same but only the delay is difference.
 
 msg.type = NBR_CH_CHANGE
 msg.value = newChannel
-msg.value2 = 1 (indicating it's NBR_CH_CHANGE)
 
-call function: loopFunction(msg, y, x, nbrCh);
-
-X = 0; Y = 1
-3. Node Tree Neighbour receives NBR_CH_CHANGE in turn; 0.15 second each where one duty cycle is 0.125 second.
+3. Node Tree Neighbour receives NBR_CH_CHANGE in turn; 1 second each
 
 call function: updateRoutingTable(sender_addr, newChannel);
-The function updates the Routing Table, r->nbrCh = newChannel; or Default Router List, uip_ds6_defrt_setCh(newChannel); to the newChannel so that when it needs to send something, it will use the newChannel.
+The function updates the Neighbour Table, nbr->nbrCh = newChannel so that when it needs to send something, it will use the newChannel.
 
-ROUTING TABLE:
--------------------------------------------------------------------------
-Route through	|	Nexthop (via)	|	Nexthop channel (nbrCh)	|
--------------------------------------------------------------------------
-aaaa:: 		|	fe80::		|	msg->value		|
-aaaa:: 		|	fe80::		|	msg->value		|
--------------------------------------------------------------------------
+NEIGHBOUR TABLE:
+-------------------------------------------------
+NBR		|	Nexthop channel (nbrCh)	|
+-------------------------------------------------
+fe80:: 		|	msg->value		|
+fe80:: 		|	msg->value		|
+-------------------------------------------------
 
-DEFAULT ROUTER LIST:
------------------------------------------
-Defrt IP	|	Parent ch	|
------------------------------------------
-fe80:: 		|	msg->value	|
------------------------------------------
-
-When NBR_CH_CHANGE has finished,node updates it's own address structure (in uip-ds6.c):
+When NBR_CH_CHANGE has finished, node updates it's own address structure (in uip-ds6.c):
 
 OWN ADDRESS STRUCTURE:
 -------------------------------------------------------------------------
@@ -54,10 +45,8 @@ aaaa:: [1]	|	msg->value	|	cc2420_get_channel()	|
 -------------------------------------------------------------------------
 
 Then,
-X = 1; Y = 1
+X = 1
 4. Node tell each Tree Neighbour to STARTPROBE delay 1 second
-
-call function: loopFunction(msg, y, x, nbrCh);
 
 msg.type = STARTPROBE;
 msg.value = newChannel;
@@ -121,36 +110,31 @@ msg.type = CONFIRM_CH;
 msg.value = uip_ds6_if.addr_list[1].prevCh (or currentCh);
 msg.value2 = 0; //indicates x = 0; y = 0
 
-Calls test1 process
+10. Calls test1 process. It goes through Neighbour table loop and send to all neighbours in range. Delay 0.5 second
 
-X = 0; Y = 0
-call function: loopFunction(msg, y, x, currentCh or prevCh) delay 0.5 second
+11. Neighbour receives CONFIRM_CH. Call test1 process
 
-10. Tree Neighbour receives CONFIRM_CH. Call test1 process
-
+call function: updateRoutingTable(sender_addr, channel);
+The function was called after receiving NBR_CH_CHANGE.
+It is called again to check/update if the previous channel is choosen instead of the new channel.
 wait for 0.15 second before sending so that Node is on the listening channel
 
 msg.type = GET_ACK;
 msg.addrPtr = sender_addr;
 msg.value = channel;
 
-call function: updateRoutingTable(sender_addr, channel);
-The function was called after receiving NBR_CH_CHANGE.
-It is called again to check/update if the previous channel is choosen instead of the new channel.
-
-11. Node receives GET_ACK from Tree Neighbour.
+12. Node receives GET_ACK from Neighbour.
 It updates the keepProbeResult() Ack section.
 
 call function: keepProbeResult(sender_addr, 0 (chN), 1 (getAck));
 When chN = 0, getAck is updated to 1
 
-updates probe recv;	chN == pr->chNum
+////updates probe recv;	chN == pr->chNum
 updates pkt rcv/sent; 	chN = 1
 updates getAck; 	chN ! = 1; chN = 0, getAck = 1 (checkAck = getAck)
 			chN ! = 1; chN != 0, checkAck = 0 
 
-12. back in test1 process
-
+[TO REDO][[[[13. back in test1 process CONFIRM_CH
 call function: checkAckProbeResultTable(newCh);
 
 Checks if all ACK are received. If not, it will go through CONFIRM_CH (from test1 process) again (**9).
@@ -159,9 +143,9 @@ Else, send CONFIRM_CH to LPBR.
 msg.type = CONFIRM_CH;
 msg.value = newChannel;
 msg.addPtr = &LPBR;
-msg.paddingBuf[30] = " ";
+msg.paddingBuf[30] = " ";]]]]]]
 
-13. LPBR receives CONFIRM_CH. It updates its Neighbour Table.
+14. LPBR receives CONFIRM_CH. It updates its Neighbour Table.
 
 NEIGHBOUR TABLE:
 -------------------------------------------------------------------------
@@ -171,7 +155,7 @@ fe80::		|msg->value	|	|	|	|	|	|
 fe80::		|msg->value	|	|	|	|	|	|
 -------------------------------------------------------------------------
 
-14. Back to checkAckProbeResultTable()
+15. Back to checkAckProbeResultTable()
 
 call function: removeProbe();
 Removes all entries in probeResult_table as it is no longer needed.

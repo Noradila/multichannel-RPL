@@ -176,6 +176,9 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
   //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
+  //changeTo = theChannel;
+  msg2.value = theChannel;
+
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     //! if checkAck == 0, do retransmission from CONFIRM_CH
     if((pr->checkAck) == 0 && (pr->pAddr.u8[13] != 1)) {
@@ -185,10 +188,11 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
       msg2.value2 = 1;
       //msg2.value2 = 0; //y==0, for() run only once in test1
 
-      process_post(&test1, event_data_ready, &msg2);
+//[TO DO]
+      //process_post(&test1, event_data_ready, &msg2);
       break;
     }
-    else if(pr->pAddr.u8[13] == 1) {
+    if(pr->pAddr.u8[13] == 1) {
       confirmToLPBR = 1; //no need to sent to LPBR again since it is in NT
     }
   }
@@ -199,7 +203,7 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     msg2.addrPtr = &sendTo1;
     msg2.paddingBuf[30] = " ";
 
-    printf("Sending CONFIRM_CH to ");
+    printf("To LPBR Sending CONFIRM_CH to ");
     uip_debug_ipaddr_print(msg2.addrPtr);
     printf(" channel %d\n", msg2.value);
 
@@ -217,11 +221,11 @@ static void readProbeResult() {
   //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     printf("keeprobe c %d r %d ack %d ", pr->chNum, pr->rxValue, pr->checkAck);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n\n");
-  }*/
+  }
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
    if(pr->chNum != 0) {
@@ -634,9 +638,6 @@ uint8_t delayTime = 0;
 
               if(nbr->ipaddr.u8[11] == r->ipaddr.u8[11]){
 
-	     //! check to ensure it doesn't repeat the same nexthop neighbour
-	     //if(!uip_ipaddr_cmp(&nextHopAddr, uip_ds6_route_nexthop(r))) {
-
 		msg2.type = keepType;
                 msg2.value = changeTo;
                 msg2.paddingBuf[30] = " ";
@@ -652,21 +653,22 @@ uint8_t delayTime = 0;
 	    //if(keepType == NBR_CH_CHANGE) {
 	      msg2.type = NBR_CH_CHANGE;
 	      printf("%d Sending NBR CH CHANGE %d to tree neighbour ", nbr->nbrCh, msg2.value);
-	      delayTime = 1;
+	      //delayTime = 1;
 	      //delayTime = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
 	    }
 	    else if(x == 1) {
 	    //if(keepType == STARTPROBE) {
 	      msg2.type = STARTPROBE;
 	      printf("%d Sending STARTPROBE %d to tree neighbour ", nbr->nbrCh, msg2.value);
-	      delayTime = 1;
+	      //delayTime = 1;
 	    }
 
             uip_debug_ipaddr_print(msg2.addrPtr);
             printf("\n");
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
 
-	    etimer_set(&time, delayTime * CLOCK_SECOND);
+	    //etimer_set(&time, delayTime * CLOCK_SECOND);
+	    etimer_set(&time, 1 * CLOCK_SECOND);
 	    PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
 	    if(uip_ds6_if.addr_list[1].currentCh != changeTo) {
@@ -775,9 +777,9 @@ uint8_t delayTime = 0;
         msg2.paddingBuf[30] = " ";
         msg2.addrPtr = &nbr->ipaddr;
 
-	if(nbr->ipaddr.u8[13] == 1) {
+	//if(nbr->ipaddr.u8[13] == 1) {
 	  //printf("no need to send to LPBR\n");
-	}
+	//}
 
 	msg2.type = CONFIRM_CH;
 	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
@@ -791,7 +793,7 @@ uint8_t delayTime = 0;
       //}
 
       //printf("FINISHED CONFIRM_CH\n\n");
-      //checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
+      checkAckProbeResultTable(changeTo); //check to retransmit CONFIRM_CH
       //removeProbe(); //should be here?
 
   //struct probeResult *pr;
