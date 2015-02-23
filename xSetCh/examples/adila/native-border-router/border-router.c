@@ -225,6 +225,41 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
+static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+  static uip_ds6_nbr_t *nbr;
+
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+    if(toSendAddr->u8[13] == nbr->ipaddr.u8[13]) {
+      //check LPBR != chCheck (1 hop)
+      if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
+        for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+          nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	  if((nbr->nbrCh) != chCheck) {
+	    chCheck = 1;
+	    //return OK
+	    //give new channel random_rand()
+	    //!chCheck = random_rand();
+	  }
+	  else {
+	    chCheck = 0;
+	    //return NOT OK
+	  }
+	}//END FOR
+      }//END IF
+      else {
+	chCheck = 0;
+        //return NOT OK (same CH as LPBR)
+      }
+    }//END IF toSendAddr == nbr->ipaddr
+    else {
+      chCheck = 1;
+    }
+  }//END FOR
+
+  return chCheck;
+}
+/*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
          const uip_ipaddr_t *sender_addr,
@@ -577,6 +612,8 @@ PROCESS_THREAD(chChange_process, ev, data)
 	msg2.value = randomNewCh;
 	msg2.address = r->ipaddr;
 
+printf("value is %d\n\n", twoHopsLPBR(&msg2.address, msg2.value));
+
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
@@ -598,7 +635,8 @@ PROCESS_THREAD(chChange_process, ev, data)
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
 	//equals to 30 secs? (even though it's supposed to be 3 secs
-	etimer_set(&time, 6 * CLOCK_SECOND);
+	//etimer_set(&time, 6 * CLOCK_SECOND);
+	etimer_set(&time, 10 * CLOCK_SECOND);
 	//etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
