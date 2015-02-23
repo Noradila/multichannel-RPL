@@ -55,7 +55,8 @@
 
 #include <stdio.h>
 
-#define DEBUG 0
+//#define DEBUG 0
+#define DEBUG DEBUG_ALL
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -347,6 +348,10 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_push(n->queued_packet_list, q);
 	  } else {
 	    list_add(n->queued_packet_list, q);
+
+//ADILA EDIT
+//printf("QUEUE %d\n\n", list_length(n->queued_packet_list));
+//----------
 	  }
 
 	  /* If q is the first packet in the neighbor's queue, send asap */

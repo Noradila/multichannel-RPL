@@ -78,6 +78,8 @@ MEMB(queued_packets_memb, struct phase_queueitem, PHASE_QUEUESIZE);
 NBR_TABLE(struct phase, nbr_phase);
 
 #define DEBUG 0
+//ADILA EDIT
+#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -117,6 +119,9 @@ phase_update(const rimeaddr_t *neighbor, rtimer_clock_t time,
         return;
       }
     } else if(mac_status == MAC_TX_OK) {
+//ADILA EDIT 23/02/14
+PRINTF("phase ack OK\n\n");
+//-------------------
       e->noacks = 0;
     }
   } else {

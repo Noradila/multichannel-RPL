@@ -54,6 +54,8 @@
 
 #include <string.h>
 
+#define DEBUG 1
+
 /* TX/RX cycles are synchronized with neighbor wake periods */
 #ifdef CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
 #define WITH_PHASE_OPTIMIZATION      CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
@@ -238,6 +240,7 @@ static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
 #define DEBUG 0
+//#define DEBUG_DEBUG ALL
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

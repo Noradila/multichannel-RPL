@@ -54,6 +54,7 @@
 #include <string.h>
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG 1
 
 #include "net/uip-debug.h"
 

@@ -47,6 +47,7 @@
 #if UIP_CONF_IPV6
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG 1
 #include "net/uip-debug.h"
 
 //ADILA EDIT

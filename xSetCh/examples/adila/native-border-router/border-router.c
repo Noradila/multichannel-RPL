@@ -225,8 +225,42 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
+static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+  struct lpbrList *l;
+  uint8_t tempVal;
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
+      if(l->chNum != chCheck) {
+	tempVal = l->routeAddr.u8[13];
+	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+	  if(tempVal == l->nbrAddr.u8[13]) {
+	    if(l->chNum != chCheck) {
+	      //ok
+	      chCheck = 1;
+	      printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
+	    }//END IF 2ND HOP CH
+	    else {
+	      chCheck = 0;
+	      printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
+	    }
+	  }//END IF 2ND HOP
+	}//END FOR 2ND FOR
+      }//END IF 1ST HOP CH
+      else {
+	chCheck = 0;
+        printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
+      }
+    }//END IF 1ST HOP
+  }//END FOR 1ST FOR
+
+  return chCheck;
+}
+/*---------------------------------------------------------------------------*/
+
 static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
+  uint8_t channelOK;
 
   for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
     nbr = nbr_table_next(ds6_neighbors,nbr)) {
@@ -236,28 +270,29 @@ static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
         for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
           nbr = nbr_table_next(ds6_neighbors,nbr)) {
 	  if((nbr->nbrCh) != chCheck) {
-	    chCheck = 1;
+	    channelOK = 1;
 	    //return OK
 	    //give new channel random_rand()
 	    //!chCheck = random_rand();
 	  }
 	  else {
-	    chCheck = 0;
+	    channelOK = 0;
 	    //return NOT OK
 	  }
 	}//END FOR
       }//END IF
       else {
-	chCheck = 0;
+	channelOK = 0;
         //return NOT OK (same CH as LPBR)
       }
     }//END IF toSendAddr == nbr->ipaddr
     else {
-      chCheck = 1;
+      channelOK = 2;
+      //channelOK = twoHopsOtherNodes(toSendAddr, chCheck);
     }
   }//END FOR
 
-  return chCheck;
+  return channelOK;
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -611,6 +646,7 @@ PROCESS_THREAD(chChange_process, ev, data)
 	msg2.type = CH_CHANGE;
 	msg2.value = randomNewCh;
 	msg2.address = r->ipaddr;
+	msg2.paddingBuf[30] = " ";
 
 printf("value is %d\n\n", twoHopsLPBR(&msg2.address, msg2.value));
 
