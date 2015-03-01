@@ -44,10 +44,16 @@
 
 #define DEBUG DEBUG_NONE
 //#define DEBUG DEBUG_ALL
+//#define DEBUG 1
 #include "net/uip-debug.h"
 #include "cmd.h"
 #include "slip-radio.h"
 #include "packetutils.h"
+
+//ADILA EDIT 25/02/15
+#include "net/mac/contikimac.h"
+#include "net/mac/simplified_nbr_table.h"
+//-------------------
 
 #ifdef SLIP_RADIO_CONF_SENSORS
 extern const struct slip_radio_sensors SLIP_RADIO_CONF_SENSORS;
@@ -76,11 +82,18 @@ packet_sent(void *ptr, int status, int transmissions)
   int pos;
   sid = *((uint8_t *)ptr);
 
+//ADILA EDIT 27/02/15
+//nbr_table *xxx;
+//xxx->theIPAddr = 23;
+
+//-------------------
+
   PRINTF("Slip-radio: packet sent! sid: %d, status: %d, tx: %d\n",
   	 sid, status, transmissions);
 
 //ADILA EDIT 10/11/14
 //reset channel here?
+//simplified_nbr_table_get_channel();
 printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
 //@
@@ -104,6 +117,8 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
 {
   int i;
 
+uint8_t aa = 0;
+
   if(data[0] == '!') {
     /* should send out stuff to the radio - ignore it as IP */
     /* --- s e n d --- */
@@ -113,18 +128,54 @@ slip_radio_cmd_handler(const uint8_t *data, int len)
 
       //ADILA EDIT 1/12/14
       if(data[3] != 0) {
-        printf("DATA[3] IS %d\n", data[3]);
+
+//if(packetbuf_attr(PACKETBUF_ADILA2) == 0 || packetbuf_attr(PACKETBUF_ADILA2) > 26) {
+//packetbuf_set_attr(PACKETBUF_ADILA2, data[3]);
+//}
+
+//packetbuf_set_attr(PACKETBUF_ADILA, data[3]);
+//packetbuf_set_attr(PACKETBUF_ADILA_IP, packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+//packetbuf_set_attr(PACKETBUF_ADILA_IP, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
+//printf("IP:%d %d DATA[3] is %d\n", packetbuf_attr(PACKETBUF_ADILA_IP), packetbuf_attr(PACKETBUF_ADILA), data[3]);
+
+printf("IN SLIP-RADIO-------------\n");
+simplified_nbr_table_get_channel();
+printf("--------------------------\n\n");
+
+aa = simplified_check_table(data[4], data[3]);
+printf("value aa %d\n\n", aa);
+printf("DATA[3] %d DATA[4] %d\n\n", data[3], data[4]);
+        //printf("DATA[3] IS %d\n", data[3]);
+
+if(aa != 1) {
+simplified_nbr_table_set_channel(data[4], data[3]);
+}
+//ADILA EDIT 25/02/15
+//extern int theval;
+//theval = 15;
+//printf("%d\n\n", theval);
+//-------------------
+
+/*if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5] != 0) {
+simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], data[3]);
+}*/
+
 	//@
         cc2420_set_channel(data[3]);
       }
+      //else {
+	//printf("DATA[3] IS 0!!!\n\n");
+      //}
 
       packetbuf_clear();
-      pos = packetutils_deserialize_atts(&data[4], len - 4);
+      //pos = packetutils_deserialize_atts(&data[4], len - 4);
+      pos = packetutils_deserialize_atts(&data[5], len - 5);
       if(pos < 0) {
         PRINTF("slip-radio: illegal packet attributes\n");
         return 1;
       }
-      pos += 4;
+      //pos += 4;
+      pos += 5;
       len -= pos;
       if(len > PACKETBUF_SIZE) {
         len = PACKETBUF_SIZE;

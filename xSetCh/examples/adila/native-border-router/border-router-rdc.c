@@ -115,7 +115,8 @@ send_packet(mac_callback_t sent, void *ptr)
 
   static uip_ds6_nbr_t *nbr;
 
-  uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
+  //uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
+  uint8_t buf[PACKETBUF_NUM_ATTRS * 5 + PACKETBUF_SIZE + 5];
   //------------------
 
   uint8_t sid;
@@ -155,14 +156,16 @@ printf("\n\n");*/
     //size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
 
     //ADILA EDIT 1/12/14
-    size = packetutils_serialize_atts(&buf[4], sizeof(buf) - 4);
+    //size = packetutils_serialize_atts(&buf[4], sizeof(buf) - 4);
+    size = packetutils_serialize_atts(&buf[5], sizeof(buf) - 5);
     //------------------
 
 #endif
     //if(size < 0 || size + packetbuf_totlen() + 3 > sizeof(buf)) {
 
     //ADILA EDIT 1/12/14
-    if(size < 0 || size + packetbuf_totlen() + 4 > sizeof(buf)) {
+    //if(size < 0 || size + packetbuf_totlen() + 4 > sizeof(buf)) {
+    if(size < 0 || size + packetbuf_totlen() + 5 > sizeof(buf)) {
     //------------------
       PRINTF("br-rdc: send failed, too large header\n");
       mac_call_sent_callback(sent, ptr, MAC_TX_ERR_FATAL, 1);
@@ -183,6 +186,8 @@ printf("\n\n");*/
 
 if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]) {
 	  //if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
+
+
 		printf("\n\nTEST ");
 //printf("11:%x 12:%x 13:%x 14:%x 15:%x \n\n", nbr->ipaddr.u8[11], nbr->ipaddr.u8[12], nbr->ipaddr.u8[13], nbr->ipaddr.u8[14], nbr->ipaddr.u8[15]);
       		uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
@@ -191,6 +196,11 @@ if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]
 		printf("\n\n");
 		  printf("NBR->NBRCH %d\n\n", nbr->nbrCh);
 		  buf[3] = nbr->nbrCh;
+		buf[4] = nbr->ipaddr.u8[13];
+
+
+//simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], buf[3]);
+
 		  break;
 	    }
 	}
@@ -218,13 +228,18 @@ if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]
       }
       else {
 	buf[3] = 0;
+	buf[4] = 0;
       }
 
       //printf("\n\n%d SEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",buf[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
 
-      memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
+      //memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
 
-      write_to_slip(buf, packetbuf_totlen() + size + 4);
+      //write_to_slip(buf, packetbuf_totlen() + size + 4);
+
+      memcpy(&buf[5 + size], packetbuf_hdrptr(), packetbuf_totlen());
+
+      write_to_slip(buf, packetbuf_totlen() + size + 5);
 
 //------------------
 

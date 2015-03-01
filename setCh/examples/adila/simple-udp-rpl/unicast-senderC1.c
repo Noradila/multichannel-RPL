@@ -266,6 +266,12 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   struct probeResult *pr;
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+    printf("%d keeprobe c %d r %d ack %d ", chN, pr->chNum, pr->rxValue, pr->checkAck);
+    uip_debug_ipaddr_print(&pr->pAddr);
+    printf("\n\n");
+  }
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {
       if(chN != 1 && getAck != 2) {
 	if(pr->chNum == 0) {
@@ -423,6 +429,7 @@ receiver(struct simple_udp_connection *c,
 
     msg2.type = NBRPROBE;
     msg2.addrPtr = sender_addr;
+    msg2.value = msg->value;
 
     process_post_synch(&test1, event_data_ready, &msg2);
   }
@@ -787,7 +794,7 @@ uint8_t delayTime = 0;
         printf("\n");
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
 
-	etimer_set(&time, 0.5 * CLOCK_SECOND);
+	etimer_set(&time, 0.7 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
       }
       //}

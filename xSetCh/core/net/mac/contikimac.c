@@ -51,10 +51,10 @@
 #include "sys/pt.h"
 #include "sys/rtimer.h"
 
+#include "net/mac/simplified_nbr_table.h"
+
 
 #include <string.h>
-
-#define DEBUG 1
 
 /* TX/RX cycles are synchronized with neighbor wake periods */
 #ifdef CONTIKIMAC_CONF_WITH_PHASE_OPTIMIZATION
@@ -187,7 +187,9 @@ static int we_are_receiving_burst = 0;
 /* STROBE_TIME is the maximum amount of time a transmitted packet
    should be repeatedly transmitted as part of a transmission. */
 #define STROBE_TIME                        (CYCLE_TIME + 2 * CHECK_TIME)
-
+//ADILA EDIT 24/02/14
+//#define STROBE_TIME                        (CYCLE_TIME)
+//-------------------
 /* GUARD_TIME is the time before the expected phase of a neighbor that
    a transmitted should begin transmitting packets. */
 #define GUARD_TIME                         10 * CHECK_TIME + CHECK_TIME_TX
@@ -224,6 +226,9 @@ static int we_are_receiving_burst = 0;
 #define SHORTEST_PACKET_SIZE  CONTIKIMAC_CONF_SHORTEST_PACKET_SIZE
 #else
 #define SHORTEST_PACKET_SIZE               43
+//ADILA EDIT
+//#define SHORTEST_PACKET_SIZE               23
+
 #endif
 
 
@@ -591,6 +596,11 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 */
 
 //ADILA EDIT 16/02/15
+//nbr_table *nt,
+//extern void simplified_nbr_table_get_channel();
+//simplified_nbr_table_get_channel();
+//printf("ADILA ATTR %d AND %d\n\n", packetbuf_attr(PACKETBUF_ADILA), packetbuf_attr(PACKETBUF_ADILA2));
+//printf("ADILA ATTR %d %d\n\n", packetbuf_attr(PACKETBUF_ADILA), cc2420_get_channel());
     printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
@@ -600,6 +610,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
+
+//packetbuf_set_attr(PACKETBUF_ADILA2, PACKETBUF_ADILA);
 //------------------
 
 
@@ -653,6 +665,9 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
     ptr = packetbuf_dataptr();
     memset(ptr + packetbuf_datalen(), 0, SHORTEST_PACKET_SIZE - packetbuf_totlen());
 
+//ADILA
+    //printf("contikimac: shorter than shortest (%d)\n", packetbuf_totlen());
+
     PRINTF("contikimac: shorter than shortest (%d)\n", packetbuf_totlen());
     transmit_len = SHORTEST_PACKET_SIZE;
   }
@@ -698,6 +713,11 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
      instread. */
   if(NETSTACK_RADIO.receiving_packet() || NETSTACK_RADIO.pending_packet()) {
     we_are_sending = 0;
+
+//ADILA
+    printf("contikimac: collision receiving %d, pending %d\n",
+           NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
+
     PRINTF("contikimac: collision receiving %d, pending %d\n",
            NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
     return MAC_TX_COLLISION;
@@ -757,6 +777,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
     /* Turn radio on to receive expected unicast ack.  Not necessary
        with hardware ack detection, and may trigger an unnecessary cca
        or rx cycle */
+
+//ADILA
+printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
+
      on();
   }
 #endif
@@ -772,6 +796,10 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
     if(!is_broadcast && (is_receiver_awake || is_known_receiver) &&
        !RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + MAX_PHASE_STROBE_TIME)) {
+
+//ADILA
+      printf("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
+
       PRINTF("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0]);
       break;
     }
@@ -873,6 +901,9 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
   if(!is_broadcast) {
     if(collisions == 0 && is_receiver_awake == 0) {
+
+//ADILA EDIT
+printf("PHASE UPDATE IN CONTIKIMAC\n\n");
       phase_update(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
 		   encounter_time, ret);
     }

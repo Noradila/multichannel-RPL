@@ -106,6 +106,10 @@ parse(void)
     /*    packetbuf_set_attr(PACKETBUF_ATTR_RELIABLE, frame.fcf.ack_required);*/
     packetbuf_set_attr(PACKETBUF_ATTR_PACKET_ID, frame.seq);
 
+//ADILA EDIT
+//packetbuf_set_attr(PACKETBUF_ADILA, 5);
+//----------
+
     PRINTF("15.4-IN: %2X", frame.fcf.frame_type);
     PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_SENDER));
     PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));

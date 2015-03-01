@@ -225,7 +225,8 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+//static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
   uint8_t tempVal;
 
@@ -254,11 +255,11 @@ static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck
     }//END IF 1ST HOP
   }//END FOR 1ST FOR
 
-  return chCheck;
+ // return chCheck;
 }
 /*---------------------------------------------------------------------------*/
-
-static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+//static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
   uint8_t channelOK;
 
@@ -271,28 +272,32 @@ static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
           nbr = nbr_table_next(ds6_neighbors,nbr)) {
 	  if((nbr->nbrCh) != chCheck) {
 	    channelOK = 1;
+	    printf("2hopsLPBR %d\n\n", channelOK);
 	    //return OK
 	    //give new channel random_rand()
 	    //!chCheck = random_rand();
 	  }
 	  else {
 	    channelOK = 0;
+	    printf("2hopsLPBR %d\n\n", channelOK);
 	    //return NOT OK
 	  }
 	}//END FOR
       }//END IF
       else {
 	channelOK = 0;
+	printf("2hopsLPBR %d\n\n", channelOK);
         //return NOT OK (same CH as LPBR)
       }
     }//END IF toSendAddr == nbr->ipaddr
     else {
       channelOK = 2;
+      printf("2hopsLPBR %d\n\n", channelOK);
       //channelOK = twoHopsOtherNodes(toSendAddr, chCheck);
     }
   }//END FOR
 
-  return channelOK;
+  //return channelOK;
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -632,6 +637,8 @@ PROCESS_THREAD(chChange_process, ev, data)
   static uip_ds6_nbr_t *nbr;
   static uip_ds6_route_t *re;
 
+uint8_t channelOK;
+
   PROCESS_BEGIN();
 
   while(1) {
@@ -648,7 +655,10 @@ PROCESS_THREAD(chChange_process, ev, data)
 	msg2.address = r->ipaddr;
 	msg2.paddingBuf[30] = " ";
 
-printf("value is %d\n\n", twoHopsLPBR(&msg2.address, msg2.value));
+//printf("value is %d\n\n", twoHopsLPBR(&msg2.address, msg2.value));
+//if(channelOK == 2) {
+//printf("value 2 is %d\n\n", twoHopsOtherNodes(&msg2.address, msg2.value));
+//}
 
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(&r->ipaddr);

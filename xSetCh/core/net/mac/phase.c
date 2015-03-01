@@ -79,7 +79,8 @@ NBR_TABLE(struct phase, nbr_phase);
 
 #define DEBUG 0
 //ADILA EDIT
-#define DEBUG 1
+//#define DEBUG DEBUG_ALL
+//#define DEBUG 1
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)

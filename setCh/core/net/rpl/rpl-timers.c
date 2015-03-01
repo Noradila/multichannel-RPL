@@ -135,6 +135,7 @@ handle_dio_timer(void *ptr)
 //ADILA EDIT
 uip_ds6_nbr_t *nbr;
   uip_ipaddr_t nH;
+//static struct ctimer time2;
 //----------
 
   instance = (rpl_instance_t *)ptr;
@@ -175,6 +176,9 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 
 //dio_output(instance, &nH);
 dio_output(instance, &nbr->ipaddr);
+
+/*ctimer_set(&time2, CLOCK_SECOND/4, NULL, NULL);
+printf("BACK IN RPL-TIMER\n\n");*/
 }//for()
 }//if(start_time > 20)
 else {

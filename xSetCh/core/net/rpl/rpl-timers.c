@@ -47,6 +47,7 @@
 #if UIP_CONF_IPV6
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_ALL
 //#define DEBUG 1
 #include "net/uip-debug.h"
 
@@ -136,6 +137,7 @@ handle_dio_timer(void *ptr)
 //ADILA EDIT
 uip_ds6_nbr_t *nbr;
   uip_ipaddr_t nH;
+static struct ctimer time2;
 //----------
 
   instance = (rpl_instance_t *)ptr;
@@ -157,14 +159,30 @@ uip_ds6_nbr_t *nbr;
 #if RPL_CONF_STATS
       instance->dio_totsend++;
 #endif /* RPL_CONF_STATS */
-      dio_output(instance, NULL);
+  //    dio_output(instance, NULL);
 
 //ADILA EDIT
 //start_time = clock_seconds();
 //printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
 
 //if(start_time > 360) {
-for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+nbr = nbr_table_head(ds6_neighbors);
+if(nbr != NULL) {
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+    printf("RPL-TIMER NBR TABLE: ");
+    uip_debug_ipaddr_print(&nbr->ipaddr);
+    dio_output(instance, &nbr->ipaddr);
+
+//ctimer_set(&time2, CLOCK_SECOND/4, NULL, NULL);
+//printf("BACK IN RPL-TIMER\n\n");
+  }
+}
+else {
+dio_output(instance, NULL);
+}
+
+/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 nbr = nbr_table_next(ds6_neighbors,nbr)) {
 printf("RPL-TIMER NBR TABLE: ");
 uip_debug_ipaddr_print(&nbr->ipaddr);

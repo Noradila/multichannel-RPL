@@ -54,6 +54,7 @@
 #include <string.h>
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_ALL
 //#define DEBUG 1
 
 #include "net/uip-debug.h"
@@ -589,7 +590,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   if(uc_addr == NULL) {
 
 //ADILA EDIT
-printf("Sending DIO multicast\n\n");
+//printf("Sending DIO multicast\n\n");
 //---------
 
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
@@ -597,6 +598,12 @@ printf("Sending DIO multicast\n\n");
     uip_create_linklocal_rplnodes_mcast(&addr);
     uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos);
   } else {
+//ADILA
+    printf("\nRPL: Sending unicast-DIO with rank %u to ",
+        (unsigned)instance->current_dag->rank);
+    uip_debug_ipaddr_print(uc_addr);
+    printf("\n");
+
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
         (unsigned)instance->current_dag->rank);
     PRINT6ADDR(uc_addr);
