@@ -543,6 +543,9 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 	    struct rdc_buf_list *buf_list,
             int is_receiver_awake)
 {
+uint8_t theChIs = 0;
+
+
   rtimer_clock_t t0;
   rtimer_clock_t encounter_time = 0;
   int strobes;
@@ -598,10 +601,12 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 //ADILA EDIT 16/02/15
 //nbr_table *nt,
 //extern void simplified_nbr_table_get_channel();
-//simplified_nbr_table_get_channel();
+theChIs = simplified_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+cc2420_set_channel(theChIs);
 //printf("ADILA ATTR %d AND %d\n\n", packetbuf_attr(PACKETBUF_ADILA), packetbuf_attr(PACKETBUF_ADILA2));
 //printf("ADILA ATTR %d %d\n\n", packetbuf_attr(PACKETBUF_ADILA), cc2420_get_channel());
-    printf("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+theChIs,
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],

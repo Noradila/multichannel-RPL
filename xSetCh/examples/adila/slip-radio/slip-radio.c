@@ -138,12 +138,12 @@ uint8_t aa = 0;
 //packetbuf_set_attr(PACKETBUF_ADILA_IP, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
 //printf("IP:%d %d DATA[3] is %d\n", packetbuf_attr(PACKETBUF_ADILA_IP), packetbuf_attr(PACKETBUF_ADILA), data[3]);
 
-printf("IN SLIP-RADIO-------------\n");
+/*printf("IN SLIP-RADIO-------------\n");
 simplified_nbr_table_get_channel();
 printf("--------------------------\n\n");
-
+*/
 aa = simplified_check_table(data[4], data[3]);
-printf("value aa %d\n\n", aa);
+//printf("value aa %d\n\n", aa);
 printf("DATA[3] %d DATA[4] %d\n\n", data[3], data[4]);
         //printf("DATA[3] IS %d\n", data[3]);
 

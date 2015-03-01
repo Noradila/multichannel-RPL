@@ -16,16 +16,16 @@ uint8_t simplified_check_table(uint8_t ipA, uint8_t ch) {
   uint8_t ok = 0;
   for(nt = list_head(simplified_nbr_table_list_table); nt != NULL; nt = nt->next) {
     if(ipA == (nt->theIPAddr)) {
-      printf("SAME IPADDR\n\n");
+      //printf("SAME IPADDR\n\n");
       if(ch != (nt->theCh)) {
-	printf("CH IS GOING TO CHANGED FROM %d\n\n", nt->theCh);
+	//printf("CH IS GOING TO CHANGED FROM %d\n\n", nt->theCh);
 	nt->theCh = ch;
-	printf("CH IS CHANGED TO %d\n\n", nt->theCh);
+	//printf("CH IS CHANGED TO %d\n\n", nt->theCh);
         ok = 1;
         return ok;
       }
       else {
-	printf("NO CHANGES!!!\n\n");
+	//printf("NO CHANGES!!!\n\n");
 	ok = 1;
 	return ok;
       }	
@@ -34,7 +34,19 @@ uint8_t simplified_check_table(uint8_t ipA, uint8_t ch) {
   return ok;
 }
 
+/*---------------------------------------------------------------------------*/
+uint8_t simplified_getCh(uint8_t iP) {
+  struct simplified_nbr_table *nt;
 
+  for(nt = list_head(simplified_nbr_table_list_table); nt != NULL; nt = nt->next) {
+    if(iP == (nt->theIPAddr)) {
+      //printf("IP SAME, CH IS %d\n\n", nt->theCh);
+      return (nt->theCh);
+    }
+  }
+  return;
+}
+/*---------------------------------------------------------------------------*/
 void simplified_nbr_table_get_channel(void) {
 //nbr_table *xx;
 //  printf("IN SIMPLIFIED NBR TABLE GET CHANNEL %d\n\n\n", xx->theIPAddr);
@@ -57,7 +69,7 @@ void simplified_nbr_table_set_channel(uint8_t theIPAddr, uint8_t theCh) {
   }*/
 
 
-  for(nt = list_head(simplified_nbr_table_list_table); nt != NULL; nt = nt->next) {
+  /*for(nt = list_head(simplified_nbr_table_list_table); nt != NULL; nt = nt->next) {
     if(theIPAddr == (nt->theIPAddr) && theCh != (nt->theCh)) {
 printf("IPADDR %d == %d NT->IPADDR\n\n", theIPAddr, nt->theIPAddr);
       //if(theCh != (nt->theCh)) {
@@ -67,7 +79,7 @@ printf("THECH %d == %d NT->THECH\n\n", theCh, nt->theCh);
 	return;
      // }
     }
-  }
+  }*/
 
   nt = memb_alloc(&simplified_nbr_table_list_mem);
   if(nt != NULL) {

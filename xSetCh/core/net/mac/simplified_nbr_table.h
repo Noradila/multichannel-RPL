@@ -7,5 +7,6 @@ typedef struct simplified_nbr_table {
 //extern nbr_table *nt;
 
 uint8_t simplified_check_table(uint8_t ipA, uint8_t ch);
+uint8_t simplified_getCh(uint8_t iP);
 void simplified_nbr_table_get_channel(void);
 void simplified_nbr_table_set_channel(uint8_t theIPAddr, uint8_t theCh);
