@@ -221,11 +221,11 @@ static void readProbeResult() {
   //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     printf("keeprobe c %d r %d ack %d ", pr->chNum, pr->rxValue, pr->checkAck);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n\n");
-  }
+  }*/
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
    if(pr->chNum != 0) {
@@ -265,11 +265,11 @@ static void readProbeResult() {
 static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t getAck) {
   struct probeResult *pr;
 
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+  /*for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     printf("%d keeprobe c %d r %d ack %d ", chN, pr->chNum, pr->rxValue, pr->checkAck);
     uip_debug_ipaddr_print(&pr->pAddr);
     printf("\n\n");
-  }
+  }*/
 
   for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
     if(uip_ipaddr_cmp(prAddr, &pr->pAddr)) {

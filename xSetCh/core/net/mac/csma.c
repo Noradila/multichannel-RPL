@@ -68,7 +68,10 @@
 #ifdef CSMA_CONF_MAX_MAC_TRANSMISSIONS
 #define CSMA_MAX_MAC_TRANSMISSIONS CSMA_CONF_MAX_MAC_TRANSMISSIONS
 #else
-#define CSMA_MAX_MAC_TRANSMISSIONS 3
+//#define CSMA_MAX_MAC_TRANSMISSIONS 3
+//ADILA EDIT 01/03/15
+#define CSMA_MAX_MAC_TRANSMISSIONS 6
+//-------------------
 #endif /* CSMA_CONF_MAX_MAC_TRANSMISSIONS */
 #endif /* CSMA_MAX_MAC_TRANSMISSIONS */
 
@@ -258,14 +261,23 @@ packet_sent(void *ptr, int status, int num_transmissions)
         /* Clamp the number of backoffs so that we don't get a too long
            timeout here, since that will delay all packets in the
            queue. */
-        if(backoff_transmissions > 3) {
+        /*if(backoff_transmissions > 3) {
           backoff_transmissions = 3;
+        }*/
+
+//ADILA EDIT 01/03/15
+        if(backoff_transmissions > 6) {
+          backoff_transmissions = 6;
         }
+//-------------------
 
         time = time + (random_rand() % (backoff_transmissions * time));
 
         if(n->transmissions < metadata->max_transmissions) {
           PRINTF("csma: retransmitting with time %lu %p\n", time, q);
+//ADILA EDIT 01/03/15
+          //printf("csma: retransmitting with time %lu %p\n", time, q);
+//-------------------
           ctimer_set(&n->transmit_timer, time,
                      transmit_packet_list, n);
           /* This is needed to correctly attribute energy that we spent
@@ -274,6 +286,10 @@ packet_sent(void *ptr, int status, int num_transmissions)
         } else {
           PRINTF("csma: drop with status %d after %d transmissions, %d collisions\n",
                  status, n->transmissions, n->collisions);
+//ADILA EDIT 01/05/15
+          //printf("csma: drop with status %d after %d transmissions, %d collisions\n",
+            //     status, n->transmissions, n->collisions);
+//-------------------
           free_packet(n, q);
           mac_call_sent_callback(sent, cptr, status, num_tx);
         }
@@ -351,6 +367,7 @@ send_packet(mac_callback_t sent, void *ptr)
 
 //ADILA EDIT
 //printf("QUEUE %d\n\n", list_length(n->queued_packet_list));
+//printf("XXXXX: MAX_MAC %d CSMA MAX %d S CONF %d\n\n", PACKETBUF_ATTR_MAX_MAC_TRANSMISSIONS, CSMA_MAX_MAC_TRANSMISSIONS, SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS);
 //----------
 	  }
 

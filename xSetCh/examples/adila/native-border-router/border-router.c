@@ -59,7 +59,8 @@
 #define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
-#define MAX_SENSORS 4
+//#define MAX_SENSORS 4
+#define MAX_SENSORS 20
 
 #include "lib/list.h"
 #include "lib/memb.h"
@@ -612,6 +613,8 @@ PROCESS_THREAD(border_router_process, ev, data)
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
+  //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+  //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
   etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   while(1) {
     //etimer_set(&et, CLOCK_SECOND * 2);
@@ -680,10 +683,10 @@ uint8_t channelOK;
 
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
 
-	//equals to 30 secs? (even though it's supposed to be 3 secs
-	//etimer_set(&time, 6 * CLOCK_SECOND);
-	etimer_set(&time, 10 * CLOCK_SECOND);
-	//etimer_set(&time, 5 * CLOCK_SECOND);
+	//3 sec per nbr
+	//equals to 30 secs? (even though it's supposed to be 3 secs) - depends on how many nbr
+	//etimer_set(&time, 10 * CLOCK_SECOND); //1 min
+	etimer_set(&time, 3 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
   }
