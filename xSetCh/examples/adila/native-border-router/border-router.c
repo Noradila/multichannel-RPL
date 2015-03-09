@@ -229,19 +229,6 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
 static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
 
-/*  static uip_ds6_nbr_t *nbr;
-
-  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-    nbr = nbr_table_next(ds6_neighbors,nbr)) {
-    //if(toSendAddr->u8[13] == nbr->ipaddr.u8[13]) {
-      //if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
-	printf("2hopsLPBR %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
-	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);	
-      //}
-    //}
-  }
-*/
-
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
       if(l->chNum != chCheck) {

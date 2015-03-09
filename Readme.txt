@@ -4,7 +4,24 @@ setCh is for other nodes
 xSetCh is for the LPBR
 /examples/adila/native-border-router
 
-************************
+********************2 HOPS COLOURING********************
+
+2 hops colouring is done at LPBR
+1. LPBR checks if the node is LPBR neighbours, else, go to 4.
+2. If it is, LPBR checks if the new channel value is the same as LPBR channel (1 hop - LPBR).
+3. If it is not, LPBR checks with all LPBR neighbours (excluding the node) (2 hops - LPBR + all LPBR neighbours)
+
+1/4. LPBR checks if the node is other tree neighbour neighbour.
+5. If tree neighbour neighbour is the same as the node address, LPBR checks the tree neighbour channel with the new channel (1 hop).
+
+6. If it is not, LPBR checks if the tree neighbour is LPBR neighbour. Else, go to 8.
+7. If it is, the new channel is checked with LPBR channel (2 hops - other node + LPBR).
+
+6/8. If tree neighbour is not LPBR neighbour, check if tree neighbour address is in other tree neighbour neighbour.
+9. Check if the new tree neighbour channel is the same as new channel.
+10. If it is not, the new channel can be used (2 hops - other node + other node).
+
+********************CHANNEL CHANGES*********************
 
 1. LPBR sends CH_CHANGE to entries in its Routing Table. Each node is given 60 seconds before it times out and send CH_CHANGE to the next node.
 
