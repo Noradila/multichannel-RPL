@@ -177,6 +177,11 @@ simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEI
       //pos += 4;
       pos += 5;
       len -= pos;
+
+//ADILA EDIT 02/03/15
+//printf("PACKETBUF SIZE %d\n\n", PACKETBUF_SIZE);
+//-------------------
+
       if(len > PACKETBUF_SIZE) {
         len = PACKETBUF_SIZE;
       }

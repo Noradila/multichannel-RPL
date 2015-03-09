@@ -631,6 +631,10 @@ theChIs,
 
   packetbuf_set_attr(PACKETBUF_ATTR_MAC_ACK, 1);
 
+//ADILA EDIT 02/03/15
+//printf("packetbuf_attr(PACKETBUF_ATTR_MAC_ACK) %d\n\n", packetbuf_attr(PACKETBUF_ATTR_MAC_ACK));
+//-------------------
+
 #if WITH_CONTIKIMAC_HEADER
   hdrlen = packetbuf_totlen();
   if(packetbuf_hdralloc(sizeof(struct hdr)) == 0) {
@@ -897,6 +901,9 @@ printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
     ret = MAC_TX_NOACK;
   } else {
     ret = MAC_TX_OK;
+//ADILA EDIT 02/03/14
+printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+//-------------------
   }
 
 #if WITH_PHASE_OPTIMIZATION

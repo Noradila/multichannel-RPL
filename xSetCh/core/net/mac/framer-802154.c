@@ -111,6 +111,10 @@ create(void)
   }
   params.fcf.panid_compression = 0;
 
+//ADILA EDIT 02/03/15
+//printf("packetbuf_attr(PACKETBUF_ATTR_MAC_ACK) %d\n\n", packetbuf_attr(PACKETBUF_ATTR_MAC_ACK));
+//-------------------
+
   /* Insert IEEE 802.15.4 (2003) version bit. */
   params.fcf.frame_version = FRAME802154_IEEE802154_2003;
 

@@ -71,8 +71,12 @@
 
 #include <stdio.h>
 
-#define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_NONE
+//#define DEBUG 1
+#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
+//#define DEBUG 1
+
 #if DEBUG
 /* PRINTFI and PRINTFO are defined for input and output to debug one without changing the timing of the other */
 uint8_t p;
@@ -1319,6 +1323,11 @@ packet_sent(void *ptr, int status, int transmissions)
 static void
 send_packet(rimeaddr_t *dest)
 {
+
+//ADILA EDIT 02/03/15
+printf("---SEND IN NET/SICSLOWPAN\n\n");
+//-------------------
+
   /* Set the link layer destination address for the packet as a
    * packetbuf attribute. The MAC layer can access the destination
    * address with the function packetbuf_addr(PACKETBUF_ADDR_RECEIVER).

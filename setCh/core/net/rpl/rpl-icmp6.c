@@ -150,6 +150,12 @@ dis_input(void)
   rpl_instance_t *instance;
   rpl_instance_t *end;
 
+//ADILA EDIT 02/03/15
+printf("Recv DIS ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf("\n");
+//-------------------
+
   /* DAG Information Solicitation */
   PRINTF("RPL: Received a DIS from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
@@ -194,6 +200,12 @@ dis_output(uip_ipaddr_t *addr)
     addr = &tmpaddr;
   }
 
+//ADILA EDIT 02/03/15
+printf("Send DIS to ");
+uip_debug_ipaddr_print(addr);
+printf("\n");
+//-------------------
+
   PRINTF("RPL: Sending a DIS to ");
   PRINT6ADDR(addr);
   PRINTF("\n");
@@ -229,11 +241,11 @@ dio_input(void)
 
   /* DAG Information Object */
 
-//ADILA EDIT
-printf("Received DIO ");
+//ADILA EDIT 02/03/15
+printf("Recv DIO ");
 uip_debug_ipaddr_print(&from);
 printf("\n");
-//----------
+//-------------------
 
   PRINTF("RPL: Received a DIO from ");
   PRINT6ADDR(&from);
@@ -567,6 +579,13 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
     uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos);
   } else {
 //printf("uDIO\n\n");
+
+//ADILA EDIT 02/03/15
+printf("Send DIO to ");
+uip_debug_ipaddr_print(uc_addr);
+printf("\n");
+//-------------------
+
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
         (unsigned)instance->current_dag->rank);
     PRINT6ADDR(uc_addr);
@@ -605,6 +624,12 @@ dao_input(void)
   prefixlen = 0;
 
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
+
+//ADILA EDIT 02/03/15
+printf("Recv DAO ");
+uip_debug_ipaddr_print(&dao_sender_addr);
+printf("\n");
+//-------------------
 
   /* Destination Advertisement Object */
   PRINTF("RPL: Received a DAO from ");
@@ -836,6 +861,12 @@ dao_output_target(rpl_parent_t *parent, uip_ipaddr_t *prefix, uint8_t lifetime)
   buffer[pos++] = 0; /* path control - ignored */
   buffer[pos++] = 0; /* path seq - ignored */
   buffer[pos++] = lifetime;
+
+//ADILA EDIT 02/03/15
+printf("Send DAO to ");
+uip_debug_ipaddr_print(rpl_get_parent_ipaddr(parent));
+printf("\n");
+//-------------------
 
   PRINTF("RPL: Sending DAO with prefix ");
   PRINT6ADDR(prefix);

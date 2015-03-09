@@ -226,14 +226,56 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
+static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+  struct lpbrList *l;
+
+/*  static uip_ds6_nbr_t *nbr;
+
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+    //if(toSendAddr->u8[13] == nbr->ipaddr.u8[13]) {
+      //if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
+	printf("2hopsLPBR %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
+	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);	
+      //}
+    //}
+  }
+*/
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
+      if(l->chNum != chCheck) {
+	printf("2hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
+	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
+      }
+    }
+  }  
+}
+/*---------------------------------------------------------------------------*/
 //static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
   uint8_t tempVal;
 
+  static uip_ds6_nbr_t *nbr;
+
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
+      printf("1hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
       if(l->chNum != chCheck) {
+	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
+	//tempVal = l->routeAddr.u8[13];
+
+  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+    nbr = nbr_table_next(ds6_neighbors,nbr)) {
+    if(l->routeAddr.u8[13] == nbr->ipaddr.u8[13]) {
+      printf("2nd hop is LPBR %d chCheck %d\n\n", uip_ds6_if.addr_list[1].currentCh, chCheck);
+    }
+  }
+	secondCheck(&l->routeAddr, chCheck);
+
+      }
+      /*if(l->chNum != chCheck) {
 	tempVal = l->routeAddr.u8[13];
 	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
 	  if(tempVal == l->nbrAddr.u8[13]) {
@@ -245,6 +287,7 @@ static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	    else {
 	      chCheck = 0;
 	      printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
+	      break;
 	    }
 	  }//END IF 2ND HOP
 	}//END FOR 2ND FOR
@@ -252,7 +295,8 @@ static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       else {
 	chCheck = 0;
         printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
-      }
+	break;
+      }*/
     }//END IF 1ST HOP
   }//END FOR 1ST FOR
 
@@ -262,40 +306,47 @@ static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 //static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
-  uint8_t channelOK;
+  uint8_t channelOK = 0;
 
   for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
     nbr = nbr_table_next(ds6_neighbors,nbr)) {
     if(toSendAddr->u8[13] == nbr->ipaddr.u8[13]) {
       //check LPBR != chCheck (1 hop)
       if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
+	printf("LPBR1hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, uip_ds6_if.addr_list[1].currentCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
         for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
           nbr = nbr_table_next(ds6_neighbors,nbr)) {
-	  if((nbr->nbrCh) != chCheck) {
-	    channelOK = 1;
-	    printf("2hopsLPBR %d\n\n", channelOK);
-	    //return OK
-	    //give new channel random_rand()
-	    //!chCheck = random_rand();
-	  }
-	  else {
-	    channelOK = 0;
-	    printf("2hopsLPBR %d\n\n", channelOK);
-	    //return NOT OK
-	  }
+	  if(toSendAddr->u8[13] != nbr->ipaddr.u8[13]) {
+
+	    if((nbr->nbrCh) != chCheck) {
+	      channelOK = 1;
+	      printf("LPBR2hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, uip_ds6_if.addr_list[1].currentCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
+	      //printf("2hopsLPBR %d\n\n", channelOK);
+	      //return OK
+	      //give new channel random_rand()
+	      //!chCheck = random_rand();
+	    }
+	    else {
+	      channelOK = 0;
+	      //printf("2hopsLPBR %d\n\n", channelOK);
+	      break;
+	      //return NOT OK
+	    }
+	  }//END IF
 	}//END FOR
       }//END IF
       else {
 	channelOK = 0;
 	printf("2hopsLPBR %d\n\n", channelOK);
+	break;
         //return NOT OK (same CH as LPBR)
       }
     }//END IF toSendAddr == nbr->ipaddr
-    else {
+    /*else {
       channelOK = 2;
       printf("2hopsLPBR %d\n\n", channelOK);
       //channelOK = twoHopsOtherNodes(toSendAddr, chCheck);
-    }
+    }*/
   }//END FOR
 
   //return channelOK;
@@ -658,10 +709,15 @@ uint8_t channelOK;
 	msg2.address = r->ipaddr;
 	msg2.paddingBuf[30] = " ";
 
-//printf("value is %d\n\n", twoHopsLPBR(&msg2.address, msg2.value));
+//printf("value is %d\n", twoHopsLPBR(&msg2.address, msg2.value));
 //if(channelOK == 2) {
-//printf("value 2 is %d\n\n", twoHopsOtherNodes(&msg2.address, msg2.value));
+//printf("value 2 is %d\n\n\n", twoHopsOtherNodes(&msg2.address, msg2.value));
 //}
+
+//keepLpbrList(&msg2.address, msg2.address, 11, 11);
+
+twoHopsLPBR(&msg2.address, msg2.value);
+twoHopsOtherNodes(&msg2.address, msg2.value);
 
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(&r->ipaddr);
@@ -685,8 +741,9 @@ uint8_t channelOK;
 
 	//3 sec per nbr
 	//equals to 30 secs? (even though it's supposed to be 3 secs) - depends on how many nbr
-	//etimer_set(&time, 10 * CLOCK_SECOND); //1 min
-	etimer_set(&time, 3 * CLOCK_SECOND);
+	etimer_set(&time, 10 * CLOCK_SECOND); //1 min
+	//etimer_set(&time, 3 * CLOCK_SECOND);
+//etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
   }

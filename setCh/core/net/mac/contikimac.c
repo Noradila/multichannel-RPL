@@ -911,6 +911,9 @@ cc2420_get_channel(),
     ret = MAC_TX_NOACK;
   } else {
     ret = MAC_TX_OK;
+//ADILA EDIT 02/03/14
+printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+//-------------------
   }
 
 #if WITH_PHASE_OPTIMIZATION

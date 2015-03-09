@@ -110,6 +110,10 @@ parse(void)
 //packetbuf_set_attr(PACKETBUF_ADILA, 5);
 //----------
 
+//ADILA EDIT 02/03/15
+//printf("packetbuf_attr(PACKETBUF_ATTR_MAC_ACK) %d\n\n", packetbuf_attr(PACKETBUF_ATTR_MAC_ACK));
+//-------------------
+
     PRINTF("15.4-IN: %2X", frame.fcf.frame_type);
     PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_SENDER));
     PRINTADDR(packetbuf_addr(PACKETBUF_ADDR_RECEIVER));

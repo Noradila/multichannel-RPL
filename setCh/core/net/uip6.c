@@ -1079,6 +1079,11 @@ uip_process(uint8_t flag)
     UIP_STAT(++uip_stat.ip.drop);
     UIP_STAT(++uip_stat.ip.vhlerr);
     UIP_LOG("ipv6: invalid version.");
+
+//ADILA EDIT
+//printf("udp: ipv6: invalid version\n\n");
+printf("here\n\n");
+
     goto drop;
   }
   /*
@@ -1105,8 +1110,19 @@ uip_process(uint8_t flag)
      */
   } else {
     UIP_LOG("ip: packet shorter than reported in IP header.");
+//ADILA EDIT
+//printf("udp: packet shorter\n\n");
+
     goto drop;
   }
+
+//ADILA EDIT
+  printf("RCV ");
+  //printf("IPv6 packet received from ");
+  uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+  //printf(" to ");
+  uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+  printf("\n");
   
   PRINTF("IPv6 packet received from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
@@ -1141,10 +1157,18 @@ uip_process(uint8_t flag)
         break;
       case 1:
 	PRINTF("Dropping packet after extension header processing\n");
+
+//ADILA EDIT
+//printf("udp: dropping packet after extension header processing\n\n");
+
         /* silently discard */
         goto drop;
       case 2:
 	PRINTF("Sending error message after extension header processing\n");
+
+//ADILA EDIT
+//printf("udp: sending error extension header\n\n");
+
         /* send icmp error message (created in ext_hdr_options_process)
          * and discard*/
         goto send;
@@ -1181,6 +1205,12 @@ uip_process(uint8_t flag)
 #endif /* UIP_CONF_IPV6_RPL */
 
       UIP_IP_BUF->ttl = UIP_IP_BUF->ttl - 1;
+//ADILA EDIT
+      printf("Forwarding packet to ");
+      uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+      printf("\n");
+
+
       PRINTF("Forwarding packet to ");
       PRINT6ADDR(&UIP_IP_BUF->destipaddr);
       PRINTF("\n");
@@ -1312,6 +1342,10 @@ uip_process(uint8_t flag)
           uip_icmp6_error_output(ICMP6_PARAM_PROB, ICMP6_PARAMPROB_HEADER, UIP_IPH_LEN + uip_ext_len + 2);
           UIP_STAT(++uip_stat.ip.drop);
           UIP_LOG("ip6: unrecognized routing type");
+
+//ADILA EDIT
+//printf("udp: ip6: unrecognized routing type\n\n");
+
           goto send;
         }
         uip_next_hdr = &UIP_EXT_BUF->next;
@@ -1340,6 +1374,10 @@ uip_process(uint8_t flag)
         UIP_STAT(++uip_stat.ip.drop);
         UIP_STAT(++uip_stat.ip.fragerr);
         UIP_LOG("ip: fragment dropped.");
+
+//ADILA EDIT
+//printf("udp: ip: fragment dropped\n\n");
+
         goto drop;
 #endif /* UIP_CONF_IPV6_REASSEMBLY */
       case UIP_PROTO_NONE:
@@ -1357,6 +1395,10 @@ uip_process(uint8_t flag)
   UIP_STAT(++uip_stat.ip.drop);
   UIP_STAT(++uip_stat.ip.protoerr);
   UIP_LOG("ip6: unrecognized header");
+
+//ADILA EDIT
+//printf("udp: ip6: unrecognized header\n\n");
+
   goto send;
   /* End of headers processing */
   
@@ -1369,6 +1411,11 @@ uip_process(uint8_t flag)
   if(uip_icmp6chksum() != 0xffff) {
     UIP_STAT(++uip_stat.icmp.drop);
     UIP_STAT(++uip_stat.icmp.chkerr);
+
+//ADILA EDIT
+//printf("udp: icmpv6: bad checksum\n\n");
+
+
     UIP_LOG("icmpv6: bad checksum.");
     PRINTF("icmpv6: bad checksum.");
     goto drop;
@@ -1437,6 +1484,10 @@ uip_process(uint8_t flag)
       uip_len = 0;
       break;
     default:
+
+//ADILA EDIT
+//printf("udp: unknown icmp6\n\n");
+
       PRINTF("Unknown icmp6 message type %d\n", UIP_ICMP_BUF->type);
       UIP_STAT(++uip_stat.icmp.drop);
       UIP_STAT(++uip_stat.icmp.typeerr);
@@ -1477,6 +1528,10 @@ uip_process(uint8_t flag)
   if(UIP_UDP_BUF->udpchksum != 0 && uip_udpchksum() != 0xffff) {
     UIP_STAT(++uip_stat.udp.drop);
     UIP_STAT(++uip_stat.udp.chkerr);
+
+//ADILA EDIT
+//printf("udp: bad checksum\n\n");
+
     PRINTF("udp: bad checksum 0x%04x 0x%04x\n", UIP_UDP_BUF->udpchksum,
            uip_udpchksum());
     goto drop;
@@ -1586,6 +1641,10 @@ uip_process(uint8_t flag)
                                        checksum. */
     UIP_STAT(++uip_stat.tcp.drop);
     UIP_STAT(++uip_stat.tcp.chkerr);
+
+//ADILA EDIT
+//printf("tcp: bad checksum\n\n");
+
     PRINTF("tcp: bad checksum 0x%04x 0x%04x\n", UIP_TCP_BUF->tcpchksum,
            uip_tcpchksum());
     goto drop;
@@ -1710,6 +1769,9 @@ uip_process(uint8_t flag)
        the remote end will retransmit the packet at a time when we
        have more spare connections. */
     UIP_STAT(++uip_stat.tcp.syndrop);
+//ADILA EDIT
+//printf("tcp: found no unused connections\n\n");
+
     UIP_LOG("tcp: found no unused connections.");
     goto drop;
   }
