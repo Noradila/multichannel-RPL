@@ -76,6 +76,7 @@ static process_event_t event_data_ready;
 uint8_t a = 0;
 uip_ipaddr_t nextHopAddr;
 uip_ipaddr_t nH;
+uint8_t channelOK = 1;
 
 struct lpbrList {
   struct lpbrList *next;
@@ -226,7 +227,8 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
   }
 }
 /*---------------------------------------------------------------------------*/
-static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+//static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+uint8_t secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
 
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
@@ -234,13 +236,20 @@ static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       if(l->chNum != chCheck) {
 	printf("2hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
 	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
+	channelOK = 1;
+      }
+      else {
+	channelOK = 0;
+	printf("CHECK CH: SECONDCHECK FAILED!\n\n");
       }
     }
-  }  
+  }
+  return channelOK;  
 }
 /*---------------------------------------------------------------------------*/
 //static uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
-static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+//static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
   uint8_t tempVal;
 
@@ -253,47 +262,38 @@ static void twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
 	//tempVal = l->routeAddr.u8[13];
 
-  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-    nbr = nbr_table_next(ds6_neighbors,nbr)) {
-    if(l->routeAddr.u8[13] == nbr->ipaddr.u8[13]) {
-      printf("2nd hop is LPBR %d chCheck %d\n\n", uip_ds6_if.addr_list[1].currentCh, chCheck);
-    }
-  }
-	secondCheck(&l->routeAddr, chCheck);
-
-      }
-      /*if(l->chNum != chCheck) {
-	tempVal = l->routeAddr.u8[13];
-	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-	  if(tempVal == l->nbrAddr.u8[13]) {
-	    if(l->chNum != chCheck) {
-	      //ok
-	      chCheck = 1;
-	      printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
-	    }//END IF 2ND HOP CH
-	    else {
-	      chCheck = 0;
-	      printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
-	      break;
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	    if(l->routeAddr.u8[13] == nbr->ipaddr.u8[13]) {
+	      if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
+	        printf("2nd hop is LPBR %d chCheck %d\n\n", uip_ds6_if.addr_list[1].currentCh, chCheck);
+	        channelOK = 1;
+	      }
+	      else {
+		channelOK = 0;
+		printf("CHECK CH: 2HOPSOTHERNODES 2 HOP LPBR FAILED\n\n");
+		break;
+	      }
 	    }
-	  }//END IF 2ND HOP
-	}//END FOR 2ND FOR
-      }//END IF 1ST HOP CH
+  	}
+	channelOK = secondCheck(&l->routeAddr, chCheck);
+      }
       else {
-	chCheck = 0;
-        printf("chCheck %d: %d == %d and CH %d != %d\n", chCheck, tempVal, l->nbrAddr.u8[13], l->chNum, chCheck);
+        channelOK = 0;
+	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
 	break;
-      }*/
+      }
     }//END IF 1ST HOP
   }//END FOR 1ST FOR
 
+  return channelOK;
  // return chCheck;
 }
 /*---------------------------------------------------------------------------*/
-static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
-//static uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+//static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
+uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
-  uint8_t channelOK = 0;
+  //uint8_t channelOK = 0;
 
   for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
     nbr = nbr_table_next(ds6_neighbors,nbr)) {
@@ -307,7 +307,7 @@ static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 
 	    if((nbr->nbrCh) != chCheck) {
 	      channelOK = 1;
-	      printf("LPBR2hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, uip_ds6_if.addr_list[1].currentCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
+	      printf("LPBR2hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, nbr->nbrCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
 	      //printf("2hopsLPBR %d\n\n", channelOK);
 	      //return OK
 	      //give new channel random_rand()
@@ -315,6 +315,7 @@ static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	    }
 	    else {
 	      channelOK = 0;
+	      printf("CHECK CH: 2HOPSLPBR 2 HOP FAILED\n\n");
 	      //printf("2hopsLPBR %d\n\n", channelOK);
 	      break;
 	      //return NOT OK
@@ -324,19 +325,14 @@ static void twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       }//END IF
       else {
 	channelOK = 0;
-	printf("2hopsLPBR %d\n\n", channelOK);
+	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
 	break;
         //return NOT OK (same CH as LPBR)
       }
     }//END IF toSendAddr == nbr->ipaddr
-    /*else {
-      channelOK = 2;
-      printf("2hopsLPBR %d\n\n", channelOK);
-      //channelOK = twoHopsOtherNodes(toSendAddr, chCheck);
-    }*/
   }//END FOR
 
-  //return channelOK;
+  return channelOK;
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -653,7 +649,7 @@ PROCESS_THREAD(border_router_process, ev, data)
 
   //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
-  etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
   while(1) {
     //etimer_set(&et, CLOCK_SECOND * 2);
     //PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
@@ -688,7 +684,8 @@ uint8_t channelOK;
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
-	randomNewCh = random_rand() % 16 + 11;
+	randomNewCh = random_rand() % 4 + 11;
+	//randomNewCh = random_rand() % 16 + 11;
 	//! check if randomNewCh is blacklisted (if it's on the list, low success rate)
 
 	msg2.type = CH_CHANGE;
@@ -703,9 +700,22 @@ uint8_t channelOK;
 
 //keepLpbrList(&msg2.address, msg2.address, 11, 11);
 
-twoHopsLPBR(&msg2.address, msg2.value);
-twoHopsOtherNodes(&msg2.address, msg2.value);
+channelOK = twoHopsLPBR(&msg2.address, msg2.value);
+channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
+//if(channelOK == 1) {
+printf("LPBR CHANNEL OK? %d\n\n\n", channelOK);
+//}
+
+/*while(channelOK == 0) {
+randomNewCh = random_rand() % 6 + 11;
+channelOK = twoHopsLPBR(&msg2.address, msg2.value);
+channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
+}
+
+printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
+	msg2.value = randomNewCh;
+*/
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
@@ -728,8 +738,8 @@ twoHopsOtherNodes(&msg2.address, msg2.value);
 
 	//3 sec per nbr
 	//equals to 30 secs? (even though it's supposed to be 3 secs) - depends on how many nbr
-	etimer_set(&time, 10 * CLOCK_SECOND); //1 min
-	//etimer_set(&time, 3 * CLOCK_SECOND);
+	//etimer_set(&time, 10 * CLOCK_SECOND); //1 min
+	etimer_set(&time, 3 * CLOCK_SECOND);
 //etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
