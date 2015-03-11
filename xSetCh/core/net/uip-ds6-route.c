@@ -246,6 +246,15 @@ uip_ds6_route_lookup(uip_ipaddr_t *addr)
   }
 
   if(found_route != NULL) {
+//ADILA EDIT
+    printf("uip-ds6-route: Found route: ");
+    uip_debug_ipaddr_print(addr);
+    printf(" via ");
+    uip_debug_ipaddr_print(uip_ds6_route_nexthop(found_route));
+    printf("\n");
+
+
+
     PRINTF("uip-ds6-route: Found route: ");
     PRINT6ADDR(addr);
     PRINTF(" via ");

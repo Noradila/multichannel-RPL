@@ -907,8 +907,10 @@ cc2420_get_channel(),
      return from the function.  */
   if(collisions > 0) {
     ret = MAC_TX_COLLISION;
+//printf("COLLISION\n\n");
   } else if(!is_broadcast && !got_strobe_ack) {
     ret = MAC_TX_NOACK;
+//printf("NOACK\n\n");
   } else {
     ret = MAC_TX_OK;
 //ADILA EDIT 02/03/14
