@@ -244,7 +244,6 @@ uint8_t secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	channelOK = 0;
 	printf("CHECK CH: SECONDCHECK FAILED!\n\n");
 	break;
-//giveChannelValue(toSendAddr, chCheck);
       }
     }
   }
@@ -277,7 +276,6 @@ uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	      else {
 		channelOK = 0;
 		printf("CHECK CH: 2HOPSOTHERNODES 2 HOP LPBR FAILED\n\n");
-//giveChannelValue(toSendAddr, chCheck);
 		break;
 	      }
 	    }
@@ -290,7 +288,6 @@ uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       else {
         channelOK = 0;
 	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
-//giveChannelValue(toSendAddr, chCheck);
 	break;
       }
     }//END IF 1ST HOP
@@ -326,7 +323,6 @@ uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 	    else {
 	      channelOK = 0;
 	      printf("CHECK CH: 2HOPSLPBR 2 HOP FAILED\n\n");
-//giveChannelValue(toSendAddr, chCheck);
 	      //printf("2hopsLPBR %d\n\n", channelOK);
 	      break;
 	      //return NOT OK
@@ -336,7 +332,6 @@ uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       }//END IF
       else {
 	channelOK = 0;
-//giveChannelValue(toSendAddr, chCheck);
 	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
 	break;
         //return NOT OK (same CH as LPBR)
@@ -346,30 +341,6 @@ uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 
   return channelOK;
   //return chCheck;
-}
-/*---------------------------------------------------------------------------*/
-void giveChannelValue(const uip_ipaddr_t *toSendAddr, uint8_t prevChGiven) {
-  uint8_t randomNewCh;
-
-  printf("IN GIVECHANNELVALUE\n\n");
-  randomNewCh = random_rand() % 4 + 11;
-
-  if(prevChGiven == randomNewCh) {
-    randomNewCh = random_rand() % 4 + 11;
-    printf("PREV %d NEWRANDOM %d\n\n", prevChGiven, randomNewCh);
-  }
-  channelOK = twoHopsLPBR(toSendAddr, randomNewCh);
-  channelOK = twoHopsOtherNodes(toSendAddr, randomNewCh);
-
-printf("CHANNELOK %d\n\n", channelOK);
-  //return randomNewCh;
-/*  if(channelOK == 1) {
-    return randomNewCh;
-  }
-  else {
-  giveChannelValue(toSendAddr, randomNewCh);
-  }
-*/
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -712,7 +683,7 @@ PROCESS_THREAD(chChange_process, ev, data)
   static uip_ds6_route_t *re;
 
 //uint8_t channelOK;
-uint8_t i;
+uint8_t i = 0;
 uint8_t prevRand;
 
   PROCESS_BEGIN();
@@ -723,9 +694,6 @@ uint8_t prevRand;
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
 
-//giveChannelValue(&msg2.address, 0);
-//randomNewCh = finalChValue();
-
 	randomNewCh = random_rand() % 5 + 11;
 	//randomNewCh = random_rand() % 16 + 11;
 	//! check if randomNewCh is blacklisted (if it's on the list, low success rate)
@@ -735,37 +703,25 @@ uint8_t prevRand;
 	msg2.address = r->ipaddr;
 	msg2.paddingBuf[30] = " ";
 
-channelOK = twoHopsLPBR(&msg2.address, msg2.value);
-channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
+	channelOK = twoHopsLPBR(&msg2.address, msg2.value);
+	channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
-//if(channelOK == 1) {
-printf("LPBR CHANNEL OK? %d\n\n\n", channelOK);
-prevRand = randomNewCh;
-while(channelOK == 0) {
-//for(i = 0; (i < 3) || (channelOK == 1); i++) {
-randomNewCh = random_rand() % 5 + 11;
-while(msg2.value == randomNewCh) {
-randomNewCh = random_rand() % 10 + 11;
-printf("prevRand == randomNewCh %d get new %d\n\n", msg2.value, randomNewCh);
-}
-channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
-channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
-}
-//}
-printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
+	//printf("LPBR CHANNEL OK? %d\n\n\n", channelOK);
+	prevRand = randomNewCh;
+	while(channelOK == 0 || (i == 3)) {
+	  randomNewCh = random_rand() % 5 + 11;
+	  while(msg2.value == randomNewCh) {
+	    randomNewCh = random_rand() % 10 + 11;
+	    //printf("prevRand == randomNewCh %d get new %d\n\n", msg2.value, randomNewCh);
+	  }
+	  channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
+	  channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
+	  i++;
+	}
+
+	//printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
 	msg2.value = randomNewCh;
-//msg2.value = channelOK;
-//}
 
-/*while(channelOK == 0) {
-randomNewCh = random_rand() % 6 + 11;
-channelOK = twoHopsLPBR(&msg2.address, msg2.value);
-channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
-}
-
-printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
-	msg2.value = randomNewCh;
-*/
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
 	uip_debug_ipaddr_print(&r->ipaddr);
 	printf(" via ");
