@@ -73,6 +73,16 @@ struct probeResult {
 LIST(probeResult_table);
 MEMB(probeResult_mem, struct probeResult, 5);
 
+struct sentRecv {
+  struct sentRecv *next;
+  uip_ipaddr_t sendToAddr;
+  uint8_t noSent;
+  uint8_t noRecv;
+};
+
+LIST(sentRecv_table);
+MEMB(sentRecv_mem, struct sentRecv, 2); //for now, only sent to LPBR
+
 //uint8_t currentVal;
 uint8_t changeTo;
 static uip_ipaddr_t holdAddr;
@@ -203,9 +213,9 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     msg2.addrPtr = &sendTo1;
     msg2.paddingBuf[30] = " ";
 
-    printf("To LPBR Sending CONFIRM_CH to ");
-    uip_debug_ipaddr_print(msg2.addrPtr);
-    printf(" channel %d\n", msg2.value);
+//    printf("To LPBR Sending CONFIRM_CH to ");
+//    uip_debug_ipaddr_print(msg2.addrPtr);
+//    printf(" channel %d\n", msg2.value);
 
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
     removeProbe();
@@ -314,6 +324,39 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
+static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
+  struct sentRecv *sr; 
+
+  /*for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
+    uip_debug_ipaddr_print(&sr->sendToAddr);
+    printf("\n");
+  }*/
+
+  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    if(uip_ipaddr_cmp(sendToAddr, &sr->sendToAddr)) {
+      if(pktSent == 1) {
+	sr->noSent = sr->noSent + 1;
+	return;
+      }
+      if(pktRecv == 1) {
+	sr->noRecv = sr->noRecv + 1;
+	return;
+      }
+      if(sr->noSent == 10) {
+	//tell LPBR to check the channel condition
+      }
+    }
+  }
+
+  sr = memb_alloc(&sentRecv_mem);
+  if(sr != NULL) {
+    sr->noSent = pktSent;
+    sr->noRecv = pktRecv;
+    uip_ipaddr_copy(&sr->sendToAddr, sendToAddr);
+    list_add(sentRecv_table, sr);
+  }
+}
 /*---------------------------------------------------------------------------*/
 /*static void keepSentRecv(const uip_ipaddr_t *prAddr, uint8_t pktSent, uint8_t pktRecv) {
   struct probeResult *pr;
@@ -457,9 +500,9 @@ receiver(struct simple_udp_connection *c,
 
   else if(msg->type == GET_ACK) {
     msg2.value = msg->value;
-    printf("Received GET ACK from ");
-    uip_debug_ipaddr_print(sender_addr);
-    printf("\n");
+//    printf("Received GET ACK from ");
+//    uip_debug_ipaddr_print(sender_addr);
+//    printf("\n");
     //noOfEntry++;
     //printf("%d: GET ACK BACK %d/%d nbr %d\n", cc2420_get_channel(), noOfEntry, keepListNo, nbrNo);
 
@@ -564,6 +607,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
     }*/
 
     //keepSentRecv(&sendTo1, 1, 0);
+
+keepSentRecv(&sendTo1, 1, 0);
 
     printf("Sending unicast to ");
     uip_debug_ipaddr_print(&sendTo1);
@@ -737,9 +782,9 @@ uint8_t delayTime = 0;
 
 	//@
         //cc2420_set_channel(msg2.value);
- 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
-	uip_debug_ipaddr_print(msg2.addrPtr);
-	printf("\n");
+// 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
+//	uip_debug_ipaddr_print(msg2.addrPtr);
+//	printf("\n");
 
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);

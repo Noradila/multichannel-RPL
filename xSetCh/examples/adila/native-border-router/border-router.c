@@ -95,6 +95,16 @@ struct lpbrList {
 LIST(lpbrList_table);
 MEMB(lpbrList_mem, struct lpbrList, 50);
 
+struct sentRecv {
+  struct sentRecv *next;
+  uip_ipaddr_t sendToAddr;
+  uint8_t noSent;
+  uint8_t noRecv;
+};
+
+LIST(sentRecv_table);
+MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
+
 enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
@@ -226,6 +236,37 @@ static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, u
     l->chNum = chValue;
     l->rxValue = pktRecv;
     list_add(lpbrList_table, l);
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
+  struct sentRecv *sr; 
+
+  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
+    uip_debug_ipaddr_print(&sr->sendToAddr);
+    printf("\n");
+  }
+
+  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    if(uip_ipaddr_cmp(sendToAddr, &sr->sendToAddr)) {
+      if(pktSent == 1) {
+	sr->noSent = sr->noSent + 1;
+	return;
+      }
+      if(pktRecv == 1) {
+	sr->noRecv = sr->noRecv + 1;
+	return;
+      }
+    }
+  }
+
+  sr = memb_alloc(&sentRecv_mem);
+  if(sr != NULL) {
+    sr->noSent = pktSent;
+    sr->noRecv = pktRecv;
+    uip_ipaddr_copy(&sr->sendToAddr, sendToAddr);
+    list_add(sentRecv_table, sr);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -397,6 +438,8 @@ receiver(struct simple_udp_connection *c,
   uip_debug_ipaddr_print(sender_addr);
   printf(" on port %d from port %d with length %d: '%s'\n",
          receiver_port, sender_port, datalen, data);
+
+keepSentRecv(sender_addr, 0, 1);
 
     /*for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -749,6 +792,8 @@ uint8_t prevRand;
 //etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
     }
+
+//FOR LOOP AGAIN TO CHECK IF ANY DIDNT CHANGE?
   }
   PROCESS_END();
 }
