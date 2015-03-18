@@ -80,6 +80,10 @@ uip_ipaddr_t nextHopAddr;
 uip_ipaddr_t nH;
 uint8_t channelOK = 1;
 
+uint8_t noOfRoutes;
+uint8_t sendingTo = 0;
+static uip_ipaddr_t holdAddr;
+
 struct lpbrList {
   struct lpbrList *next;
   uip_ipaddr_t routeAddr;
@@ -211,125 +215,6 @@ static int blen;
     }
   }
 }*/
-/*---------------------------------------------------------------------------*/
-static void recheck() {
-  struct lpbrList *l;
-  static uip_ds6_route_t *r;
-  uint8_t checkOK = 0;
-  uip_ipaddr_t *theMissedAddr;
-
-    //for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-    for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
-	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-	  if(uip_ipaddr_cmp(&r->ipaddr, &l->routeAddr)) {
-	    printf("SAME ");
-	    uip_debug_ipaddr_print(&r->ipaddr);
-	    printf(" ");
-	    uip_debug_ipaddr_print(&l->routeAddr);
-	    printf("\n");
-	    checkOK = 1;
-	    break;
-	  }
-	  else {
-	    checkOK = 0;
-	    //printf("MISSED ");
-	    //uip_debug_ipaddr_print(&r->ipaddr);
-	    //printf(" ");
-	    //uip_debug_ipaddr_print(&l->routeAddr);
-	    //printf("\n");
-	   //uip_ipaddr_copy(theMissedAddr, &r->ipaddr);
-	    //continue;
-	  }
-	}
-printf("checkOK %d ", checkOK);
-uip_debug_ipaddr_print(&r->ipaddr);
-printf("\n");
-//printf("LPBRLIST BREAK\n");
-    }
-//printf("ROUTE BREAK\n");
-
-}
-/*---------------------------------------------------------------------------*/
-static void readProbe(uint8_t checkValue) {
-  struct lpbrList *l;
-
-  if(checkValue == 1) {
-    printf("-----------------------------------------------------------\n");
-    printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
-    checkValue = 0;
-  }
-
-  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-    if(checkValue == 0) {
-    uip_debug_ipaddr_print(&l->routeAddr);
-    printf("\t");
-    uip_debug_ipaddr_print(&l->nbrAddr);
-    printf("\t");
-    printf("%d\t%d\n", l->chNum, l->rxValue);
-    }
-
-    else {
-      //? 2 hops?
-      //? compare checkValue == l->chNum for LPBR to decide what channel the node should probe on
-      //? return;
-    }
-  }
-}
-/*---------------------------------------------------------------------------*/
-static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, uint8_t chValue, uint8_t pktRecv) {
-  struct lpbrList *l; 
-
-  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-    if(uip_ipaddr_cmp(senderAddr, &l->routeAddr)) {
-      if(uip_ipaddr_cmp(&nbrAddr, &l->nbrAddr)) {
-        if(chValue == l->chNum) {
-	  l->rxValue = pktRecv;
-	  return;
-        }
-      }
-    }
-  }
-
-  l = memb_alloc(&lpbrList_mem);
-  if(l != NULL) {
-    uip_ipaddr_copy(&l->routeAddr, senderAddr);
-    uip_ipaddr_copy(&l->nbrAddr, &nbrAddr);
-    l->chNum = chValue;
-    l->rxValue = pktRecv;
-    list_add(lpbrList_table, l);
-  }
-}
-/*---------------------------------------------------------------------------*/
-static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
-  struct sentRecv *sr; 
-
-  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
-    printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
-    uip_debug_ipaddr_print(&sr->sendToAddr);
-    printf("\n");
-  }
-
-  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
-    if(uip_ipaddr_cmp(sendToAddr, &sr->sendToAddr)) {
-      if(pktSent == 1) {
-	sr->noSent = sr->noSent + 1;
-	return;
-      }
-      if(pktRecv == 1) {
-	sr->noRecv = sr->noRecv + 1;
-	return;
-      }
-    }
-  }
-
-  sr = memb_alloc(&sentRecv_mem);
-  if(sr != NULL) {
-    sr->noSent = pktSent;
-    sr->noRecv = pktRecv;
-    uip_ipaddr_copy(&sr->sendToAddr, sendToAddr);
-    list_add(sentRecv_table, sr);
-  }
-}
 /*---------------------------------------------------------------------------*/
 uint8_t lpbrCheck2ndHop(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
@@ -472,6 +357,260 @@ break;
 
   return channelOK;
   //return chCheck;
+}
+
+
+
+/*---------------------------------------------------------------------------*/
+void doSending(struct unicast_message *msg) {
+  //struct unicast_message *msg;
+  struct unicast_message msg2;
+
+  uint8_t randomNewCh;
+  static uip_ds6_route_t *r;
+
+  static uip_ds6_nbr_t *nbr;
+  static uip_ds6_route_t *re;
+
+//uint8_t channelOK;
+uint8_t i = 0;
+uint8_t prevRand;
+
+printf("GOT FROM STARTCHCHANGE WHEN 0 ");
+uip_debug_ipaddr_print(&msg->address);
+printf("\n\n");
+uip_ipaddr_copy(&holdAddr, &msg->address);
+
+	//randomNewCh = random_rand() % 5 + 11;
+	randomNewCh = (random_rand() % 16) + 11;
+	//! check if randomNewCh is blacklisted (if it's on the list, low success rate)
+
+	msg2.type = CH_CHANGE;
+	msg2.value = randomNewCh;
+	//msg2.address = r->ipaddr;
+	msg2.address = msg->address;
+	msg2.paddingBuf[30] = " ";
+
+	channelOK = twoHopsLPBR(&msg2.address, msg2.value);
+	channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
+
+	while(channelOK == 0) {
+	  randomNewCh = (random_rand() % 16) + 11;
+	  while(msg2.value == randomNewCh) {
+	    randomNewCh = (random_rand() % 16) + 11;
+	  }
+	  channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
+	  channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
+	}
+
+	//printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
+	msg2.value = randomNewCh;
+
+	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
+	uip_debug_ipaddr_print(&msg2.address);
+	//printf(" via ");
+	//uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+	printf("\n");
+
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &msg2.address);
+
+process_post(&chChange_process2, event_data_ready, NULL);
+
+}
+/*---------------------------------------------------------------------------*/
+static void startChChange(uint8_t currentNode) {
+  struct unicast_message msg2;
+  static uip_ds6_route_t *r;
+
+  uint8_t i = 0;
+
+  for(r = uip_ds6_route_head(); r != NULL; 
+    r = uip_ds6_route_next(r)) {
+    i++;
+    if(i == currentNode) {
+      msg2.address = r->ipaddr;
+      printf("i %d currentNode %d ", i, currentNode);
+      uip_debug_ipaddr_print(&r->ipaddr);
+      printf("\n\n");
+doSending(&msg2);
+      //process_post(&chChange_process2, event_data_ready, &msg2);
+      //process_post_synch(&chChange_process2, event_data_ready, &msg2);
+      break;
+    }
+  }
+
+  //process_post_synch(&chChange_process2, event_data_ready, &msg2);
+  //doSending(&msg2);
+}
+
+
+static void howManyRoutes() {
+  static uip_ds6_route_t *r;
+
+  for(r = uip_ds6_route_head(); r != NULL; 
+    r = uip_ds6_route_next(r)) {
+
+    noOfRoutes = noOfRoutes + 1;
+    printf("%d NO OF ROUTE ", noOfRoutes);
+    uip_debug_ipaddr_print(&r->ipaddr);
+    printf("\n");
+
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void recheck(const uip_ipaddr_t *ipAddress) {
+//static void recheck() {
+  struct lpbrList *l;
+  static uip_ds6_route_t *r;
+  uint8_t checkOK = 0;
+  uip_ipaddr_t *theMissedAddr;
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(uip_ipaddr_cmp(&l->routeAddr, ipAddress)) {
+      printf("SAME ");
+      uip_debug_ipaddr_print(ipAddress);
+      printf(" ");
+      uip_debug_ipaddr_print(&l->routeAddr);
+      printf("\n");
+      checkOK = 1;
+      break;
+    }
+    else {
+      checkOK = 0;
+    }
+  }
+
+  if(checkOK == 1) {
+    sendingTo = sendingTo + 1;
+    printf("CHANNELOK 1 SENDING TO %d\n\n", sendingTo);
+    startChChange(sendingTo);
+  }
+  else {
+    //repeat sending to the same node
+    startChChange(sendingTo);
+    printf("CHANNELOK 0 SENDING TO %d\n\n", sendingTo);
+  }
+/*
+    //for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+	  if(uip_ipaddr_cmp(&r->ipaddr, &l->routeAddr)) {
+	    printf("SAME ");
+	    uip_debug_ipaddr_print(&r->ipaddr);
+	    printf(" ");
+	    uip_debug_ipaddr_print(&l->routeAddr);
+	    printf("\n");
+	    checkOK = 1;
+	    break;
+	  }
+	  else {
+	    checkOK = 0;
+	    //printf("MISSED ");
+	    //uip_debug_ipaddr_print(&r->ipaddr);
+	    //printf(" ");
+	    //uip_debug_ipaddr_print(&l->routeAddr);
+	    //printf("\n");
+	   //uip_ipaddr_copy(theMissedAddr, &r->ipaddr);
+	    //continue;
+	  }
+	}
+printf("checkOK %d ", checkOK);
+uip_debug_ipaddr_print(&r->ipaddr);
+printf("\n");
+
+if(checkOK == 1) {
+sendingTo = sendingTo + 1;
+startChChange(sendingTo);
+}
+else {
+//repeat sending to the same node
+startChChange(sendingTo);
+}
+//printf("LPBRLIST BREAK\n");
+    }
+//printf("ROUTE BREAK\n");
+*/
+}
+/*---------------------------------------------------------------------------*/
+static void readProbe(uint8_t checkValue) {
+  struct lpbrList *l;
+
+  if(checkValue == 1) {
+    printf("-----------------------------------------------------------\n");
+    printf("ROUTE\t\t\tROUTE NBR\t\tCH\tRX\n");
+    checkValue = 0;
+  }
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(checkValue == 0) {
+    uip_debug_ipaddr_print(&l->routeAddr);
+    printf("\t");
+    uip_debug_ipaddr_print(&l->nbrAddr);
+    printf("\t");
+    printf("%d\t%d\n", l->chNum, l->rxValue);
+    }
+
+    else {
+      //? 2 hops?
+      //? compare checkValue == l->chNum for LPBR to decide what channel the node should probe on
+      //? return;
+    }
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void keepLpbrList(const uip_ipaddr_t *senderAddr, uip_ipaddr_t nbrAddr, uint8_t chValue, uint8_t pktRecv) {
+  struct lpbrList *l; 
+
+  for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+    if(uip_ipaddr_cmp(senderAddr, &l->routeAddr)) {
+      if(uip_ipaddr_cmp(&nbrAddr, &l->nbrAddr)) {
+        if(chValue == l->chNum) {
+	  l->rxValue = pktRecv;
+	  return;
+        }
+      }
+    }
+  }
+
+  l = memb_alloc(&lpbrList_mem);
+  if(l != NULL) {
+    uip_ipaddr_copy(&l->routeAddr, senderAddr);
+    uip_ipaddr_copy(&l->nbrAddr, &nbrAddr);
+    l->chNum = chValue;
+    l->rxValue = pktRecv;
+    list_add(lpbrList_table, l);
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
+  struct sentRecv *sr; 
+
+  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
+    uip_debug_ipaddr_print(&sr->sendToAddr);
+    printf("\n");
+  }
+
+  for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
+    if(uip_ipaddr_cmp(sendToAddr, &sr->sendToAddr)) {
+      if(pktSent == 1) {
+	sr->noSent = sr->noSent + 1;
+	return;
+      }
+      if(pktRecv == 1) {
+	sr->noRecv = sr->noRecv + 1;
+	return;
+      }
+    }
+  }
+
+  sr = memb_alloc(&sentRecv_mem);
+  if(sr != NULL) {
+    sr->noSent = pktSent;
+    sr->noRecv = pktRecv;
+    uip_ipaddr_copy(&sr->sendToAddr, sendToAddr);
+    list_add(sentRecv_table, sr);
+  }
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -798,7 +937,23 @@ PROCESS_THREAD(border_router_process, ev, data)
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
     //if(etimer_expired(&changeChTimer)) {
-      process_post_synch(&chChange_process, event_data_ready, NULL);
+    howManyRoutes();
+
+  static uip_ds6_route_t *r;
+
+  for(r = uip_ds6_route_head(); r != NULL; 
+    r = uip_ds6_route_next(r)) {
+
+    noOfRoutes = noOfRoutes + 1;
+    printf("%d NO OF ROUTE ", noOfRoutes);
+    uip_debug_ipaddr_print(&r->ipaddr);
+    printf("\n");
+
+  }
+
+    sendingTo = sendingTo + 1;
+    startChChange(sendingTo);
+      //process_post_synch(&chChange_process, event_data_ready, NULL);
     //}
     /* do anything here??? */
   }
@@ -824,6 +979,10 @@ uint8_t prevRand;
 
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
+
+    //howManyRoutes();
+    printf("NOOFROUTES %d\n\n", noOfRoutes);
+
 
     for(r = uip_ds6_route_head(); r != NULL; 
 	r = uip_ds6_route_next(r)) {
@@ -884,9 +1043,15 @@ uint8_t prevRand;
 	etimer_set(&time, 5 * CLOCK_SECOND);
 //etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+printf("RECHECK for ");
+uip_debug_ipaddr_print(&r->ipaddr);
+printf("\n\n");
+recheck(&r->ipaddr);
     }
 
-recheck();
+//recheck();
+
 //FOR LOOP AGAIN TO CHECK IF ANY DIDNT CHANGE?
   }
   PROCESS_END();
@@ -895,13 +1060,15 @@ recheck();
 PROCESS_THREAD(chChange_process2, ev, data)
 {
   static struct etimer time;
+  struct unicast_message *msg;
   struct unicast_message msg2;
+  msg = data;
+
   uint8_t randomNewCh;
   static uip_ds6_route_t *r;
 
   static uip_ds6_nbr_t *nbr;
   static uip_ds6_route_t *re;
-  struct lpbrList *l;
 
 //uint8_t channelOK;
 uint8_t i = 0;
@@ -912,83 +1079,64 @@ uint8_t prevRand;
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
-//static void recheck() {
-//  struct lpbrList *l;
-//  static uip_ds6_route_t *r;
+/*printf("GOT FROM STARTCHCHANGE WHEN 0 ");
+uip_debug_ipaddr_print(&msg->address);
+printf("\n\n");
+uip_ipaddr_copy(&holdAddr, &msg->address);
 
-    for(r = uip_ds6_route_head(); r != NULL; 
-	r = uip_ds6_route_next(r)) {
-
-	for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
-	  if(!uip_ipaddr_cmp(&r->ipaddr, &l->routeAddr)) {
-	    printf("NOT SAME" );
-	    uip_debug_ipaddr_print(&r->ipaddr);
-	    printf(" ");
-	    uip_debug_ipaddr_print(&l->routeAddr);
-	    printf("\n");
-	  }
-	}
-    }
-
-//}
-/*	randomNewCh = random_rand() % 5 + 11;
-	//randomNewCh = random_rand() % 16 + 11;
+	//randomNewCh = random_rand() % 5 + 11;
+	randomNewCh = (random_rand() % 16) + 11;
 	//! check if randomNewCh is blacklisted (if it's on the list, low success rate)
 
 	msg2.type = CH_CHANGE;
 	msg2.value = randomNewCh;
-	msg2.address = r->ipaddr;
+	//msg2.address = r->ipaddr;
+	msg2.address = msg->address;
 	msg2.paddingBuf[30] = " ";
 
 	channelOK = twoHopsLPBR(&msg2.address, msg2.value);
 	channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
-	//printf("LPBR CHANNEL OK? %d\n\n\n", channelOK);
-	prevRand = randomNewCh;
-	while(channelOK == 0 || (i == 3)) {
-	  randomNewCh = random_rand() % 5 + 11;
+	while(channelOK == 0) {
+	  randomNewCh = (random_rand() % 16) + 11;
 	  while(msg2.value == randomNewCh) {
-	    randomNewCh = random_rand() % 10 + 11;
-	    //printf("prevRand == randomNewCh %d get new %d\n\n", msg2.value, randomNewCh);
+	    randomNewCh = (random_rand() % 16) + 11;
 	  }
 	  channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
 	  channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
-	  i++;
 	}
 
 	//printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
 	msg2.value = randomNewCh;
 
 	printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
-	uip_debug_ipaddr_print(&r->ipaddr);
-	printf(" via ");
-	uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	//printf(" nbrCh %d", r->nbrCh);
+	uip_debug_ipaddr_print(&msg2.address);
+	//printf(" via ");
+	//uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
 	printf("\n");
 
-	/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-	  if(uip_ipaddr_cmp(&nbr->ipaddr, uip_ds6_route_nexthop(r))) {
-	    if(r->ipaddr.u8[11] == nbr->ipaddr.u8[11]) {
-		  nbr->nbrCh = msg2.value;
-		  r->nbrCh = msg2.value;
-	    }
-	  }
-	}*/
-
-/*	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &r->ipaddr);
-
+	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &msg2.address);
+*/
 	//3 sec per nbr
 	//equals to 30 secs? (even though it's supposed to be 3 secs) - depends on how many nbr
 	//etimer_set(&time, 10 * CLOCK_SECOND); //1 min
-	etimer_set(&time, 3 * CLOCK_SECOND);
+	//etimer_set(&time, 3 * CLOCK_SECOND);
+
+	etimer_set(&time, 5 * CLOCK_SECOND);
 //etimer_set(&time, 5 * CLOCK_SECOND);
 	PROCESS_YIELD_UNTIL(etimer_expired(&time));
-    }
-*/
-//FOR LOOP AGAIN TO CHECK IF ANY DIDNT CHANGE?
+
+//recheck();
+printf("RECHECK for ");
+uip_debug_ipaddr_print(&holdAddr);
+printf("\n\n");
+recheck(&holdAddr);
+
+/*	etimer_set(&time, 0.5 * CLOCK_SECOND);
+//etimer_set(&time, 5 * CLOCK_SECOND);
+	PROCESS_YIELD_UNTIL(etimer_expired(&time));
+printf("timer2 expired\n\n");*/
+//FOR LOOP AGAIN TO CHECK IF ANY DIDNT CHANGE?*/
   }
   PROCESS_END();
 }
-/*---------------------------------------------------------------------------*/
