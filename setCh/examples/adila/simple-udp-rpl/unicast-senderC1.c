@@ -58,7 +58,8 @@
 //#define SEND_INTERVAL		(310 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(450 * CLOCK_SECOND)
 #define SEND_INTERVAL		(600 * CLOCK_SECOND)
-#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
+//#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
+#define SEND_TIME		(random_rand() % (60 * CLOCK_SECOND))
 //#define SEND_TIME		(20 * CLOCK_SECOND)
 
 struct probeResult {
@@ -590,7 +591,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
   etimer_set(&periodic_timer, SEND_INTERVAL);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-    etimer_reset(&periodic_timer);
+    //etimer_reset(&periodic_timer);
+    etimer_set(&periodic_timer, 60 * CLOCK_SECOND);
     etimer_set(&send_timer, SEND_TIME);
 
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&send_timer));
@@ -711,12 +713,12 @@ uint8_t delayTime = 0;
 	    else if(x == 1) {
 	    //if(keepType == STARTPROBE) {
 	      msg2.type = STARTPROBE;
-	      printf("%d Sending STARTPROBE %d to tree neighbour ", nbr->nbrCh, msg2.value);
+	      //printf("%d Sending STARTPROBE %d to tree neighbour ", nbr->nbrCh, msg2.value);
 	      //delayTime = 1;
 	    }
 
-            uip_debug_ipaddr_print(msg2.addrPtr);
-            printf("\n");
+            //uip_debug_ipaddr_print(msg2.addrPtr);
+            //printf("\n");
 	    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
 
 	    //etimer_set(&time, delayTime * CLOCK_SECOND);
