@@ -60,7 +60,8 @@
 #include "net/uip-debug.h"
 
 //#define MAX_SENSORS 4
-#define MAX_SENSORS 20
+//#define MAX_SENSORS 20
+#define MAX_SENSORS 50
 
 //#include "random.h"
 
@@ -109,7 +110,8 @@ struct sentRecv {
 };
 
 LIST(sentRecv_table);
-MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
+//MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
+MEMB(sentRecv_mem, struct sentRecv, 50); //for now, only sent to LPBR
 
 enum {
 	CH_CHANGE,
@@ -417,7 +419,7 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
   }
 
   //if(checkOK == 1) {
-  if(checkOK == 1 || noOfRetransmit == 6) {
+  if(checkOK == 1 || noOfRetransmit == 10) {
     printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     sendingTo = sendingTo + 1;
     noOfRetransmit = 0;
@@ -821,7 +823,8 @@ PROCESS_THREAD(border_router_process, ev, data)
   //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
   //etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
-  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
+  //etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
 
