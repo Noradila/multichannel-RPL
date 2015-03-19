@@ -84,6 +84,8 @@ uint8_t noOfRoutes;
 uint8_t sendingTo = 0;
 static uip_ipaddr_t holdAddr;
 
+uint8_t noOfRetransmit;
+
 struct lpbrList {
   struct lpbrList *next;
   uip_ipaddr_t routeAddr;
@@ -480,15 +482,21 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
     }
   }
 
-  if(checkOK == 1) {
+  //if(checkOK == 1) {
+  if(checkOK == 1 || noOfRetransmit == 5) {
+    printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     sendingTo = sendingTo + 1;
+    noOfRetransmit = 0;
     printf("CHANNELOK 1 SENDING TO %d\n\n", sendingTo);
     startChChange(sendingTo);
   }
   else {
     //repeat sending to the same node
-    startChChange(sendingTo);
+    //startChChange(sendingTo);
+    printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     printf("CHANNELOK 0 SENDING TO %d\n\n", sendingTo);
+    noOfRetransmit = noOfRetransmit + 1;
+    startChChange(sendingTo);
   }
 /*
     //for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
@@ -939,7 +947,7 @@ PROCESS_THREAD(border_router_process, ev, data)
     //if(etimer_expired(&changeChTimer)) {
     howManyRoutes();
 
-  static uip_ds6_route_t *r;
+  /*static uip_ds6_route_t *r;
 
   for(r = uip_ds6_route_head(); r != NULL; 
     r = uip_ds6_route_next(r)) {
@@ -949,7 +957,7 @@ PROCESS_THREAD(border_router_process, ev, data)
     uip_debug_ipaddr_print(&r->ipaddr);
     printf("\n");
 
-  }
+  }*/
 
     sendingTo = sendingTo + 1;
     startChChange(sendingTo);
