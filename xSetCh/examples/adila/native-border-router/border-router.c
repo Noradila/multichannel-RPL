@@ -87,6 +87,8 @@ static uip_ipaddr_t holdAddr;
 
 uint8_t noOfRetransmit;
 
+uint8_t i;
+
 struct lpbrList {
   struct lpbrList *next;
   uip_ipaddr_t routeAddr;
@@ -341,7 +343,28 @@ void doSending(struct unicast_message *msg) {
   channelOK = twoHopsLPBR(&msg2.address, msg2.value);
   channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
-  while(channelOK == 0) {
+  //channel will be selected and checked with 2 hops for 4 times
+  //if failed, it will use the default channel, 26
+  while(channelOK == 0 && i < 4) {
+    randomNewCh = (random_rand() % 16) + 11;
+    while(msg2.value == randomNewCh) {
+      randomNewCh = (random_rand() % 16) + 11;
+      printf("RANDOMNEWCH %d i %d\n\n", randomNewCh, i);
+    }
+    channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
+    channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
+
+    i++;
+  }
+
+  if(i == 4) {
+    //couldn't find a 2 hops channel value, use the default 26
+    printf("%d RANDOMNEWCH USE DEFAULT\n\n", i);
+    randomNewCh = 26;
+    i = 0;
+  }
+
+/*  while(channelOK == 0) {
     randomNewCh = (random_rand() % 16) + 11;
     while(msg2.value == randomNewCh) {
       randomNewCh = (random_rand() % 16) + 11;
@@ -349,7 +372,7 @@ void doSending(struct unicast_message *msg) {
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
     channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
   }
-
+*/
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
 
@@ -419,7 +442,7 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
   }
 
   //if(checkOK == 1) {
-  if(checkOK == 1 || noOfRetransmit == 10) {
+  if(checkOK == 1 || noOfRetransmit == 6) {
     printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     sendingTo = sendingTo + 1;
     noOfRetransmit = 0;
@@ -822,9 +845,9 @@ PROCESS_THREAD(border_router_process, ev, data)
 
   //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
-  //etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
   //etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
-  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
+  //etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
 
@@ -865,6 +888,7 @@ uint8_t prevRand;
     //etimer_set(&time, 3 * CLOCK_SECOND);
 
     etimer_set(&time, 5 * CLOCK_SECOND);
+    //etimer_set(&time, 7 * CLOCK_SECOND);
     PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
     printf("RECHECK for ");
