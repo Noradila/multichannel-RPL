@@ -57,7 +57,8 @@
 //#define SEND_INTERVAL		(60 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(310 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(450 * CLOCK_SECOND)
-#define SEND_INTERVAL		(600 * CLOCK_SECOND)
+//#define SEND_INTERVAL		(600 * CLOCK_SECOND)
+#define SEND_INTERVAL		(900 * CLOCK_SECOND) //wait for 15 minutes
 //#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 #define SEND_TIME		(random_rand() % (60 * CLOCK_SECOND))
 //#define SEND_TIME		(20 * CLOCK_SECOND)
