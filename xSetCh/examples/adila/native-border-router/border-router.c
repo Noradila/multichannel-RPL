@@ -419,12 +419,50 @@ static void howManyRoutes() {
   }
 }
 /*---------------------------------------------------------------------------*/
-static void recheck(const uip_ipaddr_t *ipAddress) {
-//static void recheck() {
+static void recheck2() {
   struct lpbrList *l;
   static uip_ds6_route_t *r;
   uint8_t checkOK = 0;
-  uip_ipaddr_t *theMissedAddr;
+  uip_ipaddr_t theMissedAddr;
+
+  for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+    for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
+      if(uip_ipaddr_cmp(&r->ipaddr, &l->routeAddr)) {
+        /*printf("SAME ");
+	uip_debug_ipaddr_print(&r->ipaddr);
+	printf(" ");
+	uip_debug_ipaddr_print(&l->routeAddr);
+	printf("\n");*/
+	checkOK = 1;
+	break;
+      }
+      else {
+	checkOK = 0;
+      }
+    }
+    if(checkOK == 0) {
+      uip_ipaddr_copy(&theMissedAddr, &r->ipaddr);
+      printf("themissedaddr ");
+      uip_debug_ipaddr_print(&theMissedAddr);
+      printf("\n\n");
+      break;
+    }
+  }
+ 
+  if(checkOK == 0) {
+    printf("recheck2 checkOK %d ", checkOK);
+    uip_debug_ipaddr_print(&theMissedAddr);
+    printf("\n");
+  }
+
+}
+
+static void recheck(const uip_ipaddr_t *ipAddress) {
+//static void recheck() {
+  struct lpbrList *l;
+  //static uip_ds6_route_t *r;
+  uint8_t checkOK = 0;
+  //uip_ipaddr_t *theMissedAddr;
 
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(uip_ipaddr_cmp(&l->routeAddr, ipAddress)) {
@@ -442,12 +480,18 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
   }
 
   //if(checkOK == 1) {
-  if(checkOK == 1 || noOfRetransmit == 6) {
+  if(checkOK == 1 || noOfRetransmit == 4) {
     printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     sendingTo = sendingTo + 1;
     noOfRetransmit = 0;
     printf("CHANNELOK 1 SENDING TO %d\n\n", sendingTo);
     startChChange(sendingTo);
+
+    if(sendingTo == (noOfRoutes + 1)) {
+      //recheck again
+      printf("SENDINGTO-1 %d NOOFROUTES %d\n\n", sendingTo, noOfRoutes + 1);
+      recheck2();
+    }
   }
   else {
     //repeat sending to the same node
@@ -587,6 +631,12 @@ receiver(struct simple_udp_connection *c,
       uip_debug_ipaddr_print(&nbr->ipaddr);
       printf(" channel %d\n", nbr->nbrCh);
     }*/
+  }
+
+  else if(msg->type == SENTRECV) {
+    printf("Received SENTRECV %d from ", msg->value);
+    uip_debug_ipaddr_print(sender_addr);
+    printf("\n");
   }
 
   else {
