@@ -59,6 +59,7 @@
 //#define SEND_INTERVAL		(450 * CLOCK_SECOND)
 //#define SEND_INTERVAL		(600 * CLOCK_SECOND)
 #define SEND_INTERVAL		(900 * CLOCK_SECOND) //wait for 15 minutes
+//#define SEND_INTERVAL		(1200 * CLOCK_SECOND)
 //#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 #define SEND_TIME		(random_rand() % (60 * CLOCK_SECOND))
 //#define SEND_TIME		(20 * CLOCK_SECOND)
@@ -326,8 +327,14 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
+static void sendSentRecv() {
+  printf("Sending LPBR SENTRECV\n\n");
+}
+
 static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
   struct sentRecv *sr; 
+  struct unicast_message msg2;
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   /*for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
     printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
@@ -339,15 +346,38 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
     if(uip_ipaddr_cmp(sendToAddr, &sr->sendToAddr)) {
       if(pktSent == 1) {
 	sr->noSent = sr->noSent + 1;
+
+        if(sr->noSent == 2) {
+	  //sendSentRecv();
+	  //tell LPBR to check the channel condition
+	  msg2.type = SENTRECV;
+	  //msg2.address = pr->pAddr;
+	  msg2.value = sr->noSent;
+	  //msg2.value2 = pr->rxValue; 
+
+	  printf("Sending LPBR has sent 2 packets\n");
+	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+	}
 	return;
       }
       if(pktRecv == 1) {
 	sr->noRecv = sr->noRecv + 1;
 	return;
       }
-      if(sr->noSent == 10) {
-	//tell LPBR to check the channel condition
-      }
+      /*  if(sr->noSent == 2) {
+	  sendSentRecv();
+	  //tell LPBR to check the channel condition
+	  /*msg2.type = SENTRECV;
+	  //msg2.address = pr->pAddr;
+	  msg2.value = sr->noSent;
+	  //msg2.value2 = pr->rxValue; 
+
+	  printf("Sending LPBR has sent 2 packets\n");
+	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+	  //return;*/
+      /*  }
+	return;
+      }*/
     }
   }
 
@@ -611,7 +641,7 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
 
     //keepSentRecv(&sendTo1, 1, 0);
 
-keepSentRecv(&sendTo1, 1, 0);
+//keepSentRecv(&sendTo1, 1, 0);
 
     printf("Sending unicast to ");
     uip_debug_ipaddr_print(&sendTo1);
@@ -619,6 +649,8 @@ keepSentRecv(&sendTo1, 1, 0);
     sprintf(buf, "Message %d", message_number);
     message_number++;
     simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &sendTo1);
+
+    keepSentRecv(&sendTo1, 1, 0);
 
       //? to be called after sending the PROBE INFO to LPBR - empty the list
       //? QUICK HACK
