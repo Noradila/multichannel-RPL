@@ -719,6 +719,9 @@ receiver(struct simple_udp_connection *c,
     msg2.value = msg->value;
     uip_ipaddr_copy(&msg2.addrPtr, &sender_addr);
 
+    if(sender_addr->u8[11] == 2) {
+      recheckChChange(&msg2);
+    }
     //recheckChChange(&msg2);
 
   }
