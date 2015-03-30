@@ -1,0 +1,14 @@
+\section{Evaluation}
+%ours, RPL + ContikiMAC, MiCMAC
+We describe the experiments that we run to evaluate our multi-channel tree protocol and comparing the results (compare what??) against single-channel tree protocol and MiCMAC.
+
+\subsection{Experimental Setup}
+%//methodology? key metrics?
+We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of (explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. (how many other nodes??) are duty cycled and acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on several channels (check??) to measure the benefits of multi-channel operation of changing channel when failure happens within a given period. 
+
+- throughput?
+
+\subsection{Effect of Multi-channel}
+//with existings - better? worse? what about RAM, ROM used?
+
+\subsection{Resilience to External Interference}

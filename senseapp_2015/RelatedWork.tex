@@ -1,0 +1,46 @@
+\section{Related Work}
+%- multichannel enables communication between more than one node to occur simultaneously and in a collision free manner
+
+%\subsection{Existing Multichannel Protocol}
+Radio duty cycling mechanism can be classified into two categories; synchronous and asynchronous. Multichannel synchronous protocols for such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC and TSCH depend on the neighbouring nodes to synchronise with each other while multichannel asynchronous protocols such as Chrysso, MiCMAC and our protocol are independent.
+
+**NOT YET ADDED - Multichannel protocol such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC. What these works do?
+
+%TSCH (Time Synchronized Channel Hopping) employs TDMA and channel hopping such that it schedules communications in 2 dimensions: time and frequency.
+
+Timeslotted Channel Hopping (TSCH) \cite{tsch} focuses on the MAC layer which can be used with RPL. It uses time synchronisation and channel hopping for ultra low power operation and high reliability. TSCH schedules the communication in time and frequency slot. However, it requires tight synchronisation to the neighbour nodes. In order to use TSCH with RPL, there are several problems to be addressed in term of the topology and network maintenance as RPL determines the multihop route and has it's own control messages.
+
+%Chrysso is a multi-channel solution that is specifically designed for mitigating external interference in data collection WSNs. The core of Chrysso’s functionality comprises a set of channel switching policies that interface to both the MAC layer and the network layer (Collect).
+
+Chrysso \cite{chrysso} is a multichannel protocol for data collection applications. The nodes are organised into parent-children groups where each parent-children uses two channel for transmitting and receiving packets. Both parent and children nodes can hop to another channel when interference is detected based on the channel switching policies. If a node loses connectivity, Chrysso calls the scan mode to enable neighbour discovery over multiple channel. Chrysso concentrates on data collection while our work tries to improve RPL single channel into multichannel without dealing with the MAC layer. 
+
+MiCMAC \cite{micmac} is an asynchronous protocol, ContikiMAC \cite{contikimac} channel hopping variant. On every wakeup cycle, the channel is periodically switched according to a pseudo-random sequence. MiCMAC introduces channel lock for the channel reception at the sender. There is a dedicated broadcast channel for a duration at every wake up period. MiCMAC can be used with RPL without any changes to RPL. However, RPL might not formed properly because the nodes need to be on the broadcast channel at different time for different node according to the trickle timer to receive RPL control messages which are sent through unicast and broadcast.
+
+Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. Our work is a variant of RPL.
+
+%- channel? repetition of time slot over 2-hop range? TDMA-W?
+%- S-MAC? contend for the channel during listen cycles? meaning?
+%- pair wise synchronisation?
+%- energy savings - obtained by allowing radio for data communication to enter the low power sleep mode
+%- ContikiMAC + CSMA - it does the backoff (solve deafness problem?) check how CSMA deals with deafness. When deafness happen in our case?
+%- overhearing avoided as nodes are assigned different channels
+%- transmit at a constant power level?
+%- nodes are allocated channels that overlap at 3 hops or more through the execution of a suitable channel assignment algorithm
+%- channel negotiation is only when selecting channel to listen on - based on LPBR channel change message
+%- collision - if nodes try to send to the same parent/node. Collision won't happen even during the phase for control channel exchange (receive channel change from LPBR) since it won't happen all at once
+
+%\subsection{RPL Topology}
+
+%routing in RPL
+%Routing protocol for low power and lossy networks (RPL) is a gradient based routing protocol forming any-to-any routing for low power IPv6 networks. RPL topology is a Destination-Oriented Directed Acyclic Graph (DODAG), rooted at a single destination, called the Low Power and lossy network Border Router (LPBR) with no cycles. The root has the overall view of the network. The other nodes however, only has knowledge of its neighbours and default router. RPL is a rooted topology which any-to-any traffic is directed towards the root unless the common ancestor is found which the traffic is then routed downwards towards the destination. This strategy is used in order to scale large networks by reducing the routing overhead at the cost of increased hop count through common ancestor. However, RPL has drawbacks. It takes a while before a broken link is detected and global repair to take place.
+
+%objective function
+%routing metrics
+%RPL separates the routing optimisation objectives with the packet processing and forwarding policies. This allows the networks to have different optimisation objectives which include the rank computation, node selection, parents selection and route optimisation. However, RPL Objective Function (OF) is not an algorithm. It is the process to optimise the routes. In RPL terminology, the node distance to the root and other nodes is defined as the node's rank. The rank increases downwards and decreases towards the root. There are two Objective Functions specified as the standard, which are the Objective Function Zero (OF0) and Minimum Rank with Hysteresis Objective Function (MRHOF). OF0 is based on the shortest amount of hops to the root~\cite{of0}. MRHOF uses hysteresis with the Expected Transmission Count (ETX) metric. ETX is the number of transmissions that a node expect to successfully deliver a packet to the destination. It finds the path with the minimum rank and switches only if the rank is less than the current rank to prevent frequent changes~\cite{mrhof}. Hop count and ETX are node and link metrics which is a direct conversion of metric to rank values. By default, Contiki uses MRHOF.
+
+%rpl messages
+%RPL defines three main types of ICMPv6 based control messages used in topology formation and maintenance which are the DODAG Information Object (DIO), Destination Advertisement Object (DAO) and DODAG Information Solicitation (DIS). DIO contains the information needed by the node such as the configuration parameters, parent selection and rank. DAO is used to enable packets to propagate towards the root. DIS is used by a node to require  DIO messages from its neighbour in order to join the DODAG. 
+
+%topology formation
+%trickle timer
+%The topology starts that the root node that sends DIO messages to its neighbours. The nodes that receive the message choose it's parent based on the OF, updates the DIO message before sending to its neighbours. The same processes are repeated until all nodes have joined the tree. DIO message is also used for topology maintenance. However, calling the messages frequently would make the network congested. Thus, Trickle timer is used. Trickle algorithm controls the transmission rate of DIO messages. When the timer expires, Trickle doubles the timer interval until it reaches the maximum value. However, when an event occurs, the timer is reset to the minimum value~\cite{trickle}. By default, Contiki uses $2^{12}$ milliseconds as the minimum interval between DIO messages and $2^{20}$ milliseconds as the maximum value.

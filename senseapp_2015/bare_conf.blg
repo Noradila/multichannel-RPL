@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: bare_conf.aux
+The style file: plain.bst
+Database file #1: globecom_2015.bib
+Warning--to sort, need author or key in ieee_2012
+Warning--empty author in ieee_2012
+Warning--empty journal in mrhof
+Warning--empty journal in tsch
+Warning--empty journal in of0
+You've used 17 entries,
+            2118 wiz_defined-function locations,
+            580 strings with 7451 characters,
+and the built_in function-call counts, 6490 in all, are:
+= -- 649
+> -- 309
+< -- 9
++ -- 128
+- -- 106
+* -- 386
+:= -- 1002
+add.period$ -- 53
+call.type$ -- 17
+change.case$ -- 104
+chr.to.int$ -- 0
+cite$ -- 22
+duplicate$ -- 312
+empty$ -- 468
+format.name$ -- 106
+if$ -- 1433
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 16
+newline$ -- 86
+num.names$ -- 32
+pop$ -- 130
+preamble$ -- 1
+purify$ -- 87
+quote$ -- 0
+skip$ -- 272
+stack$ -- 0
+substring$ -- 276
+swap$ -- 129
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 68
+warning$ -- 5
+while$ -- 52
+width$ -- 19
+write$ -- 187
+(There were 5 warnings)
