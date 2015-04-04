@@ -60,8 +60,12 @@ At initialisation, LPBR uses random channel to decide which node and what channe
 	
 %**TWO HOP COLOURING STRATEGY?
 \subsubsection{Two Hops Neighbour Strategy -}
-////DID MANY CHANGES, TO BE REWRITTEN!!!
-In two hops neighbour strategy, similar to random channel selection, LPBR choose a random channel for a node unless LPBR has knowledge of the channels condition as mentioned in Random Channel Selection section. The node checks if there is another node that is two hops away using the same channel. In RPL, the node routing table and neighbour table do not contain the information of all existing nodes in the network but only the nearest nodes that are in range. In order to do the checking, both routing table and neighbour table are used. The routing table is referred to when forwarding the channel value to the specific node while the neighbour table keeps the information on the node and neighbours listening and transmitting channels. This is important as the node should always sends on the correct transmitting channel and return to the listening channel. When a node gets the channel to change into, it first checks it's own neighbour table if any of the neighbour is currently on the channel. If there is none, the node asks the neighbours to check their neighbour table. The decision of whether the channel can be used is passed back to LPBR. LPBR will then use the channel or decide on another channel depending on the reply from the node and neighbours, and the steps explained in section 3.4 proceed. If LPBR could not get a two hops free channel, it will use the default channel which is channel 26.
+In two hops neighbour strategy, similar to random channel selection, LPBR choose a random channel for a node unless LPBR has knowledge of the channels condition as mentioned in Random Channel Selection section. The node checks if there is another node that is two hops away using the same channel. In RPL, the node routing table and neighbour table do not contain the information of all existing nodes in the network but only the nearest nodes that are in range. The neighbour table keeps the information of the node's neighbours listening. This is important as the node should always sends on the correct transmitting channel which is the neighbour listening channel. 
+
+////WRONG! LPBR DO THE 2 HOPS CHECKING!!!
+When a node gets the channel to change into, it first checks it's own neighbour table if any of the neighbour is currently on the channel. If there is none, the node asks the neighbours to check their neighbour table. The decision of whether the channel can be used is passed back to LPBR. LPBR will then use the channel or decide on another channel depending on the reply from the node and neighbours, and the steps explained in section 3.4 proceed. 
+
+If LPBR could not get a two hops free channel, it will use the default channel which is channel 26.
 
 
 \subsection{Channel Quality Checking}
