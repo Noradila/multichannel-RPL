@@ -16,7 +16,7 @@ Chrysso \cite{chrysso} is a multichannel protocol for data collection applicatio
 
 MiCMAC \cite{micmac} is an asynchronous protocol, ContikiMAC \cite{contikimac} channel hopping variant. On every wakeup cycle, the channel is periodically switched according to a pseudo-random sequence. MiCMAC introduces channel lock for the channel reception at the sender. There is a dedicated broadcast channel for a duration at every wake up period. MiCMAC can be used with RPL without any changes to RPL. However, RPL might not formed properly because the nodes need to be on the broadcast channel at different time for different node according to the trickle timer to receive RPL control messages which are sent through unicast and broadcast.
 
-Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. Our work is a variant of RPL.
+Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. The RPL control messages are sent through unicast in order to reduce unnecessary transmitting in broadcast. Our work makes use of RPL topology formation and improves on the channel within the topology formed.
 
 %- channel? repetition of time slot over 2-hop range? TDMA-W?
 %- S-MAC? contend for the channel during listen cycles? meaning?

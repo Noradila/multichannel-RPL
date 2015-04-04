@@ -60,6 +60,7 @@
 //#define SEND_INTERVAL		(600 * CLOCK_SECOND)
 #define SEND_INTERVAL		(900 * CLOCK_SECOND) //wait for 15 minutes
 //#define SEND_INTERVAL		(1200 * CLOCK_SECOND)
+//#define SEND_INTERVAL		(2000 * CLOCK_SECOND)
 //#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 #define SEND_TIME		(random_rand() % (60 * CLOCK_SECOND))
 //#define SEND_TIME		(20 * CLOCK_SECOND)
@@ -327,14 +328,13 @@ static void keepProbeResult(const uip_ipaddr_t *prAddr, uint8_t chN, uint8_t get
   }
 }
 /*---------------------------------------------------------------------------*/
-static void sendSentRecv() {
-  printf("Sending LPBR SENTRECV\n\n");
-}
-
 static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_t pktRecv) {
   struct sentRecv *sr; 
   struct unicast_message msg2;
   uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+
+  uip_ipaddr_t sendTo2;
+  uip_ip6addr(&sendTo2, 0xaaaa, 0, 0, 0, 0x212, 0x7402, 0x0002, 0x0202);
 
   /*for(sr = list_head(sentRecv_table); sr != NULL; sr = sr->next) {
     printf("keepSentRecv s: %d r: %d ", sr->noSent, sr->noRecv);
@@ -347,8 +347,9 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
       if(pktSent == 1) {
 	sr->noSent = sr->noSent + 1;
 
-        if(sr->noSent == 2) {
-	  //sendSentRecv();
+        if(sr->noSent == 5) {
+//if(sr->sendToAddr.u8[11] == 2) {
+//if(uip_ipaddr_cmp(&sr->sendToAddr, &sendTo2)) {
 	  //tell LPBR to check the channel condition
 	  msg2.type = SENTRECV;
 	  //msg2.address = pr->pAddr;
@@ -357,6 +358,12 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
 
 	  printf("Sending LPBR has sent 2 packets\n");
 	  simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+
+          sr->noSent = 0;
+
+//return;
+//}
+	  //process_post_synch(&test1, event_data_ready, &msg2);
 	}
 	return;
       }
@@ -365,7 +372,6 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
 	return;
       }
       /*  if(sr->noSent == 2) {
-	  sendSentRecv();
 	  //tell LPBR to check the channel condition
 	  /*msg2.type = SENTRECV;
 	  //msg2.address = pr->pAddr;
@@ -692,6 +698,12 @@ uint8_t delayTime = 0;
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
 
+    /*if(msg->type == SENTRECV) {
+      printf("T\n\n");
+      etimer_set(&time, 5 * CLOCK_SECOND);
+      PROCESS_YIELD_UNTIL(etimer_expired(&time));
+    }*/
+
     //if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE || msg->type == CONFIRM_CH) {
     if(msg->type == NBR_CH_CHANGE || msg->type == STARTPROBE) {
 
@@ -869,9 +881,9 @@ uint8_t delayTime = 0;
 	//}
 
 	msg2.type = CONFIRM_CH;
-	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
-        uip_debug_ipaddr_print(msg2.addrPtr);
-        printf("\n");
+//	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
+//        uip_debug_ipaddr_print(msg2.addrPtr);
+//        printf("\n");
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);	
 
 	etimer_set(&time, 0.7 * CLOCK_SECOND);
@@ -913,10 +925,10 @@ uint8_t delayTime = 0;
       msg2.value = changeTo;
 
       //!cc2420_set_channel(msg2.value);
-      printf("Sending GET_ACK back %d ", changeTo);
+//      printf("Sending GET_ACK back %d ", changeTo);
       //cc2420_set_channel(uip_ds6_defrt_ch());
-      uip_debug_ipaddr_print(msg2.addrPtr);
-      printf("\n");
+//      uip_debug_ipaddr_print(msg2.addrPtr);
+//      printf("\n");
 
       //@
       //cc2420_set_channel(changeTo);

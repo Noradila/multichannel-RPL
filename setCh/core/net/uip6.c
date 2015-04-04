@@ -84,6 +84,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
 #if UIP_CONF_IPV6_RPL
@@ -915,6 +916,7 @@ ext_hdr_options_process(void)
 void
 uip_process(uint8_t flag)
 {
+printf("DEBUG UIP_PROCESS\n\n");
 #if UIP_TCP
   register struct uip_conn *uip_connr = uip_conn;
 #endif /* UIP_TCP */
@@ -1067,7 +1069,7 @@ uip_process(uint8_t flag)
       goto udp_send;
     } else {
 //ADILA EDIT
-//printf("1a\n\n");
+//printf("drop\n\n");
 
       goto drop;
     }
@@ -1084,7 +1086,7 @@ uip_process(uint8_t flag)
   if((UIP_IP_BUF->vtc & 0xf0) != 0x60)  { /* IP version and header length. */
 
 //ADILA EDIT
-//printf("aaa %d\n\n", ++us.ip.drop);
+//printf("us.ip.drop %d\n\n", ++us.ip.drop);
 
 
     UIP_STAT(++uip_stat.ip.drop);
@@ -1093,7 +1095,6 @@ uip_process(uint8_t flag)
 
 //ADILA EDIT
 //printf("udp: ipv6: invalid version\n\n");
-//printf("here\n\n");
 
     goto drop;
   }
@@ -1146,7 +1147,7 @@ uip_process(uint8_t flag)
     PRINTF("Dropping packet, src is mcast\n");
 
 //ADILA EDIT
-//printf("abcd %d\n\n", ++us.ip.drop);
+//printf("us.ip.drop %d\n\n", ++us.ip.drop);
 
     goto drop;
   }
@@ -1174,9 +1175,6 @@ uip_process(uint8_t flag)
 	PRINTF("Dropping packet after extension header processing\n");
 
 //ADILA EDIT
-//printf("1\n\n");
-
-//ADILA EDIT
 //printf("udp: dropping packet after extension header processing\n\n");
 
         /* silently discard */
@@ -1184,8 +1182,6 @@ uip_process(uint8_t flag)
       case 2:
 	PRINTF("Sending error message after extension header processing\n");
 
-//ADILA EDIT
-//printf("2\n\n");
 //ADILA EDIT
 //printf("udp: sending error extension header\n\n");
 
@@ -1209,7 +1205,7 @@ uip_process(uint8_t flag)
       /* Check MTU */
       if(uip_len > UIP_LINK_MTU) {
 //ADILA EDIT
-//printf("abcdef\n\n");
+//printf("icmp pkt too big\n\n");
 
         uip_icmp6_error_output(ICMP6_PACKET_TOO_BIG, 0, UIP_LINK_MTU);
         UIP_STAT(++uip_stat.ip.drop);
@@ -1251,7 +1247,7 @@ uip_process(uint8_t flag)
          (!uip_ds6_is_addr_onlink((&UIP_IP_BUF->destipaddr)))) {
 
 //ADILA EDIT
-printf("abcde\n\n");
+//printf("LL source address with off link destination, dropping\n");
 
         PRINTF("LL source address with off link destination, dropping\n");
         uip_icmp6_error_output(ICMP6_DST_UNREACH,
@@ -1260,7 +1256,7 @@ printf("abcde\n\n");
       }
 //ADILA EDIT
 //printf("DROP\n\n");
-printf("2 abcde\n\n");
+
       PRINTF("Dropping packet, not for me and link local or multicast\n");
       UIP_STAT(++uip_stat.ip.drop);
       goto drop;
@@ -1322,7 +1318,7 @@ printf("2 abcde\n\n");
           case 1:
             /*silently discard*/
 //ADILA EDIT
-//printf("4\n\n");
+//printf("drop\n\n");
 
             goto drop;
           case 2:
@@ -1354,7 +1350,7 @@ printf("2 abcde\n\n");
           case 1:
             /*silently discard*/
 //ADILA EDIT
-//printf("1a\n\n");
+//printf("drop\n\n");
 
             goto drop;
           case 2:
@@ -1554,7 +1550,7 @@ printf("2 abcde\n\n");
   remove_ext_hdr();
 
 //ADILA EDIT
-printf("RECV UDP %d\n\n", ++us.udp.recv);
+//printf("RECV UDP %d\n\n", ++us.udp.recv);
 
   PRINTF("Receiving UDP packet\n");
   UIP_STAT(++uip_stat.udp.recv);

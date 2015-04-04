@@ -80,6 +80,7 @@ int
 simple_udp_send(struct simple_udp_connection *c,
                 const void *data, uint16_t datalen)
 {
+//printf("SIMPLE UDP SEND\n\n");
   if(c->udp_conn != NULL) {
     uip_udp_packet_sendto(c->udp_conn, data, datalen,
                           &c->remote_addr, UIP_HTONS(c->remote_port));

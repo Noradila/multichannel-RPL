@@ -479,6 +479,9 @@ cc2420_prepare(const void *payload, unsigned short payload_len)
 static int
 cc2420_send(const void *payload, unsigned short payload_len)
 {
+
+//printf("DEBUG CC2420_SEND\n\n");
+
   cc2420_prepare(payload, payload_len);
   return cc2420_transmit(payload_len);
 }
@@ -662,6 +665,9 @@ PROCESS_THREAD(cc2420_process, ev, data)
 static int
 cc2420_read(void *buf, unsigned short bufsize)
 {
+
+//printf("DEBUG CC2420_READ\n\n");
+
   uint8_t footer[2];
   uint8_t len;
 #if CC2420_CONF_CHECKSUM
@@ -866,6 +872,7 @@ cc2420_cca(void)
 int
 cc2420_receiving_packet(void)
 {
+//printf("DEBUG CC2420_RECEIVING_PACKET\n\n");
   return CC2420_SFD_IS_1;
 }
 /*---------------------------------------------------------------------------*/

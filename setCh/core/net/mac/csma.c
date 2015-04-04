@@ -110,6 +110,10 @@ MEMB(packet_memb, struct rdc_buf_list, MAX_QUEUED_PACKETS);
 MEMB(metadata_memb, struct qbuf_metadata, MAX_QUEUED_PACKETS);
 LIST(neighbor_list);
 
+
+//ADILA EDIT
+//static uint8_t rdc_is_transmitting;
+
 static void packet_sent(void *ptr, int status, int num_transmissions);
 static void transmit_packet_list(void *ptr);
 
@@ -147,6 +151,24 @@ default_timebase(void)
 static void
 transmit_packet_list(void *ptr)
 {
+
+//!!!!!! ADILA EDIT
+/*  struct neighbor_queue *n = ptr;
+
+  if(rdc_is_transmitting) {
+    return;
+  }
+
+  struct rdc_buf_list *q = list_head(n->queued_packet_list);
+  if(q != NULL) {
+    PRINTF("csma: preparing number %d %p, queue len %d\n", n->transmissions, q,
+        list_length(n->queued_packet_list));
+    rdc_is_transmitting = 1;
+    /* Send packets in the neighbor's list */
+/*    NETSTACK_RDC.send_list(packet_sent, n, q);
+  }*/
+//!!!!!!!!!!!!!!!!
+
   struct neighbor_queue *n = ptr;
   if(n) {
     struct rdc_buf_list *q = list_head(n->queued_packet_list);
@@ -172,7 +194,7 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p)
 
 //ADILA EDIT 09/02/14
 if((list_length(n->queued_packet_list)) == 0) {
-printf("empty Q %d\n", list_length(n->queued_packet_list));
+//printf("empty Q %d\n", list_length(n->queued_packet_list));
 ////Reset to listening channel when queue is empty
 //Not really require as the radio will be switched off when
 //the queue is empty
@@ -180,6 +202,12 @@ printf("empty Q %d\n", list_length(n->queued_packet_list));
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 }
 //-------------------
+
+
+//ADILA EDIT
+printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//----------
 
     PRINTF("csma: free_queued_packet, queue length %d\n",
         list_length(n->queued_packet_list));
@@ -191,11 +219,18 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
       /* Set a timer for next transmissions */
       ctimer_set(&n->transmit_timer, default_timebase(),
                  transmit_packet_list, n);
+
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//ADILA EDIT
+//ctimer_set(&n->transmit_timer, 0, transmit_packet_list, n);
+
     } else {
       /* This was the last packet in the queue, we free the neighbor */
       ctimer_stop(&n->transmit_timer);
       list_remove(neighbor_list, n);
       memb_free(&neighbor_memb, n);
+
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     }
   }
 }
@@ -211,6 +246,9 @@ packet_sent(void *ptr, int status, int num_transmissions)
   void *cptr;
   int num_tx;
   int backoff_transmissions;
+
+//ADILA EDIT
+//rdc_is_transmitting = 0;
 
   n = ptr;
   if(n == NULL) {
@@ -365,7 +403,7 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_add(n->queued_packet_list, q);
 
 //ADILA EDIT
-//printf("Q %d\n\n", list_length(n->queued_packet_list));
+//printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
 //----------
 	  }
 
@@ -376,9 +414,11 @@ send_packet(mac_callback_t sent, void *ptr)
 	  return;
 	}
 	memb_free(&metadata_memb, q->ptr);
+//printf("D1 1\n\n");
 	PRINTF("csma: could not allocate queuebuf, dropping packet\n");
       }
       memb_free(&packet_memb, q);
+//printf("D1 2\n\n");
       PRINTF("csma: could not allocate queuebuf, dropping packet\n");
     }
     /* The packet allocation failed. Remove and free neighbor entry if empty. */
@@ -386,8 +426,10 @@ send_packet(mac_callback_t sent, void *ptr)
       list_remove(neighbor_list, n);
       memb_free(&neighbor_memb, n);
     }
-    printf("csma: could not allocate packet, dropping packet\n");
+//printf("D1 3\n\n");
+//    printf("csma: could not allocate packet, dropping packet\n");
   } else {
+//!!printf("D1 4\n\n");
     PRINTF("csma: could not allocate neighbor, dropping packet\n");
   }
   mac_call_sent_callback(sent, ptr, MAC_TX_ERR, 1);
@@ -426,6 +468,9 @@ init(void)
   memb_init(&packet_memb);
   memb_init(&metadata_memb);
   memb_init(&neighbor_memb);
+
+//ADILA EDIT
+//rdc_is_transmitting = 0;
 }
 /*---------------------------------------------------------------------------*/
 const struct mac_driver csma_driver = {

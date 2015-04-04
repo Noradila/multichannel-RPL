@@ -170,6 +170,7 @@
 #ifndef SICSLOWPAN_CONF_FRAG
 #define SICSLOWPAN_CONF_FRAG                    1
 #define SICSLOWPAN_CONF_MAXAGE                  8
+//#define SICSLOWPAN_CONF_MAXAGE                  1
 #endif /* SICSLOWPAN_CONF_FRAG */
 #define SICSLOWPAN_CONF_CONVENTIONAL_MAC	1
 #define SICSLOWPAN_CONF_MAX_ADDR_CONTEXTS       2

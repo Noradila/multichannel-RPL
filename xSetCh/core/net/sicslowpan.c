@@ -71,9 +71,9 @@
 
 #include <stdio.h>
 
-//#define DEBUG DEBUG_NONE
+#define DEBUG DEBUG_NONE
 //#define DEBUG 1
-#define DEBUG DEBUG_FULL
+//#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 //#define DEBUG 1
 
@@ -1365,6 +1365,8 @@ printf("---SEND IN NET/SICSLOWPAN\n\n");
 static uint8_t
 output(uip_lladdr_t *localdest)
 {
+//printf("DEBUG SICSLOWPAN OUTPUT\n\n");
+
   int framer_hdrlen;
 
   /* The MAC address of the destination of the packet */
@@ -1593,6 +1595,8 @@ output(uip_lladdr_t *localdest)
 static void
 input(void)
 {
+//printf("DEBUG SICSLOWPAN INPUT\n\n");
+
   /* size of the IP packet (read from fragment) */
   uint16_t frag_size = 0;
   /* offset of the fragment in the IP packet */

@@ -23,16 +23,16 @@ Multichannel RPL concentrates on finding the best channels for nodes to listen a
 The design of Multichannel RPL are based on several crucial observations:
 
 \begin{itemize}
-\item Channel assignment - as the nodes are battery powered, the decision of selecting the channel is left to LPBR. This reduces the processing on the nodes and enable load balancing within channels as LPBR has a complete knowledge of the topology. LPBR keeps track of the channel conditions based on the feedback it receives from the nodes. 
+\item Channel assignment - as the nodes are battery powered, the decision of selecting the channel is left to LPBR. This reduces the processing on the nodes and enable load balancing within channels as LPBR has a complete knowledge of the topology. LPBR keeps track of the channel conditions based on the feedback it receives from the nodes. All intelligence is done at LPBR.
 
 \item Interference - external interference cannot be predicted, thus channel cannot be allocated beforehand as it varies over time. It is impossible to determine a single channel that is free from interference.
 
-\item Frequency diversity - RPL only considers a single channel. Applying multichannel to the existing RPL may hinder neighbour detection and RPL control messages.
+\item Frequency diversity - RPL only considers a single channel. Applying multichannel to the existing RPL may hinder neighbour detection and RPL control messages. We solved this by enabling unicast in neighbour detection and RPL control messages. We assume that no new nodes should join the topology after the initial setup.
 \end{itemize}
 
-Multichannel RPL focuses on the network layer of the protocol. The selection of channels to the nodes are decided once the topology tree has been formed by LPBR.
+Multichannel RPL focuses on the application layer of the protocol. The selection of channels to the nodes are decided once the topology tree has been formed by LPBR.
 
-Figure 1 shows the design of Multichannel RPL. The states are explained in the next sections.
+%Figure 1 shows the design of Multichannel RPL. The states are explained in the next sections.
 
 %\begin{figure}
 %\centering
@@ -41,26 +41,36 @@ Figure 1 shows the design of Multichannel RPL. The states are explained in the n
 %\label{fig:example}
 %\end{figure}
 
-\subsection{Channel Selection}
+\subsection{Channel Selection Strategies}
 
 %//LPBR decides the channel; random at first (or maybe not) and then based on probing that were done previously stating the condition of channels.
 
-At initialisation, during the tree topology formation, all nodes are on the same channel, which is channel 26 by default. This is because nodes that are on different channels might not be detected which result in unoptimised topology. Channel 26 is used because it is the channel that the studies in \cite{chrysso}\cite{micmac}\cite{watteyne} studies have in common. By default, in a single channel case, channel 26 is used as it usually does not overlap with WiFi and is relatively in a cleaner frequency. 
+At initialisation, during the tree topology formation, all nodes are on the same channel, which is channel 26 by default. This is because nodes that are on different channels might not be detected which result in unoptimised topology. Channel 26 is used because it is the channel that the studies in \cite{chrysso}\cite{micmac}\cite{watteyne} studies have in common. By default, in a single channel case, channel 26 is used as it usually does not overlap with WiFi and is relatively in a cleaner frequency than the other channels. 
 
-Once the topology has formed and stabilised, LPBR sends a channel change message which random channel is chosen for the node to change into. LPBR chooses random channel as it does not have information regarding the condition of the channels. It will build it's knowledge of the channels based on the feedback it receives from the nodes. If LPBR has the knowledge of the channels, it decides on the best channel for the node to maintain high transmitting and receiving rate. LPBR set a timer for the node to reply. If it times out, no changes in done to the channel.
+%Once the topology has formed and stabilised, LPBR sends a channel change message which random channel is chosen for the node to change into. LPBR chooses random channel as it does not have information regarding the condition of the channels. It will build it's knowledge of the channels based on the feedback it receives from the nodes. If LPBR has the knowledge of the channels, it decides on the best channel for the node to maintain high transmitting and receiving rate. LPBR set a timer for the node to reply. If it times out, no changes in done to the channel.
 
-The channel that is selected also needs to (fulfil?) two hops colouring strategies which is explained in detail in the next section. This is done in order to eliminate the risk of next hop neighbour using the same channel which could lead to congestion on the channel.
+%The channel that is selected also needs to (fulfil?) two hops colouring strategies which is explained in detail in the next section. This is done in order to eliminate the risk of next hop neighbour using the same channel which could lead to congestion on the channel.
 
 %how often probing? each time?
 
+There are two strategies that LPBR uses when deciding on a channel change; random change and two hop colouring strategy. 
+
+\subsubsection{Random Channel Selection -}
+At initialisation, LPBR uses random channel to decide which node and what channel the node should try to change into. The neighbours of the node will send probes messages to check the channel condition and the probing result is used to decide on the changes. This strategy is used when LPBR has no knowledge of the suitable channel for the node. By forcing the neighbour-node pair sending probing messages, LPBR could build its knowledge based on the probing results. LPBR will have an overall information of channels which will affect its decision in the future. The advantages of having these information is that LPBR can be certain that the channel that it chooses for a node to change into will have better throughput than the current channel. Through probing results, LPBR knows how much better a certain channel is compared to other channels as this information is only accessible by the LPBR. 
+	
+%**TWO HOP COLOURING STRATEGY?
+\subsubsection{Two Hops Neighbour Strategy -}
+////DID MANY CHANGES, TO BE REWRITTEN!!!
+In two hops neighbour strategy, similar to random channel selection, LPBR choose a random channel for a node unless LPBR has knowledge of the channels condition as mentioned in Random Channel Selection section. The node checks if there is another node that is two hops away using the same channel. In RPL, the node routing table and neighbour table do not contain the information of all existing nodes in the network but only the nearest nodes that are in range. In order to do the checking, both routing table and neighbour table are used. The routing table is referred to when forwarding the channel value to the specific node while the neighbour table keeps the information on the node and neighbours listening and transmitting channels. This is important as the node should always sends on the correct transmitting channel and return to the listening channel. When a node gets the channel to change into, it first checks it's own neighbour table if any of the neighbour is currently on the channel. If there is none, the node asks the neighbours to check their neighbour table. The decision of whether the channel can be used is passed back to LPBR. LPBR will then use the channel or decide on another channel depending on the reply from the node and neighbours, and the steps explained in section 3.4 proceed. If LPBR could not get a two hops free channel, it will use the default channel which is channel 26.
 
 
 \subsection{Channel Quality Checking}
 %channel quality check = probing
 %//Channel condition is checked by probing before deciding to switch unless LPBR has the information regarding the specific channel based on probing that were done previously.
 
-The channel is check at initialisation in order for the LPBR to build it's knowledge on the channels quality. The channel quality checking is invoke each time the node receives the channel change message from LPBR. The node informs the neighbours of the new channel it might be listening on. However, the condition of the channel might have been changed since the last it was checked. The node's neighbours will probe the node and collects the information about the send successes of the channel. The results from probing is used to decide if the new channel is better than the current channel. LPBR is informs and updates its knowledge on the condition. 
+The channel is check at initialisation in order for the LPBR to build it's knowledge on the channels quality. The channel quality checking is invoke each time the node receives the channel change message from LPBR. The node informs the neighbours of the new channel it might be listening on. The node's neighbours will probe the node and collects the information on the success or failure rate of the channel. The results from probing is used to decide if the new channel is better than the current channel. LPBR is informs and updates its knowledge on the channel condition. 
 
+////FUTURE WORK?
 Even though external interference varies over time, it is unlikely that the channel quality fluctuates frequently within minutes that would affect the receiving success rate. Thus, the channel quality check is invoke on three (cases? situations?); on initialisation, when receiving LPBR channel change message and when the packet delivery ratio (PDR) drops. ***NOT SURE  
 
 
@@ -73,20 +83,19 @@ Each node keeps the counter of packets it has sent and received. It will send th
 
 %State machine explanation should be here?
 
-As mentioned in section 3.2, LPBR decides the channel that a node should be listening on either by random selection or through LPBR knowledge of the channels. Figure 1 shows the states in channel switching. LPBR sends the change channel message to the node on the receiving node current listening channel. The node saves it's current and new channel in it's table to allow the channel to be restored if require. The node contacts its neighbours, informing the new channel value. The neighbours will in turn, send probing messages to check the new channel condition. Different neighbours might have different success rate, thus the final decision of switching is based on the threshold that is set. 
+\begin{figure}
+\centering
+\includegraphics[width=3in]{Diagram1}
+\caption{Channel switching process}
+\label{fig_sim}
+\end{figure}
 
-If the threshold is not met or the probing has timed out, the node is restores to its current channel. It removes the new channel value from the table and informs LPBR of the updated channel condition. Otherwise, the node sends a change channel message to the neighbours and waits for acknowledgement. The node and the neighbours updates their table. The node informs LPBR of the changes and listens on the new channel for data packets. If the acknowledgement does not arrive before the timeout, the change channel message is retransmitted. The neighbour node is ignored if the retransmissions has timed out. 
+LPBR decides the channel that a node should be listening on either by random selection or through LPBR knowledge of the channels. Figure 1 shows the states in channel switching. LPBR sends the change channel message to the node on the receiving node current listening channel. The node saves it's current and new channel to allow the channel to be restored if require. The node contacts its neighbours, informing the new channel value. The neighbours will in turn, send probing messages to check the new channel condition. Different neighbours might have different success rate, thus the final decision of switching is based on the threshold that is set. 
 
-It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
+If the threshold is not met or the probing has timed out, the node is restores to its current channel and informs LPBR of the updated channel condition. Otherwise, the node sends a change channel message to the neighbours and waits for acknowledgement. The node and the neighbours updates their table. The node informs LPBR of the changes and listens on the new channel for data packets. If the acknowledgement does not arrive before the timeout, the change channel message is retransmitted. The neighbour node is ignored if the retransmissions has timed out. 
 
-LPBR sends a change channel message after ***some time to check the condition of the node's channel and to get updates on the channels. The node's neighbours will start probing on the channel which the result is use to decide the changes.
+%It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
 
-\subsection{LPBR Strategies}   
-There are two strategies that LPBR uses when sending a change channel message to the nodes; random change and two hop colouring strategy. 
+%LPBR sends a change channel message after ***some time to check the condition of the node's channel and to get updates on the channels. The node's neighbours will start probing on the channel which the result is use to decide the changes.
 
-\subsubsection{Random Channel Selection -}
-At initialisation, LPBR uses random change to decide which node and what channel the node should try to change into. The neighbours of the node will send probes messages to check the channel condition and the result is used to decide on the changes. This strategy is used when LPBR has no knowledge of the suitable channel for the node. By forcing the neighbour-node pair sending probing messages, LPBR could build its table based on the probing result. LPBR will have an overall information of channels which will affect its decision when sending a channel change message to the node.The advantages of this is LPBR can be certain that the channel that it choose for a node to change into will have better throughput than the current channel. Through probing result, LPBR knows how much better a certain channel is compared to other channels as this information is kept in LPBR table. 
-	
-%**TWO HOP COLOURING STRATEGY?
-\subsubsection{Two Hops Neighbour Strategy -}
-In two hops neighbour strategy, similar to random channel selection, LPBR choose a random channel for a node unless LPBR has knowledge of the channels condition as mentioned in Random Channel Selection section. The node checks if there is another node that is two hops away using the same channel. In RPL, the node routing table and neighbour table do not contain the information of all existing nodes in the network but only the nearest nodes that are in range. In order to do the checking, both routing table and neighbour table are used. The routing table is referred to when forwarding the channel value to the specific node while the neighbour table keeps the information on the node and neighbours listening and transmitting channels. This is important as the node should always sends on the correct transmitting channel and return to the listening channel. When a node gets the channel to change into, it first checks it's own neighbour table if any of the neighbour is currently on the channel. If there is none, the node asks the neighbours to check their neighbour table. The decision of whether the channel can be used is passed back to LPBR. LPBR will then use the channel or decide on another channel depending on the reply from the node and neighbours, and the steps explained in section 3.4 proceed. If LPBR could not get a two hops free channel, it will use the default channel which is channel 26.
+%\subsection{LPBR Strategies}   

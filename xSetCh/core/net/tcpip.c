@@ -50,6 +50,7 @@
 #include <string.h>
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
 #if UIP_LOGGING
@@ -114,6 +115,7 @@ static uint8_t (* outputfunc)(uip_lladdr_t *a);
 uint8_t
 tcpip_output(uip_lladdr_t *a)
 {
+//printf("DEBUG TCPIP_OUTPUT\n\n");
   int ret;
   if(outputfunc != NULL) {
     ret = outputfunc(a);
@@ -183,6 +185,7 @@ check_for_tcp_syn(void)
 static void
 packet_input(void)
 {
+//printf("DEBUG TCPIP PACKET_INPUT\n\n");
 #if UIP_CONF_IP_FORWARD
   if(uip_len > 0) {
     tcpip_is_forwarding = 1;
@@ -539,6 +542,8 @@ tcpip_input(void)
 void
 tcpip_ipv6_output(void)
 {
+
+//printf("DEBUG TCPIP_IPV6_OUTPUT\n\n");
   uip_ds6_nbr_t *nbr = NULL;
   uip_ipaddr_t *nexthop;
 
@@ -618,6 +623,9 @@ tcpip_ipv6_output(void)
           }
 #endif /* UIP_CONF_RPL */
           uip_ds6_route_rm(route);
+
+//ADILA EDIT
+printf("NO NEXT HOP DROP\n\n");
 
           /* We don't have a nexthop to send the packet to, so we drop
              it. */

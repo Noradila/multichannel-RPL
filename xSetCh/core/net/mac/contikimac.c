@@ -246,6 +246,8 @@ static volatile unsigned char radio_is_on = 0;
 
 #define DEBUG 0
 //#define DEBUG_DEBUG ALL
+//#define DEBUG DEBUG_FULL
+
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -369,6 +371,10 @@ static void
 powercycle_turn_radio_on(void)
 {
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
+
+//ADILA EDIT
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
     on();
   }
 }
@@ -545,6 +551,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 {
 uint8_t theChIs = 0;
 
+//printf("DEBUG CONTIKIMAC SEND_PACKET\n\n");
 
   rtimer_clock_t t0;
   rtimer_clock_t encounter_time = 0;
@@ -998,6 +1005,9 @@ recv_burst_off(void *ptr)
 static void
 input_packet(void)
 {
+
+//printf("DEBUG CONTIKIMAC INPUT_PACKET\n\n");
+
   static struct ctimer ct;
   if(!we_are_receiving_burst) {
     off();

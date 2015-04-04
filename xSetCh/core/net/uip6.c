@@ -84,6 +84,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
 #if UIP_CONF_IPV6_RPL
@@ -912,6 +913,7 @@ ext_hdr_options_process(void)
 void
 uip_process(uint8_t flag)
 {
+printf("DEBUG UIP_PROCESS\n\n");
 #if UIP_TCP
   register struct uip_conn *uip_connr = uip_conn;
 #endif /* UIP_TCP */

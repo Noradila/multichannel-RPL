@@ -290,6 +290,9 @@ on(void)
 {
   if(contikimac_is_on && radio_is_on == 0) {
     radio_is_on = 1;
+
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
     NETSTACK_RADIO.on();
   }
 }
@@ -300,6 +303,9 @@ off(void)
   if(contikimac_is_on && radio_is_on != 0 &&
      contikimac_keep_radio_on == 0) {
     radio_is_on = 0;
+
+////!!!!!!!!! reset to listening channel here?
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     NETSTACK_RADIO.off();
   }
 }
@@ -352,7 +358,13 @@ powercycle_turn_radio_off(void)
 #endif /* CONTIKIMAC_CONF_COMPOWER */
   
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
+
+////!!!!!!!!! reset to listening channel here?
+//printf("OFF?\n\n");
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
     off();
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 #if CONTIKIMAC_CONF_COMPOWER
     if(was_on && !radio_is_on) {
       compower_accumulate(&compower_idle_activity);
@@ -368,7 +380,10 @@ powercycle_turn_radio_on(void)
     //ADILA EDIT 10/11/14
     //@
     //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     on();
+    //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -578,6 +593,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 //uip_ipaddr_t toParent;
 //--------------
 
+printf("DEBUG SEND PACKET RET\n\n");
+
   /* Exit if RDC and radio were explicitly turned off */
    if(!contikimac_is_on && !contikimac_keep_radio_on) {
     PRINTF("contikimac: radio is turned off\n");
@@ -767,7 +784,8 @@ cc2420_get_channel(),
 
 //! ADILA TAKE NOT
 //CHANGE RADIO CHANNEL HERE (RESET?)
-//printf("FINISHED SENDING?\n\n");
+printf("FINISHED SENDING?\n\n");
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //----------------
 
 #if !RDC_CONF_HARDWARE_CSMA
@@ -833,12 +851,15 @@ cc2420_get_channel(),
       int ret;
 
       txtime = RTIMER_NOW();
+
+
       ret = NETSTACK_RADIO.transmit(transmit_len);
 
 #if RDC_CONF_HARDWARE_ACK
      /* For radios that block in the transmit routine and detect the
 	ACK in hardware */
       if(ret == RADIO_TX_OK) {
+//printf("DEBUG RADIO TX OK\n\n");
         if(!is_broadcast) {
           got_strobe_ack = 1;
           encounter_time = txtime;
@@ -910,7 +931,7 @@ cc2420_get_channel(),
 //printf("COLLISION\n\n");
   } else if(!is_broadcast && !got_strobe_ack) {
     ret = MAC_TX_NOACK;
-//printf("NOACK\n\n");
+printf("NOACK\n\n");
   } else {
     ret = MAC_TX_OK;
 //ADILA EDIT 02/03/14
@@ -953,6 +974,8 @@ qsend_list(mac_callback_t sent, void *ptr, struct rdc_buf_list *buf_list)
   int ret;
   int is_receiver_awake;
   
+printf("DEBUG QSEND LIST\n\n");
+
   if(curr == NULL) {
     return;
   }
@@ -976,12 +999,14 @@ qsend_list(mac_callback_t sent, void *ptr, struct rdc_buf_list *buf_list)
     }
 
     /* Send the current packet */
+printf("QSEND LIST SENDING PACKET\n\n");
     ret = send_packet(sent, ptr, curr, is_receiver_awake);
     if(ret != MAC_TX_DEFERRED) {
       mac_call_sent_callback(sent, ptr, ret, 1);
     }
 
     if(ret == MAC_TX_OK) {
+printf("QSEND LIST MAX TX OK\n\n");
       if(next != NULL) {
         /* We're in a burst, no need to wake the receiver up again */
         is_receiver_awake = 1;

@@ -50,6 +50,7 @@
 #include <string.h>
 
 #define DEBUG DEBUG_NONE
+//#define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
 #if UIP_LOGGING
@@ -114,12 +115,18 @@ static uint8_t (* outputfunc)(uip_lladdr_t *a);
 uint8_t
 tcpip_output(uip_lladdr_t *a)
 {
+printf("DEBUG TCPIP_OUTPUT\n\n");
+
   int ret;
   if(outputfunc != NULL) {
     ret = outputfunc(a);
     return ret;
   }
   UIP_LOG("tcpip_output: Use tcpip_set_outputfunc() to set an output function");
+
+//ADILA EDIT
+  //PRINTF("tcpip_output: Use tcpip_set_outputfunc() to set an output function");
+
   return 0;
 }
 
@@ -138,6 +145,10 @@ tcpip_output(void)
     return outputfunc();
   }
   UIP_LOG("tcpip_output: Use tcpip_set_outputfunc() to set an output function");
+
+//ADILA EDIT
+  //printf("tcpip_output: Use tcpip_set_outputfunc() to set an output function");
+
   return 0;
 }
 
@@ -197,6 +208,9 @@ packet_input(void)
 #if UIP_CONF_IPV6
         tcpip_ipv6_output();
 #else
+//ADILA EDIT
+//printf("tcpip packet_input forward output len %d\n", uip_len);
+
 	PRINTF("tcpip packet_input forward output len %d\n", uip_len);
         tcpip_output();
 #endif
@@ -216,6 +230,10 @@ packet_input(void)
 #if UIP_CONF_IPV6
       tcpip_ipv6_output();
 #else
+
+//ADILA EDIT
+      //printf("tcpip packet_input output len %d\n", uip_len);
+
       PRINTF("tcpip packet_input output len %d\n", uip_len);
       tcpip_output();
 #endif
@@ -547,13 +565,24 @@ tcpip_ipv6_output(void)
   }
 
   if(uip_len > UIP_LINK_MTU) {
+//ADILA EDIT
+//printf("tcpip_ipv6_output: Packet to big");
+
+//printf("D1\n\n");
+
     UIP_LOG("tcpip_ipv6_output: Packet to big");
     uip_len = 0;
     return;
   }
 
   if(uip_is_addr_unspecified(&UIP_IP_BUF->destipaddr)){
+//printf("D2\n\n");
     UIP_LOG("tcpip_ipv6_output: Destination address unspecified");
+
+//ADILA EDIT
+    //printf("tcpip_ipv6_output: Destination address unspecified");
+    //PRINTF("tcpip_ipv6_output: Destination address unspecified");
+
     uip_len = 0;
     return;
   }
@@ -574,10 +603,16 @@ tcpip_ipv6_output(void)
 
       /* No route was found - we send to the default route instead. */
       if(route == NULL) {
+//printf("D3\n\n");
         PRINTF("tcpip_ipv6_output: no route found, using default route\n");
+
+//ADILA EDIT
+        //printf("tcpip_ipv6_output: no route found, using default route\n");
+
         nexthop = uip_ds6_defrt_choose();
         if(nexthop == NULL) {
 #ifdef UIP_FALLBACK_INTERFACE
+//printf("D4\n\n");
 	  PRINTF("FALLBACK: removing ext hdrs & setting proto %d %d\n", 
 		 uip_ext_len, *((uint8_t *)UIP_IP_BUF + 40));
 	  if(uip_ext_len > 0) {
@@ -589,6 +624,10 @@ tcpip_ipv6_output(void)
 	  }
 	  UIP_FALLBACK_INTERFACE.output();
 #else
+
+//ADILA EDIT
+         //printf("tcpip_ipv6_output: Destination off-link but no route\n");
+//printf("D5\n\n");
           PRINTF("tcpip_ipv6_output: Destination off-link but no route\n");
 #endif /* !UIP_FALLBACK_INTERFACE */
           uip_len = 0;
@@ -613,11 +652,16 @@ tcpip_ipv6_output(void)
           dag = (rpl_dag_t *)route->state.dag;
           if(dag != NULL) {
             instance = dag->instance;
-
+//printf("D6\n\n");
             rpl_repair_root(instance->instance_id);
           }
 #endif /* UIP_CONF_RPL */
+
+//printf("D7\n\n");
           uip_ds6_route_rm(route);
+
+//ADILA EDIT
+//printf("NO NEXT HOP DROP\n\n");
 
           /* We don't have a nexthop to send the packet to, so we drop
              it. */
@@ -680,6 +724,7 @@ tcpip_ipv6_output(void)
     } else {
 #if UIP_ND6_SEND_NA
       if(nbr->state == NBR_INCOMPLETE) {
+//printf("D8\n\n");
         PRINTF("tcpip_ipv6_output: nbr cache entry incomplete\n");
 #if UIP_CONF_IPV6_QUEUE_PKT
         /* Copy outgoing pkt in the queuing buffer for later transmit and set
@@ -698,6 +743,7 @@ tcpip_ipv6_output(void)
         nbr->state = NBR_DELAY;
         stimer_set(&nbr->reachable, UIP_ND6_DELAY_FIRST_PROBE_TIME);
         nbr->nscount = 0;
+//printf("D9\n\n");
         PRINTF("tcpip_ipv6_output: nbr cache entry stale moving to delay\n");
       }
 #endif /* UIP_ND6_SEND_NA */

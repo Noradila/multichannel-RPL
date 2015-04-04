@@ -164,9 +164,11 @@ CMD_HANDLERS(border_router_cmd_handler);
 PROCESS(border_router_process, "Border router process");
 PROCESS(chChange_process, "Channel change process");
 
+PROCESS(test, "TEST");
+
 //#if WEBSERVER==0
 /* No webserver */
-AUTOSTART_PROCESSES(&border_router_process,&border_router_cmd_process, &chChange_process);
+AUTOSTART_PROCESSES(&border_router_process,&border_router_cmd_process, &chChange_process, &test);
 //#elif WEBSERVER>1
 /* Use an external webserver application */
 /*#include "webserver-nogui.h"
@@ -428,6 +430,8 @@ static void recheck2() {
   uint8_t checkOK = 0;
   uip_ipaddr_t theMissedAddr;
 
+  struct unicast_message msg2;
+
   for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
     for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
       if(uip_ipaddr_cmp(&r->ipaddr, &l->routeAddr)) {
@@ -448,16 +452,19 @@ static void recheck2() {
       printf("themissedaddr ");
       uip_debug_ipaddr_print(&theMissedAddr);
       printf("\n\n");
-      break;
+      //break;
+      msg2.address = theMissedAddr;
+      //process_post_synch(&test, event_data_ready, &msg2);
+      //doSending(&msg2);
     }
   }
  
-  if(checkOK == 0) {
+/*  if(checkOK == 0) {
     printf("recheck2 checkOK %d ", checkOK);
     uip_debug_ipaddr_print(&theMissedAddr);
     printf("\n");
   }
-
+*/
 }
 
 /*uint8_t waitingTime(const uip_ipaddr_t *ipAddress) {
@@ -626,7 +633,9 @@ static void recheckChChange(struct unicast_message *msg) {
       uip_debug_ipaddr_print(&sr->sendToAddr);
       printf("\n");
 
-      if(msg->value == sr->noRecv) {
+      //if(msg->value == sr->noRecv) {
+      if(msg->value != sr->noRecv) {
+	sr->noRecv = 0;
 	msg2.address = sr->sendToAddr;
 	doSending(&msg2);
       }
@@ -719,10 +728,10 @@ receiver(struct simple_udp_connection *c,
     msg2.value = msg->value;
     uip_ipaddr_copy(&msg2.addrPtr, &sender_addr);
 
-    if(sender_addr->u8[11] == 2) {
+    /*if(sender_addr->u8[11] == 2) {
       recheckChChange(&msg2);
-    }
-    //recheckChChange(&msg2);
+    }*/
+    recheckChChange(&msg2);
 
   }
 
@@ -989,8 +998,8 @@ PROCESS_THREAD(border_router_process, ev, data)
 
   //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
-  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
-  //etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
+//  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
@@ -1031,8 +1040,9 @@ uint8_t wTime;
 
     //3 sec per nbr
     //equals to 30 secs? (even though it's supposed to be 3 secs) - depends on how many nbr
+    //10 = 60; 5 = 6*5 = 10-30?
     //etimer_set(&time, 10 * CLOCK_SECOND); //1 min
-    //etimer_set(&time, 3 * CLOCK_SECOND);
+//    etimer_set(&time, 3 * CLOCK_SECOND);
 
     etimer_set(&time, 5 * CLOCK_SECOND);
     //etimer_set(&time, 7 * CLOCK_SECOND);
@@ -1052,6 +1062,36 @@ x = 0;*/
     uip_debug_ipaddr_print(&holdAddr);
     printf("\n\n");
     recheck(&holdAddr);
+  }
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(test, ev, data)
+{
+  static struct etimer time;
+  struct unicast_message *msg;
+  struct unicast_message msg2;
+  msg = data;
+
+  uint8_t randomNewCh;
+  static uip_ds6_route_t *r;
+
+  static uip_ds6_nbr_t *nbr;
+  static uip_ds6_route_t *re;
+
+uint8_t i = 0;
+uint8_t prevRand;
+
+uint8_t wTime;
+//uint8_t x = 0;
+
+  PROCESS_BEGIN();
+
+  while(1) {
+    PROCESS_WAIT_EVENT_UNTIL(ev == event_data_ready);
+
+doSending(msg);
+
   }
   PROCESS_END();
 }

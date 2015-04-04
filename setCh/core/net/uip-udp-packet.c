@@ -49,6 +49,8 @@ extern uint16_t uip_slen;
 void
 uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
 {
+
+//printf("DEBUG UIP PACKET SEND\n\n");
 #if UIP_UDP
   if(data != NULL) {
     uip_udp_conn = c;
@@ -75,6 +77,8 @@ uip_udp_packet_sendto(struct uip_udp_conn *c, const void *data, int len,
 {
   uip_ipaddr_t curaddr;
   uint16_t curport;
+
+//printf("UDP SENDTO\n\n");
 
   if(toaddr != NULL) {
     /* Save current IP addr/port. */

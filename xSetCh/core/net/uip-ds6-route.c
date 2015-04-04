@@ -357,6 +357,9 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 /*if(r->nbrCh == 0) {
   r->nbrCh = 26;
 }*/
+if(r->routeCh == 0) {
+  r->routeCh = 26;
+}
 //-------------------
 
   PRINTF("uip_ds6_route_add: adding route: ");

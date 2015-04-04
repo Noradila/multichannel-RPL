@@ -862,6 +862,8 @@ uncompress_hdr_hc06(uint16_t ip_len)
     if (tmp != 0) {
       context = addr_context_lookup_by_number(sci);
       if(context == NULL) {
+
+//printf("D1\n\n");
         PRINTF("sicslowpan uncompress_hdr: error context not found\n");
         return;
       }
@@ -910,6 +912,8 @@ uncompress_hdr_hc06(uint16_t ip_len)
 
       /* all valid cases below need the context! */
       if(context == NULL) {
+
+//printf("D2\n\n");
 	PRINTF("sicslowpan uncompress_hdr: error context not found\n");
 	return;
       }
@@ -1240,6 +1244,7 @@ uncompress_hdr_hc1(uint16_t ip_len)
       break;
 #endif/* UIP_CONF_UDP */
     default:
+//printf("D3\n\n");
       /* this shouldn't happen, drop */
       return;
   }
@@ -1357,6 +1362,8 @@ static uint8_t
 output(uip_lladdr_t *localdest)
 {
   int framer_hdrlen;
+
+//printf("DEBUG 6O\n\n");
 
   /* The MAC address of the destination of the packet */
   rimeaddr_t dest;
@@ -1487,6 +1494,7 @@ output(uip_lladdr_t *localdest)
     packetbuf_set_datalen(rime_payload_len + rime_hdr_len);
     q = queuebuf_new_from_packetbuf();
     if(q == NULL) {
+//printf("D1\n\n\n");
       PRINTFO("could not allocate queuebuf for first fragment, dropping packet\n");
       return 0;
     }
@@ -1499,6 +1507,8 @@ output(uip_lladdr_t *localdest)
     if((last_tx_status == MAC_TX_COLLISION) ||
        (last_tx_status == MAC_TX_ERR) ||
        (last_tx_status == MAC_TX_ERR_FATAL)) {
+
+//printf("D4\n\n");
       PRINTFO("error in fragment tx, dropping subsequent fragments.\n");
       return 0;
     }
@@ -1533,6 +1543,7 @@ output(uip_lladdr_t *localdest)
       packetbuf_set_datalen(rime_payload_len + rime_hdr_len);
       q = queuebuf_new_from_packetbuf();
       if(q == NULL) {
+//printf("D5\n\n");
         PRINTFO("could not allocate queuebuf, dropping fragment\n");
         return 0;
       }
@@ -1547,10 +1558,12 @@ output(uip_lladdr_t *localdest)
          (last_tx_status == MAC_TX_ERR) ||
          (last_tx_status == MAC_TX_ERR_FATAL)) {
         PRINTFO("error in fragment tx, dropping subsequent fragments.\n");
+//printf("D6\n\n");
         return 0;
       }
     }
 #else /* SICSLOWPAN_CONF_FRAG */
+//printf("D7\n\n");
     PRINTFO("sicslowpan output: Packet too large to be sent without fragmentation support; dropping packet\n");
     return 0;
 #endif /* SICSLOWPAN_CONF_FRAG */
@@ -1584,6 +1597,8 @@ output(uip_lladdr_t *localdest)
 static void
 input(void)
 {
+//printf("DEBUG 6I\n\n");
+
   /* size of the IP packet (read from fragment) */
   uint16_t frag_size = 0;
   /* offset of the fragment in the IP packet */
@@ -1605,6 +1620,8 @@ input(void)
 #if SICSLOWPAN_CONF_FRAG
   /* if reassembly timed out, cancel it */
   if(timer_expired(&reass_timer)) {
+//printf("DEBUG TO\n\n");
+//timer_reset(&reass_timer);
     sicslowpan_len = 0;
     processed_ip_in_len = 0;
   }
@@ -1683,6 +1700,7 @@ input(void)
        * the packet is a fragment that does not belong to the packet
        * being reassembled or the packet is not a fragment.
        */
+//printf("DEBUG DROP\n\n");
       PRINTFI("sicslowpan input: Dropping 6lowpan packet that is not a fragment of the packet currently being reassembled\n");
       return;
     }
@@ -1695,6 +1713,7 @@ input(void)
       /* We are currently not reassembling a packet, but have received a packet fragment
        * that is not the first one. */
       if(is_fragment && !first_fragment) {
+//printf("D6\n\n");
         return;
       }
 
@@ -1757,6 +1776,7 @@ input(void)
    * If this is a subsequent fragment, this is the contrary.
    */
   if(packetbuf_datalen() < rime_hdr_len) {
+//printf("D8\n\n");
     PRINTF("SICSLOWPAN: packet dropped due to header > total packet\n");
     return;
   }
@@ -1767,6 +1787,7 @@ input(void)
     int req_size = UIP_LLH_LEN + uncomp_hdr_len + (uint16_t)(frag_offset << 3)
         + rime_payload_len;
     if(req_size > sizeof(sicslowpan_buf)) {
+//printf("D9\n\n");
       PRINTF(
           "SICSLOWPAN: packet dropped, minimum required SICSLOWPAN_IP_BUF size: %d+%d+%d+%d=%d (current size: %d)\n",
           UIP_LLH_LEN, uncomp_hdr_len, (uint16_t)(frag_offset << 3),

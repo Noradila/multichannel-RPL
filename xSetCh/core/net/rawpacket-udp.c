@@ -60,12 +60,14 @@ rawpacket_setup(int id)
 void
 rawpacket_send(struct rawpacket_conn *c, char *data, int datalen)
 {
+//printf("DEBUG RAWPACKET SEND\n\n");
   uip_udp_packet_send((struct uip_udp_conn *)c, data, datalen);
 }
 /*---------------------------------------------------------------------------*/
 int
 rawpacket_received(struct rawpacket_conn *c)
 {
+//printf("DEBUG RAWPACKET RECEIVED\n\n");
   return uip_newdata() && (struct uip_udp_conn *)c == uip_udp_conn;
 }
 /*---------------------------------------------------------------------------*/
