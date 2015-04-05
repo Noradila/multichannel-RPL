@@ -2,9 +2,11 @@
 %- multichannel enables communication between more than one node to occur simultaneously and in a collision free manner
 
 %\subsection{Existing Multichannel Protocol}
-Radio duty cycling mechanism can be classified into two categories; synchronous and asynchronous. Multichannel synchronous protocols for such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC and TSCH depend on the neighbouring nodes to synchronise with each other while multichannel asynchronous protocols such as Chrysso, MiCMAC and our protocol are independent.
+Radio duty cycling mechanism can be classified into two categories; synchronous and asynchronous. Multichannel synchronous protocols for such as MC-LMAC (has time slot to transmit of a particular channel) \cite{mc-lmac}, Y-MAC \cite{y-mac}, EM-MAC \cite{emmac} and TSCH depend on the neighbouring nodes to synchronise with each other while multichannel asynchronous protocols such as MuChMAC \cite{muchmac}, Chrysso \cite{chrysso}, MiCMAC \cite{micmac} and our protocol are independent. However, only a few recent multichannel protocols uses RPL as the routing protocol. 
 
-**NOT YET ADDED - Multichannel protocol such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC. What these works do?
+RPL is a gradient based routing protocol forming any-to-any routing for low power IPv6 networks, rooted at a single destination. It was standardised by IETF in March 2012. There are many studies that were done on routing protocol such as LEACH \cite{leach}, PEGASIS \cite{pegasis}, and CTP \cite{ctp}. RPL is designed largely based on CTP.
+
+%**NOT YET ADDED - Multichannel protocol such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC. What these works do?
 
 %TSCH (Time Synchronized Channel Hopping) employs TDMA and channel hopping such that it schedules communications in 2 dimensions: time and frequency.
 

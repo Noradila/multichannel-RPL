@@ -1,61 +1,54 @@
 This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: globecom_2015.aux
-I couldn't open database file ewsn_adila_2014.bib
----line 34 of file globecom_2015.aux
- : \bibdata{ewsn_adila_2014
- :                         }
-I'm skipping whatever remains of this command
 The style file: plain.bst
-I found no database files---while reading file globecom_2015.aux
-Warning--I didn't find a database entry for "ieee_2012"
-Warning--I didn't find a database entry for "watteyne"
-Warning--I didn't find a database entry for "wu"
-Warning--I didn't find a database entry for "chrysso"
-Warning--I didn't find a database entry for "micmac"
-Warning--I didn't find a database entry for "tsch"
-Warning--I didn't find a database entry for "contikimac"
-Warning--I didn't find a database entry for "orpl"
-Warning--I didn't find a database entry for "mrhof"
-You've used 0 entries,
+Database file #1: globecom_2015.bib
+Warning--to sort, need author or key in ieee_2012
+Warning--empty author in ieee_2012
+Warning--empty booktitle in leach
+Warning--can't use both volume and number fields in leach
+Warning--empty journal in mrhof
+Warning--empty journal in tsch
+Warning--empty journal in of0
+You've used 24 entries,
             2118 wiz_defined-function locations,
-            506 strings with 4069 characters,
-and the built_in function-call counts, 18 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 7
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+            626 strings with 8984 characters,
+and the built_in function-call counts, 9811 in all, are:
+= -- 981
+> -- 450
+< -- 17
++ -- 183
+- -- 154
+* -- 624
+:= -- 1490
+add.period$ -- 76
+call.type$ -- 24
+change.case$ -- 149
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 31
+duplicate$ -- 450
+empty$ -- 735
+format.name$ -- 154
+if$ -- 2182
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 3
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 24
+missing$ -- 23
+newline$ -- 121
+num.names$ -- 46
+pop$ -- 183
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 125
 quote$ -- 0
-skip$ -- 1
+skip$ -- 386
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 517
+swap$ -- 186
+text.length$ -- 17
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
-warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 2
-(There were 2 error messages)
+type$ -- 96
+warning$ -- 7
+while$ -- 82
+width$ -- 26
+write$ -- 271
+(There were 7 warnings)

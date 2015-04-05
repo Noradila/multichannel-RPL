@@ -45,7 +45,7 @@ Multichannel RPL focuses on the application layer of the protocol. The selection
 
 %//LPBR decides the channel; random at first (or maybe not) and then based on probing that were done previously stating the condition of channels.
 
-At initialisation, during the tree topology formation, all nodes are on the same channel, which is channel 26 by default. This is because nodes that are on different channels might not be detected which result in unoptimised topology. Channel 26 is used because it is the channel that the studies in \cite{chrysso}\cite{micmac}\cite{watteyne} studies have in common. By default, in a single channel case, channel 26 is used as it usually does not overlap with WiFi and is relatively in a cleaner frequency than the other channels. 
+At initialisation, during the tree topology formation, all nodes are on the same channel, which is channel 26 by default. This is because nodes that are on different channels might not be detected which result in unoptimised topology. Channel 26 is used because it is the channel that the studies in \cite{chrysso}\cite{micmac}\cite{watteyne} have in common. By default, in a single channel case, channel 26 is used as it usually does not overlap with WiFi and is relatively in a cleaner frequency than the other channels. 
 
 %Once the topology has formed and stabilised, LPBR sends a channel change message which random channel is chosen for the node to change into. LPBR chooses random channel as it does not have information regarding the condition of the channels. It will build it's knowledge of the channels based on the feedback it receives from the nodes. If LPBR has the knowledge of the channels, it decides on the best channel for the node to maintain high transmitting and receiving rate. LPBR set a timer for the node to reply. If it times out, no changes in done to the channel.
 
@@ -74,12 +74,12 @@ If LPBR could not get a two hops free channel, it will use the default channel w
 
 The channel is check at initialisation in order for the LPBR to build it's knowledge on the channels quality. The channel quality checking is invoke each time the node receives the channel change message from LPBR. The node informs the neighbours of the new channel it might be listening on. The node's neighbours will probe the node and collects the information on the success or failure rate of the channel. The results from probing is used to decide if the new channel is better than the current channel. LPBR is informs and updates its knowledge on the channel condition. 
 
-////FUTURE WORK?
-Even though external interference varies over time, it is unlikely that the channel quality fluctuates frequently within minutes that would affect the receiving success rate. Thus, the channel quality check is invoke on three (cases? situations?); on initialisation, when receiving LPBR channel change message and when the packet delivery ratio (PDR) drops. ***NOT SURE  
+%////FUTURE WORK?
+%Even though external interference varies over time, it is unlikely that the channel quality fluctuates frequently within minutes that would affect the receiving success rate. Thus, the channel quality check is invoke on three (cases? situations?); on initialisation, when receiving LPBR channel change message and when the packet delivery ratio (PDR) drops. ***NOT SURE  
 
 
-****
-Each node keeps the counter of packets it has sent and received. It will send the information to LPBR periodically in order for LPBR to get a full view on the condition of the channels. LPBR will then decide if the node needs to change to another channel depending on the sent and received information. If the node does not perform well based on the number of received packets less than the number of packets being sent, LPBR will decide on a new channel the node needs to change into. The node will go through the channel changing processes to decide if the new channel is performing better than the previous channel before (settling?) for the new channel.
+%****
+%Each node keeps the counter of packets it has sent and received. It will send the information to LPBR periodically in order for LPBR to get a full view on the condition of the channels. LPBR will then decide if the node needs to change to another channel depending on the sent and received information. If the node does not perform well based on the number of received packets less than the number of packets being sent, LPBR will decide on a new channel the node needs to change into. The node will go through the channel changing processes to decide if the new channel is performing better than the previous channel before (settling?) for the new channel.
 
 \subsection{Channel Switching}
 
@@ -96,7 +96,7 @@ Each node keeps the counter of packets it has sent and received. It will send th
 
 LPBR decides the channel that a node should be listening on either by random selection or through LPBR knowledge of the channels. Figure 1 shows the states in channel switching. LPBR sends the change channel message to the node on the receiving node current listening channel. The node saves it's current and new channel to allow the channel to be restored if require. The node contacts its neighbours, informing the new channel value. The neighbours will in turn, send probing messages to check the new channel condition. Different neighbours might have different success rate, thus the final decision of switching is based on the threshold that is set. 
 
-If the threshold is not met or the probing has timed out, the node is restores to its current channel and informs LPBR of the updated channel condition. Otherwise, the node sends a change channel message to the neighbours and waits for acknowledgement. The node and the neighbours updates their table. The node informs LPBR of the changes and listens on the new channel for data packets. If the acknowledgement does not arrive before the timeout, the change channel message is retransmitted. The neighbour node is ignored if the retransmissions has timed out. 
+If the threshold is not met or the probing has timed out, the node is restores to its current channel and informs LPBR of the updated channel condition. Otherwise, the node sends a change channel message to the neighbours and waits for acknowledgement. The node and the neighbours updates their table. The node informs LPBR of the changes and listens on the new channel for data packets. If the acknowledgement does not arrive after the timeout, the change channel confirmation message is retransmitted. The neighbour node is ignored if the retransmissions has timed out. 
 
 %It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
 
