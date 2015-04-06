@@ -205,6 +205,7 @@ static int blen;
 uint8_t lpbrCheck2ndHop(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   static uip_ds6_nbr_t *nbr;
 
+  //check with all LPBR neighbours
   for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
     nbr = nbr_table_next(ds6_neighbors,nbr)) {
     if(toSendAddr->u8[13] != nbr->ipaddr.u8[13]) {
@@ -671,6 +672,9 @@ receiver(struct simple_udp_connection *c,
     printf(" nbr %d ", ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER))[5]) ;
     uip_debug_ipaddr_print(&msg->address);
     printf(" chNum %d rxValue %d\n", msg->value, msg->value2);
+
+////!!!!TO DO
+//keepLpbrList(&msg2);
 
     keepLpbrList(sender_addr, msg->address, msg->value, msg->value2);
     readProbe(1);
