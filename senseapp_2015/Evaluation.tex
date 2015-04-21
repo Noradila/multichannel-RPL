@@ -1,12 +1,22 @@
 \section{Evaluation}
 %ours, RPL + ContikiMAC, MiCMAC
-We describe the experiments that we run to evaluate our multi-channel tree protocol and comparing the results (compare what??) against single-channel tree protocol and MiCMAC.
+The results of our multichannel RPL protocol is compared against single-channel tree protocol and MiCMAC.
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
-We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of (explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. (how many other nodes??) are duty cycled and acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on several channels (check??) to measure the benefits of multi-channel operation of changing channel when failure happens within a given period. 
+We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR.
+
+RPL border router is used in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of (ram value?), (rom value). By using a border router, this allows channel changing to be decided in real time. 
+
+RPL border router is used to interface a regular IPv6 with a regular RPL.
+
+(explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. There are 14 duty cycled nodes that acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on channel 26; which is the channel LPBR is listening on. 
+
+%several channels, mainly on the parents channel as the packets travel upward to measure the benefits of multi-channel operation of changing channel when failure happens within a given period. 
 
 - throughput?
+
+We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
 
 \subsection{Effect of Multi-channel}
 //with existings - better? worse? what about RAM, ROM used?

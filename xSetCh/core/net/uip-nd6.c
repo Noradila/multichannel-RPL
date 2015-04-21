@@ -77,7 +77,7 @@
 #if UIP_CONF_IPV6
 /*------------------------------------------------------------------*/
 #define DEBUG 0
-#define DEBUG 1
+//#define DEBUG 1
 #include "net/uip-debug.h"
 
 #if UIP_LOGGING
@@ -150,13 +150,13 @@ uip_nd6_ns_input(void)
   uint8_t flags;
 
 //ADILA EDIT
-printf("Received NS ");
+/*printf("Received NS ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 printf(" to ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
 printf(" with target address");
 uip_debug_ipaddr_print((uip_ipaddr_t *) (&UIP_ND6_NS_BUF->tgtipaddr));
-printf("\n");
+printf("\n");*/
 //----------
 
   PRINTF("Received NS from ");
@@ -330,13 +330,13 @@ create_na:
   PRINTF("\n");
 
 //ADILA EDIT
-printf("Sending NA ");
+/*printf("Sending NA ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
 printf(" from ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 printf(" with target address ");
 uip_debug_ipaddr_print(&UIP_ND6_NA_BUF->tgtipaddr);
-printf("\n");
+printf("\n");*/
 //----------
   return;
 
@@ -414,7 +414,7 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
   PRINTF("\n");
 
 //ADILA EDIT
-uip_ipaddr_t testIP;
+/*uip_ipaddr_t testIP;
 printf("13:%x 14:%x 15:%x\n\n", UIP_IP_BUF->destipaddr.u8[13], UIP_IP_BUF->destipaddr.u8[14], UIP_IP_BUF->destipaddr.u8[15]);
 printf("Sending NS ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
@@ -422,7 +422,7 @@ printf(" from ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 printf(" with target address ");
 uip_debug_ipaddr_print(tgt);
-printf("\n");
+printf("\n");*/
 //----------
 
   return;
@@ -440,13 +440,13 @@ uip_nd6_na_input(void)
   uint8_t is_override;
 
 //ADILA EDIT
-printf("Received NA ");
+/*printf("Received NA ");
 uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 printf("to");
 uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
 printf("with target address");
 uip_debug_ipaddr_print((uip_ipaddr_t *) (&UIP_ND6_NA_BUF->tgtipaddr));
-printf("\n");
+printf("\n");*/
 //----------
 
   PRINTF("Received NA from");

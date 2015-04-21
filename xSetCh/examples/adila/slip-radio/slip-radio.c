@@ -94,7 +94,7 @@ packet_sent(void *ptr, int status, int transmissions)
 //ADILA EDIT 10/11/14
 //reset channel here?
 //simplified_nbr_table_get_channel();
-printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
+//printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
 //cc2420_set_channel(26);
 //@
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
@@ -144,7 +144,7 @@ printf("--------------------------\n\n");
 */
 aa = simplified_check_table(data[4], data[3]);
 //printf("value aa %d\n\n", aa);
-printf("DATA[3] %d DATA[4] %d\n\n", data[3], data[4]);
+//printf("DATA[3] %d DATA[4] %d\n\n", data[3], data[4]);
         //printf("DATA[3] IS %d\n", data[3]);
 
 if(aa != 1) {
@@ -190,7 +190,7 @@ simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEI
 
       PRINTF("slip-radio: sending %u (%d bytes)\n",
              data[2], packetbuf_datalen());
-      printf("RADIO sending packet\n");
+      //printf("RADIO sending packet\n");
 
       /* parse frame before sending to get addresses, etc. */
       no_framer.parse();
@@ -287,6 +287,10 @@ putchar(int c)
   if(!debug_frame) {            /* Start of debug output */
     slip_arch_writeb(SLIP_END);
     slip_arch_writeb('\r');     /* Type debug line == '\r' */
+
+//ADILA EDIT
+//slip_arch_writeb('\n'); 
+
     debug_frame = 1;
   }
 

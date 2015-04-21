@@ -347,7 +347,7 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
       if(pktSent == 1) {
 	sr->noSent = sr->noSent + 1;
 
-        if(sr->noSent == 5) {
+/*        if(sr->noSent == 5) {
 //if(sr->sendToAddr.u8[11] == 2) {
 //if(uip_ipaddr_cmp(&sr->sendToAddr, &sendTo2)) {
 	  //tell LPBR to check the channel condition
@@ -365,6 +365,7 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
 //}
 	  //process_post_synch(&test1, event_data_ready, &msg2);
 	}
+*/
 	return;
       }
       if(pktRecv == 1) {
@@ -648,8 +649,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
     //keepSentRecv(&sendTo1, 1, 0);
 
 //keepSentRecv(&sendTo1, 1, 0);
-
-    printf("Sending unicast to ");
+if(message_number < 50) {
+    printf("Sending unicast %d to ", message_number);
     uip_debug_ipaddr_print(&sendTo1);
     printf("\n");
     sprintf(buf, "Message %d", message_number);
@@ -663,6 +664,7 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
       //for(q = 1; q <= 3; q++) {
         //removeProbe();
       //}
+}
   }
 
   PROCESS_END();
@@ -751,7 +753,7 @@ uint8_t delayTime = 0;
 	    if(x == 0) {
 	    //if(keepType == NBR_CH_CHANGE) {
 	      msg2.type = NBR_CH_CHANGE;
-	      printf("%d Sending NBR CH CHANGE %d to tree neighbour ", nbr->nbrCh, msg2.value);
+	      printf("%d:%d Sending NBR CH CHANGE %d to tree neighbour\n", cc2420_get_channel(), nbr->nbrCh, msg2.value);
 	      //delayTime = 1;
 	      //delayTime = 0.15; //takes 1 sec but it doesn't matter since it will be in queue
 	    }
@@ -829,6 +831,7 @@ uint8_t delayTime = 0;
 
 	//@
         //cc2420_set_channel(msg2.value);
+//printf("PROBE\n");
 // 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
 //	uip_debug_ipaddr_print(msg2.addrPtr);
 //	printf("\n");

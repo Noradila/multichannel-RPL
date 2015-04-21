@@ -83,7 +83,7 @@ printf("THECH %d == %d NT->THECH\n\n", theCh, nt->theCh);
 
   nt = memb_alloc(&simplified_nbr_table_list_mem);
   if(nt != NULL) {
-printf("added IPAddr %d theCh %d\n\n", theIPAddr, theCh);
+//printf("added IPAddr %d theCh %d\n\n", theIPAddr, theCh);
     nt->theIPAddr = theIPAddr;
     nt->theCh = theCh;
     list_add(simplified_nbr_table_list_table, nt);

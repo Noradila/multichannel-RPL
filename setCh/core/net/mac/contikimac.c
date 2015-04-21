@@ -292,7 +292,10 @@ on(void)
     radio_is_on = 1;
 
 //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+// printf("THE RECV %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
+///!!! if recv != 0 check the channel
 
+//printf("ON %d\n\n", cc2420_get_channel());
     NETSTACK_RADIO.on();
   }
 }
@@ -306,7 +309,10 @@ off(void)
 
 ////!!!!!!!!! reset to listening channel here?
 //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//printf("CURRENTCH %d PREVCH %d\n\n", uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].prevCh);
+//printf("OFF %d\n\n", cc2420_get_channel());
     NETSTACK_RADIO.off();
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -593,7 +599,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 //uip_ipaddr_t toParent;
 //--------------
 
-printf("DEBUG SEND PACKET RET\n\n");
+//printf("DEBUG SEND PACKET RET\n\n");
 
   /* Exit if RDC and radio were explicitly turned off */
    if(!contikimac_is_on && !contikimac_keep_radio_on) {
@@ -639,6 +645,8 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //printf("\n");
 
 if((nbr->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+
+//printf("contikimac CHANNEL %d\n", cc2420_get_channel());
 //if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
 //printf("CMAC %d recv %d ch %d\n\n", r->ipaddr.u8[11], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], r->nbrCh);
 //cc2420_set_channel(r->nbrCh);
@@ -654,7 +662,7 @@ printf("\n");
 cc2420_set_channel(uip_ds6_defrt_ch());
 }*/
 //    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+/*    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
 cc2420_get_channel(),
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
@@ -664,6 +672,7 @@ cc2420_get_channel(),
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
+*/
 #else /* UIP_CONF_IPV6 */
     PRINTDEBUG("contikimac: send unicast to %u.%u\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
@@ -766,6 +775,7 @@ cc2420_get_channel(),
   
   /* Switch off the radio to ensure that we didn't start sending while
      the radio was doing a channel check. */
+//printf("CONTIKIMAC OFF?\n\n");
   off();
 
 
@@ -784,7 +794,7 @@ cc2420_get_channel(),
 
 //! ADILA TAKE NOT
 //CHANGE RADIO CHANNEL HERE (RESET?)
-printf("FINISHED SENDING?\n\n");
+//printf("FINISHED SENDING?\n\n");
 //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //----------------
 
@@ -931,11 +941,11 @@ printf("FINISHED SENDING?\n\n");
 //printf("COLLISION\n\n");
   } else if(!is_broadcast && !got_strobe_ack) {
     ret = MAC_TX_NOACK;
-printf("NOACK\n\n");
+//!printf("NOACK\n\n");
   } else {
     ret = MAC_TX_OK;
 //ADILA EDIT 02/03/14
-printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+printf("RET = MAC TX OK from %d sender %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5], packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[5]);
 //-------------------
   }
 
@@ -974,7 +984,7 @@ qsend_list(mac_callback_t sent, void *ptr, struct rdc_buf_list *buf_list)
   int ret;
   int is_receiver_awake;
   
-printf("DEBUG QSEND LIST\n\n");
+//printf("DEBUG QSEND LIST\n\n");
 
   if(curr == NULL) {
     return;
@@ -999,14 +1009,14 @@ printf("DEBUG QSEND LIST\n\n");
     }
 
     /* Send the current packet */
-printf("QSEND LIST SENDING PACKET\n\n");
+//printf("QSEND LIST SENDING PACKET\n\n");
     ret = send_packet(sent, ptr, curr, is_receiver_awake);
     if(ret != MAC_TX_DEFERRED) {
       mac_call_sent_callback(sent, ptr, ret, 1);
     }
 
     if(ret == MAC_TX_OK) {
-printf("QSEND LIST MAX TX OK\n\n");
+//printf("QSEND LIST MAX TX OK\n\n");
       if(next != NULL) {
         /* We're in a burst, no need to wake the receiver up again */
         is_receiver_awake = 1;

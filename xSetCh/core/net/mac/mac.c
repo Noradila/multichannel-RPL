@@ -49,16 +49,16 @@ mac_call_sent_callback(mac_callback_t sent, void *ptr, int status, int num_tx)
          (void *)sent, ptr, status, num_tx);
   switch(status) {
   case MAC_TX_COLLISION:
-    printf("mac: collision after %d tx\n", num_tx);
+    PRINTF("mac: collision after %d tx\n", num_tx);
     break; 
   case MAC_TX_NOACK:
-    printf("mac: noack after %d tx\n", num_tx);
+    PRINTF("mac: noack after %d tx\n", num_tx);
     break;
   case MAC_TX_OK:
-    printf("mac: sent after %d tx\n", num_tx);
+    PRINTF("mac: sent after %d tx\n", num_tx);
     break;
   default:
-    printf("mac: error %d after %d tx\n", status, num_tx);
+    PRINTF("mac: error %d after %d tx\n", status, num_tx);
   }
 
   if(sent) {

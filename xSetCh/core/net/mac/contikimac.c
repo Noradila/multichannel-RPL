@@ -612,7 +612,7 @@ theChIs = simplified_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
 cc2420_set_channel(theChIs);
 //printf("ADILA ATTR %d AND %d\n\n", packetbuf_attr(PACKETBUF_ADILA), packetbuf_attr(PACKETBUF_ADILA2));
 //printf("ADILA ATTR %d %d\n\n", packetbuf_attr(PACKETBUF_ADILA), cc2420_get_channel());
-    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+/*    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
 theChIs,
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
@@ -622,7 +622,7 @@ theChIs,
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
-
+*/
 //packetbuf_set_attr(PACKETBUF_ADILA2, PACKETBUF_ADILA);
 //------------------
 
@@ -731,9 +731,9 @@ theChIs,
     we_are_sending = 0;
 
 //ADILA
-    printf("contikimac: collision receiving %d, pending %d\n",
+    /*printf("contikimac: collision receiving %d, pending %d\n",
            NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
-
+*/
     PRINTF("contikimac: collision receiving %d, pending %d\n",
            NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
     return MAC_TX_COLLISION;
@@ -795,7 +795,7 @@ theChIs,
        or rx cycle */
 
 //ADILA
-printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
+//printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
 //printf("XXXXX: MAX_MAC %d S CONF %d\n\n", PACKETBUF_ATTR_MAX_MAC_TRANSMISSIONS, SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS);
 //----------
 
@@ -816,7 +816,7 @@ printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
        !RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + MAX_PHASE_STROBE_TIME)) {
 
 //ADILA
-      printf("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
+      //printf("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
 
       PRINTF("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0]);
       break;
@@ -909,7 +909,7 @@ printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
   } else {
     ret = MAC_TX_OK;
 //ADILA EDIT 02/03/14
-printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
+//printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
 //-------------------
   }
 
@@ -924,7 +924,7 @@ printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u
     if(collisions == 0 && is_receiver_awake == 0) {
 
 //ADILA EDIT
-printf("PHASE UPDATE IN CONTIKIMAC\n\n");
+//printf("PHASE UPDATE IN CONTIKIMAC\n\n");
       phase_update(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
 		   encounter_time, ret);
     }

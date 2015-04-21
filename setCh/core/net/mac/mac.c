@@ -44,7 +44,7 @@
 void
 mac_call_sent_callback(mac_callback_t sent, void *ptr, int status, int num_tx)
 {
-printf("DEBUG MAC\n\n");
+//printf("DEBUG MAC\n\n");
 
   PRINTF("mac_callback_t %p ptr %p status %d num_tx %d\n",
          (void *)sent, ptr, status, num_tx);

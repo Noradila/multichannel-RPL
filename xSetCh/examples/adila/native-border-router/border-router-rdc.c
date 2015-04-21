@@ -188,13 +188,13 @@ if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]
 	  //if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
 
 
-		printf("\n\nTEST ");
+/*		printf("\n\nTEST ");
 //printf("11:%x 12:%x 13:%x 14:%x 15:%x \n\n", nbr->ipaddr.u8[11], nbr->ipaddr.u8[12], nbr->ipaddr.u8[13], nbr->ipaddr.u8[14], nbr->ipaddr.u8[15]);
       		uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
       		uip_debug_ipaddr_print(&nH);
 		uip_debug_ipaddr_print(&nbr->ipaddr);
 		printf("\n\n");
-		  printf("NBR->NBRCH %d\n\n", nbr->nbrCh);
+		  printf("NBR->NBRCH %d\n\n", nbr->nbrCh);*/
 		  buf[3] = nbr->nbrCh;
 		buf[4] = nbr->ipaddr.u8[13];
 

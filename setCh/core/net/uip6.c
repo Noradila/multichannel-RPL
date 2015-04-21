@@ -916,7 +916,7 @@ ext_hdr_options_process(void)
 void
 uip_process(uint8_t flag)
 {
-printf("DEBUG UIP_PROCESS\n\n");
+//printf("DEBUG UIP_PROCESS\n\n");
 #if UIP_TCP
   register struct uip_conn *uip_connr = uip_conn;
 #endif /* UIP_TCP */
@@ -1630,7 +1630,7 @@ printf("DEBUG UIP_PROCESS\n\n");
 
  udp_send:
 //printf("IN UDP_SEND\n\n");
-//  PRINTF("In udp_send\n");
+  PRINTF("In udp_send\n");
 
   if(uip_slen == 0) {
 

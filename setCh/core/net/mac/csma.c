@@ -205,8 +205,8 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 
 
 //ADILA EDIT
-printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
+//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //----------
 
     PRINTF("csma: free_queued_packet, queue length %d\n",
@@ -220,7 +220,9 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
       ctimer_set(&n->transmit_timer, default_timebase(),
                  transmit_packet_list, n);
 
+//printf("SET CH %d\n\n", list_length(n->queued_packet_list));
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+//printf("SET CH %d\n\n", list_length(n->queued_packet_list));
 //ADILA EDIT
 //ctimer_set(&n->transmit_timer, 0, transmit_packet_list, n);
 

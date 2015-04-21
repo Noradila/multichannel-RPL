@@ -211,12 +211,12 @@ uint8_t lpbrCheck2ndHop(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
     if(toSendAddr->u8[13] != nbr->ipaddr.u8[13]) {
       if((nbr->nbrCh) != chCheck) {
 	channelOK = 1;
-	printf("LPBR2hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, nbr->nbrCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
+	//printf("LPBR2hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, nbr->nbrCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
         //!chCheck = random_rand();
       }//END ((nbr->nbrCh) != chCheck)
       else {
 	channelOK = 0;
-	printf("CHECK CH: 2HOPSLPBR 2 HOP FAILED\n\n");
+	//printf("CHECK CH: 2HOPSLPBR 2 HOP FAILED\n\n");
         //printf("2hopsLPBR %d\n\n", channelOK);
         break;
        //return NOT OK
@@ -233,13 +233,13 @@ uint8_t secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
       if(l->chNum != chCheck) {
-	printf("2hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
-	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
+	//printf("2hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
+	//printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
 	channelOK = 1;
       }
       else {
 	channelOK = 0;
-	printf("CHECK CH: SECONDCHECK FAILED!\n\n");
+	//printf("CHECK CH: SECONDCHECK FAILED!\n\n");
 	break;
       }
     }
@@ -258,21 +258,21 @@ uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   //for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(l->nbrAddr.u8[13] == toSendAddr->u8[13]) {
-      printf("1hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
+      //printf("1hopsothernodes %d ch %d lchNum %d l %d to %d\n\n", l->routeAddr.u8[13], chCheck, l->chNum, l->nbrAddr.u8[13], toSendAddr->u8[13]);
       if(l->chNum != chCheck) {
-	printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
+	//printf("l->chNum %d != chCheck %d\n\n", l->chNum, chCheck);
 	//tempVal = l->routeAddr.u8[13];
 
 	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
 	    if(l->routeAddr.u8[13] == nbr->ipaddr.u8[13]) {
 	      if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
-	        printf("2nd hop is LPBR %d chCheck %d\n\n", uip_ds6_if.addr_list[1].currentCh, chCheck);
+	        //printf("2nd hop is LPBR %d chCheck %d\n\n", uip_ds6_if.addr_list[1].currentCh, chCheck);
 	        channelOK = 1;
 	      }
 	      else {
 		channelOK = 0;
-		printf("CHECK CH: 2HOPSOTHERNODES 2 HOP LPBR FAILED for %d\n\n", l->routeAddr.u8[13]);
+		//printf("CHECK CH: 2HOPSOTHERNODES 2 HOP LPBR FAILED for %d\n\n", l->routeAddr.u8[13]);
 		break;
 	      }
 	    }
@@ -284,7 +284,7 @@ uint8_t twoHopsOtherNodes(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       }
       else {
         channelOK = 0;
-	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
+	//printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
 	break;
       }
     }//END IF 1ST HOP
@@ -302,7 +302,7 @@ uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
     if(toSendAddr->u8[13] == nbr->ipaddr.u8[13]) {
       //check LPBR != chCheck (1 hop)
       if(uip_ds6_if.addr_list[1].currentCh != chCheck) {
-	printf("LPBR1hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, uip_ds6_if.addr_list[1].currentCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
+	//printf("LPBR1hopsLPBR ch %d lchNum %d l %d to %d\n\n", chCheck, uip_ds6_if.addr_list[1].currentCh, nbr->ipaddr.u8[13], toSendAddr->u8[13]);
 
         channelOK = lpbrCheck2ndHop(toSendAddr, chCheck);
         if(channelOK == 0) {
@@ -311,7 +311,7 @@ uint8_t twoHopsLPBR(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
       }//END IF
       else {
 	channelOK = 0;
-	printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
+	//printf("CHECK CH: 2HOPSOTHERNODES 1 HOP FAILED\n\n");
 	break;
         //return NOT OK (same CH as LPBR)
       }
@@ -355,7 +355,7 @@ void doSending(struct unicast_message *msg) {
     randomNewCh = (random_rand() % 16) + 11;
     while(msg2.value == randomNewCh) {
       randomNewCh = (random_rand() % 16) + 11;
-      printf("RANDOMNEWCH %d i %d\n\n", randomNewCh, i);
+      //printf("RANDOMNEWCH %d i %d\n\n", randomNewCh, i);
     }
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
     channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
@@ -365,7 +365,7 @@ void doSending(struct unicast_message *msg) {
 
   if(i == 4) {
     //couldn't find a 2 hops channel value, use the default 26
-    printf("%d RANDOMNEWCH USE DEFAULT\n\n", i);
+    //printf("%d RANDOMNEWCH USE DEFAULT\n\n", i);
     randomNewCh = 26;
     i = 0;
   }
@@ -403,9 +403,9 @@ static void startChChange(uint8_t currentNode) {
     i++;
     if(i == currentNode) {
       msg2.address = r->ipaddr;
-      printf("i %d currentNode %d ", i, currentNode);
-      uip_debug_ipaddr_print(&r->ipaddr);
-      printf("\n\n");
+      //printf("i %d currentNode %d ", i, currentNode);
+      //uip_debug_ipaddr_print(&r->ipaddr);
+      //printf("\n\n");
       doSending(&msg2);
       break;
     }
@@ -419,9 +419,9 @@ static void howManyRoutes() {
     r = uip_ds6_route_next(r)) {
 
     noOfRoutes = noOfRoutes + 1;
-    printf("%d NO OF ROUTE ", noOfRoutes);
-    uip_debug_ipaddr_print(&r->ipaddr);
-    printf("\n");
+    //printf("%d NO OF ROUTE ", noOfRoutes);
+    //uip_debug_ipaddr_print(&r->ipaddr);
+    //printf("\n");
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -502,11 +502,11 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
 
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(uip_ipaddr_cmp(&l->routeAddr, ipAddress)) {
-      printf("SAME ");
-      uip_debug_ipaddr_print(ipAddress);
-      printf(" ");
-      uip_debug_ipaddr_print(&l->routeAddr);
-      printf("\n");
+      //printf("SAME ");
+      //uip_debug_ipaddr_print(ipAddress);
+      //printf(" ");
+      //uip_debug_ipaddr_print(&l->routeAddr);
+      //printf("\n");
       checkOK = 1;
       break;
     }
@@ -517,24 +517,25 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
 
   //if(checkOK == 1) {
   if(checkOK == 1 || noOfRetransmit == 4) {
-    printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
+    //printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     sendingTo = sendingTo + 1;
     noOfRetransmit = 0;
-    printf("CHANNELOK 1 SENDING TO %d\n\n", sendingTo);
+    //printf("CHANNELOK 1 SENDING TO %d\n\n", sendingTo);
     startChChange(sendingTo);
 
     //!!!!! if sending done recheck the whole table again?
-    if(sendingTo == (noOfRoutes + 1)) {
+/*    if(sendingTo == (noOfRoutes + 1)) {
       //recheck again
-      printf("SENDINGTO-1 %d NOOFROUTES %d\n\n", sendingTo, noOfRoutes + 1);
+      //printf("SENDINGTO-1 %d NOOFROUTES %d\n\n", sendingTo, noOfRoutes + 1);
       recheck2();
     }
+*/
   }
   else {
     //repeat sending to the same node
     //startChChange(sendingTo);
-    printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
-    printf("CHANNELOK 0 SENDING TO %d\n\n", sendingTo);
+    //printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
+    //printf("CHANNELOK 0 SENDING TO %d\n\n", sendingTo);
     noOfRetransmit = noOfRetransmit + 1;
     startChChange(sendingTo);
   }
@@ -621,7 +622,7 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
   }
 }
 /*---------------------------------------------------------------------------*/
-static void recheckChChange(struct unicast_message *msg) {
+/*static void recheckChChange(struct unicast_message *msg) {
   struct sentRecv *sr; 
   struct unicast_message msg2;
 
@@ -645,7 +646,7 @@ static void recheckChChange(struct unicast_message *msg) {
 
   //doSending(&msg2);
 }
-
+*/
 /*---------------------------------------------------------------------------*/
 static void
 receiver(struct simple_udp_connection *c,
@@ -689,11 +690,11 @@ receiver(struct simple_udp_connection *c,
       if(sender_addr->u8[11] == r->ipaddr.u8[11]) {
       //if(uip_ipaddr_cmp(sender_addr, &r->ipaddr)) {
         r->routeCh = msg->value;
-        printf("UPDATE ROUTING TABLE: ");
-	uip_debug_ipaddr_print(&r->ipaddr);
+        //printf("UPDATE ROUTING TABLE: ");
+	//uip_debug_ipaddr_print(&r->ipaddr);
 	//printf(" VIA ");
 	//uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	printf(" R->ROUTECH %d\n", r->routeCh);
+	//printf(" R->ROUTECH %d\n", r->routeCh);
       }
     }
 
@@ -702,10 +703,10 @@ receiver(struct simple_udp_connection *c,
       nbr = nbr_table_next(ds6_neighbors,nbr)) {
       if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
         nbr->nbrCh = msg->value;
-        printf("UPDATE NBR TABLE: ");
-        uip_debug_ipaddr_print(&nbr->ipaddr);
-        printf(" nbr->nbrCh %d ", nbr->nbrCh);
-        printf("\n");
+        //printf("UPDATE NBR TABLE: ");
+        //uip_debug_ipaddr_print(&nbr->ipaddr);
+        //printf(" nbr->nbrCh %d ", nbr->nbrCh);
+        //printf("\n");
       }
     }
 
@@ -724,7 +725,7 @@ receiver(struct simple_udp_connection *c,
     }*/
   }
 
-  else if(msg->type == SENTRECV) {
+/*  else if(msg->type == SENTRECV) {
     printf("Received SENTRECV %d from ", msg->value);
     uip_debug_ipaddr_print(sender_addr);
     printf("\n");
@@ -735,9 +736,9 @@ receiver(struct simple_udp_connection *c,
     /*if(sender_addr->u8[11] == 2) {
       recheckChChange(&msg2);
     }*/
-    recheckChChange(&msg2);
+//    recheckChChange(&msg2);
 
-  }
+//  }
 
   else {
     printf("Data received from ");
@@ -747,7 +748,7 @@ receiver(struct simple_udp_connection *c,
 
     keepSentRecv(sender_addr, 0, 1);
 
-    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+/*    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
       nbr = nbr_table_next(ds6_neighbors,nbr)) {
       printf("NBR: ");
       uip_debug_ipaddr_print(&nbr->ipaddr);
@@ -761,6 +762,7 @@ receiver(struct simple_udp_connection *c,
       printf(" routeCh %d", r->routeCh);
       printf("\n");
     }
+*/
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -1062,9 +1064,9 @@ PROCESS_YIELD_UNTIL(etimer_expired(&time));
 etimer_reset(&time);
 }
 x = 0;*/
-    printf("RECHECK for ");
-    uip_debug_ipaddr_print(&holdAddr);
-    printf("\n\n");
+    //printf("RECHECK for ");
+    //uip_debug_ipaddr_print(&holdAddr);
+    //printf("\n\n");
     recheck(&holdAddr);
   }
   PROCESS_END();

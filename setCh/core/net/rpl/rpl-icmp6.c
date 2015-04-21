@@ -151,9 +151,9 @@ dis_input(void)
   rpl_instance_t *end;
 
 //ADILA EDIT 02/03/15
-printf("Recv DIS ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
-printf("\n");
+//printf("Recv DIS ");
+//uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+//printf("\n");
 //-------------------
 
   /* DAG Information Solicitation */
@@ -201,9 +201,9 @@ dis_output(uip_ipaddr_t *addr)
   }
 
 //ADILA EDIT 02/03/15
-printf("Send DIS to ");
-uip_debug_ipaddr_print(addr);
-printf("\n");
+//printf("Send DIS to ");
+//uip_debug_ipaddr_print(addr);
+//printf("\n");
 //-------------------
 
   PRINTF("RPL: Sending a DIS to ");
@@ -242,9 +242,9 @@ dio_input(void)
   /* DAG Information Object */
 
 //ADILA EDIT 02/03/15
-printf("Recv DIO ");
-uip_debug_ipaddr_print(&from);
-printf("\n");
+//printf("Recv DIO ");
+//uip_debug_ipaddr_print(&from);
+//printf("\n");
 //-------------------
 
   PRINTF("RPL: Received a DIO from ");
@@ -258,7 +258,7 @@ printf("\n");
       /* set reachable timer */
       stimer_set(&nbr->reachable, UIP_ND6_REACHABLE_TIME / 1000);
 //ADILA EDIT 19/02/15
-printf("add nbr\n\n");
+//printf("add nbr\n\n");
 //-------------------
       PRINTF("RPL: Neighbor added to neighbor cache ");
       PRINT6ADDR(&from);
@@ -581,9 +581,9 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //printf("uDIO\n\n");
 
 //ADILA EDIT 02/03/15
-printf("Send DIO to ");
-uip_debug_ipaddr_print(uc_addr);
-printf("\n");
+//printf("Send DIO to ");
+//uip_debug_ipaddr_print(uc_addr);
+//printf("\n");
 //-------------------
 
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
@@ -626,9 +626,9 @@ dao_input(void)
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
 
 //ADILA EDIT 02/03/15
-printf("Recv DAO ");
-uip_debug_ipaddr_print(&dao_sender_addr);
-printf("\n");
+//printf("Recv DAO ");
+//uip_debug_ipaddr_print(&dao_sender_addr);
+//printf("\n");
 //-------------------
 
   /* Destination Advertisement Object */
@@ -863,9 +863,9 @@ dao_output_target(rpl_parent_t *parent, uip_ipaddr_t *prefix, uint8_t lifetime)
   buffer[pos++] = lifetime;
 
 //ADILA EDIT 02/03/15
-printf("Send DAO to ");
-uip_debug_ipaddr_print(rpl_get_parent_ipaddr(parent));
-printf("\n");
+//printf("Send DAO to ");
+//uip_debug_ipaddr_print(rpl_get_parent_ipaddr(parent));
+//printf("\n");
 //-------------------
 
   PRINTF("RPL: Sending DAO with prefix ");

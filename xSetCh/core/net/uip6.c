@@ -913,7 +913,7 @@ ext_hdr_options_process(void)
 void
 uip_process(uint8_t flag)
 {
-printf("DEBUG UIP_PROCESS\n\n");
+//printf("DEBUG UIP_PROCESS\n\n");
 #if UIP_TCP
   register struct uip_conn *uip_connr = uip_conn;
 #endif /* UIP_TCP */

@@ -115,7 +115,7 @@ static uint8_t (* outputfunc)(uip_lladdr_t *a);
 uint8_t
 tcpip_output(uip_lladdr_t *a)
 {
-printf("DEBUG TCPIP_OUTPUT\n\n");
+//printf("DEBUG TCPIP_OUTPUT\n\n");
 
   int ret;
   if(outputfunc != NULL) {

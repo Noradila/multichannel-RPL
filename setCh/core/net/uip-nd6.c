@@ -153,9 +153,9 @@ uip_nd6_ns_input(void)
 //----------
 
 //ADILA EDIT 02/03/15
-printf("Recv NS ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
-printf("\n");
+//printf("Recv NS ");
+//uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+//printf("\n");
 //-------------------
 
   PRINTF("Received NS from ");
@@ -322,9 +322,9 @@ create_na:
   UIP_STAT(++uip_stat.nd6.sent);
 
 //ADILA EDIT 02/03/15
-printf("Send NA to ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
-printf("\n");
+//printf("Send NA to ");
+//uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+//printf("\n");
 //-------------------
 
   PRINTF("Sending NA to ");
@@ -409,9 +409,9 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
 //----------*/
 
 //ADILA EDIT 02/03/15
-printf("Send NS to ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
-printf("\n");
+//printf("Send NS to ");
+//uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
+//printf("\n");
 //-------------------
 
   PRINTF("Sending NS to");
@@ -436,9 +436,9 @@ uip_nd6_na_input(void)
   uint8_t is_override;
 
 //ADILA EDIT 02/03/15
-printf("Recv NA ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
-printf("\n");
+//printf("Recv NA ");
+//uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+//printf("\n");
 //-------------------
 
 //ADILA EDIT

@@ -1325,7 +1325,7 @@ send_packet(rimeaddr_t *dest)
 {
 
 //ADILA EDIT 02/03/15
-printf("---SEND IN NET/SICSLOWPAN\n\n");
+//printf("---SEND IN NET/SICSLOWPAN\n\n");
 //-------------------
 
   /* Set the link layer destination address for the packet as a
