@@ -4,7 +4,10 @@ The results of our multichannel RPL protocol is compared against single-channel 
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
-We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 26; which is the channel LPBR is listening on. 
+We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 26; which is the channel LPBR is listening on.
+
+//!!!why 1 interference only?
+The simulator, Cooja has a memory leak problem which unable us to use more interference on different channels as we would run out of memory to run the simulation for 60 minutes. 
 
 RPL border router is used in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of (ram value?), (rom value). By using a border router, this allows channel changing to be decided in real time. 
 
