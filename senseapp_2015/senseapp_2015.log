@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.7.14)  21 APR 2015 21:45
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.7.14)  21 APR 2015 21:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -250,23 +250,26 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4] (./senseapp_2015.aux) ) 
+[4] (./senseapp_2015.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2205 strings out of 494985
- 35088 string characters out of 6180356
+ 2208 strings out of 494985
+ 35136 string characters out of 6180356
  96438 words of memory out of 5000000
- 5408 multiletter control sequences out of 15000+600000
+ 5411 multiletter control sequences out of 15000+600000
  34143 words of font info for 63 fonts, out of 8000000 for 9000
  39 hyphenation exceptions out of 8191
  37i,6n,23p,1300b,211s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/
-8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
-mes/utmri8a.pfb>
-Output written on senseapp_2015.pdf (4 pages, 104332 bytes).
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
+w/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on senseapp_2015.pdf (4 pages, 104958 bytes).
 PDF statistics:
  43 PDF objects out of 1000 (max. 8388607)
  29 compressed objects within 1 object stream
