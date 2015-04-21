@@ -8,15 +8,21 @@ We evaluate the protocol in Cooja simulated environment with emulation of TMote 
 
 RPL border router is used in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of (ram value?), (rom value). By using a border router, this allows channel changing to be decided in real time. 
 
-RPL border router is used to interface a regular IPv6 with a regular RPL.
+%RPL border router is used to interface a regular IPv6 with a regular RPL.
 
-(explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. There are 14 duty cycled nodes that acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on channel 26; which is the channel LPBR is listening on. 
+%(explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. There are 14 duty cycled nodes that acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on channel 26; which is the channel LPBR is listening on. 
 
 %several channels, mainly on the parents channel as the packets travel upward to measure the benefits of multi-channel operation of changing channel when failure happens within a given period. 
 
-- throughput?
+%- throughput?
 
-We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
+We evaluate multichannel RPL variant using two performance metrics: end to end packet delivery and latency. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. %We compare our multichannel protocol with Contiki's default ContikiMAC and RPL, and MiCMAC.
+
+We run the simulation for a duration of 60 minutes to send 700 packets; 50 packets for each node. RPL runs the initial network setup for a few minutes before it is stable. We set the RPL setup time to be 5 minutes before our multichannel protocol runs for 10 minutes. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 3 times.
+
+%We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
+
+
 
 \subsection{Effect of Multi-channel}
 //with existings - better? worse? what about RAM, ROM used?
