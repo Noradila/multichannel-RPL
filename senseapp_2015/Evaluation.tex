@@ -4,10 +4,10 @@ The results of our multichannel RPL protocol is compared against single-channel 
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
-We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 26; which is the channel LPBR is listening on.
+We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 26; which is the channel LPBR is listening on. The interference model that we use is described in \cite{Boano:2010:MSM:2127940.2127963}. 
 
 //!!!why 1 interference only?
-The simulator, Cooja has a memory leak problem which unable us to use more interference on different channels as we would run out of memory to run the simulation for 60 minutes. 
+The simulator, Cooja has a memory leak problem which unable us to use more interference on different channels as we would run out of memory to run the simulation for 60 minutes. We plan to run our protocol on the testbed as our future work.
 
 RPL border router is used in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of (ram value?), (rom value). By using a border router, this allows channel changing to be decided in real time. 
 
@@ -19,6 +19,7 @@ RPL border router is used in order to move most processing decisions on a PC as 
 
 %- throughput?
 
+//!!! only need 1 metric; to be changed!
 We evaluate multichannel RPL variant using two performance metrics: end to end packet delivery and latency. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. %We compare our multichannel protocol with Contiki's default ContikiMAC and RPL, and MiCMAC.
 
 We run the simulation for a duration of 60 minutes to send 700 packets; 50 packets for each node. RPL runs the initial network setup for a few minutes before it is stable. We set the RPL setup time to be 5 minutes before our multichannel protocol runs for 10 minutes. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 3 times.
