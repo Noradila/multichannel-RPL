@@ -325,6 +325,8 @@ PROCESS_THREAD(slip_radio_process, ev, data)
 #endif
   printf("Slip Radio started...\n");
 
+cc2420_set_txpower(11);
+
   etimer_set(&et, CLOCK_SECOND * 3);
 
   while(1) {

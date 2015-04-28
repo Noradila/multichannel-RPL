@@ -265,12 +265,20 @@ static void readProbeResult() {
   msg2.type = CONFIRM_CH;
   //msg2.value2 = 0;
 
-  if((sum/divide) >= ((sum/divide)/2)) {
+
+  //if((sum/divide) >= ((sum/divide)/2)) {
+  if((sum/divide) == 8) {
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   }
   else {
     msg2.value = uip_ds6_if.addr_list[1].prevCh;
+
+//reset here?
+uip_ds6_if.addr_list[1].currentCh = uip_ds6_if.addr_list[1].prevCh;
+cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
+
+//    msg2.value = uip_ds6_if.addr_list[1].currentCh;
   process_post(&test1, event_data_ready, &msg2);
 
 //!!!!!!!!!!CONFIRM_CH IS TO BE SENT TO ALL NBR!!!!!!
@@ -626,6 +634,8 @@ PROCESS_THREAD(unicast_sender_process, ev, data)
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
+cc2420_set_txpower(11);
+
   etimer_set(&periodic_timer, SEND_INTERVAL);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
@@ -832,9 +842,9 @@ uint8_t delayTime = 0;
 	//@
         //cc2420_set_channel(msg2.value);
 //printf("PROBE\n");
-// 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
-//	uip_debug_ipaddr_print(msg2.addrPtr);
-//	printf("\n");
+ 	printf("%d %d Sending %d NBRPROBE %d to sender ", cc2420_get_channel(), sizeof(msg2), msg2.value2, msg2.value);
+	uip_debug_ipaddr_print(msg2.addrPtr);
+	printf("\n");
 
 	y++;
 	simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2), msg2.addrPtr);
