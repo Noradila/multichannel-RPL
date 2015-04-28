@@ -10,45 +10,45 @@ Warning--can't use both volume and number fields in leach
 Warning--empty journal in mrhof
 Warning--empty journal in tsch
 Warning--empty journal in of0
-You've used 24 entries,
+You've used 25 entries,
             2118 wiz_defined-function locations,
-            627 strings with 8996 characters,
-and the built_in function-call counts, 9811 in all, are:
-= -- 981
-> -- 450
-< -- 17
-+ -- 183
-- -- 154
-* -- 624
-:= -- 1490
-add.period$ -- 76
-call.type$ -- 24
-change.case$ -- 149
+            632 strings with 9252 characters,
+and the built_in function-call counts, 10403 in all, are:
+= -- 1043
+> -- 483
+< -- 18
++ -- 196
+- -- 166
+* -- 668
+:= -- 1580
+add.period$ -- 80
+call.type$ -- 25
+change.case$ -- 158
 chr.to.int$ -- 0
-cite$ -- 31
-duplicate$ -- 450
-empty$ -- 735
-format.name$ -- 154
-if$ -- 2182
+cite$ -- 32
+duplicate$ -- 473
+empty$ -- 774
+format.name$ -- 166
+if$ -- 2313
 int.to.chr$ -- 0
-int.to.str$ -- 24
-missing$ -- 23
-newline$ -- 121
-num.names$ -- 46
-pop$ -- 183
+int.to.str$ -- 25
+missing$ -- 24
+newline$ -- 126
+num.names$ -- 48
+pop$ -- 192
 preamble$ -- 1
-purify$ -- 125
+purify$ -- 133
 quote$ -- 0
-skip$ -- 386
+skip$ -- 405
 stack$ -- 0
-substring$ -- 517
-swap$ -- 186
-text.length$ -- 17
+substring$ -- 554
+swap$ -- 196
+text.length$ -- 18
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 96
+type$ -- 100
 warning$ -- 7
-while$ -- 82
-width$ -- 26
-write$ -- 271
+while$ -- 87
+width$ -- 27
+write$ -- 285
 (There were 7 warnings)

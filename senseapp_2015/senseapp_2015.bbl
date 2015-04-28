@@ -20,6 +20,14 @@ Asaduzzaman and Hyung~Yun Kong.
   networks.
 \newblock volume~12, pages 358--365, Aug 2010.
 
+\bibitem{Boano:2010:MSM:2127940.2127963}
+Carlo~Alberto Boano, Thiemo Voigt, Nicolas Tsiftes, Luca Mottola, Kay
+  R\"{o}mer, and Marco~Antonio Z\'{u}\~{n}iga.
+\newblock Making sensornet mac protocols robust against interference.
+\newblock In {\em Proceedings of the 7th European Conference on Wireless Sensor
+  Networks}, EWSN'10, pages 272--288, Berlin, Heidelberg, 2010.
+  Springer-Verlag.
+
 \bibitem{muchmac}
 Joris Borms, Kris Steenhaut, and Bart Lemmens.
 \newblock Low-overhead dynamic multi-channel mac for wireless sensor networks.
