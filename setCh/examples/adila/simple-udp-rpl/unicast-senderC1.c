@@ -267,7 +267,7 @@ static void readProbeResult() {
 
 
   //if((sum/divide) >= ((sum/divide)/2)) {
-  if((sum/divide) == 8) {
+/*  if((sum/divide) == 8) {
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   }
   else {
@@ -277,8 +277,8 @@ static void readProbeResult() {
 uip_ds6_if.addr_list[1].currentCh = uip_ds6_if.addr_list[1].prevCh;
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
-
-//    msg2.value = uip_ds6_if.addr_list[1].currentCh;
+*/
+    msg2.value = uip_ds6_if.addr_list[1].currentCh;
   process_post(&test1, event_data_ready, &msg2);
 
 //!!!!!!!!!!CONFIRM_CH IS TO BE SENT TO ALL NBR!!!!!!
