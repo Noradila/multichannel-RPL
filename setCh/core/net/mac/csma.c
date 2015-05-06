@@ -117,6 +117,7 @@ LIST(neighbor_list);
 static void packet_sent(void *ptr, int status, int num_transmissions);
 static void transmit_packet_list(void *ptr);
 
+//uint8_t bufferSent = 0;
 /*---------------------------------------------------------------------------*/
 static struct neighbor_queue *
 neighbor_queue_from_addr(const rimeaddr_t *addr)
@@ -405,6 +406,8 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_add(n->queued_packet_list, q);
 
 //ADILA EDIT
+//bufferSent = bufferSent + 1;
+//printf("BUFFERSENT %d\n", bufferSent);
 //printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
 //----------
 	  }

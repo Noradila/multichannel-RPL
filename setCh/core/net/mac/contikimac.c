@@ -241,6 +241,8 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
+//uint8_t hasSent = 0;
+
 #define DEBUG 0
 #if DEBUG
 #include <stdio.h>
@@ -618,6 +620,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 #endif
   if(rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER), &rimeaddr_null)) {
     is_broadcast = 1;
+//hasSent = hasSent + 1;
+//printf("contikimac: send broadcast %d\n", hasSent);
     PRINTDEBUG("contikimac: send broadcast\n");
 
     if(broadcast_rate_drop()) {
@@ -673,6 +677,8 @@ cc2420_get_channel(),
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
 */
+//hasSent = hasSent + 1;
+//printf("contikimac: send unicast %d\n", hasSent);
 #else /* UIP_CONF_IPV6 */
     PRINTDEBUG("contikimac: send unicast to %u.%u\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],

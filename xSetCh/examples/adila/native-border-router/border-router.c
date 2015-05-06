@@ -370,7 +370,7 @@ void doSending(struct unicast_message *msg) {
     i = 0;
   }
 
-/*  while(channelOK == 0) {
+  while(channelOK == 0) {
     randomNewCh = (random_rand() % 16) + 11;
     while(msg2.value == randomNewCh) {
       randomNewCh = (random_rand() % 16) + 11;
@@ -381,8 +381,8 @@ void doSending(struct unicast_message *msg) {
 
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
-*/
-msg2.value = 22;
+
+//msg2.value = 22;
 
   printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
   uip_debug_ipaddr_print(&msg2.address);

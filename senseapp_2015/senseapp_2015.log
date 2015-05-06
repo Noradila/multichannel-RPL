@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.7.14)  30 APR 2015 15:58
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  1 MAY 2015 12:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **senseapp_2015.tex
 (./senseapp_2015.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 4 languages loaded.
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (./IEEEtran.cls
 Document Class: IEEEtran 2012/11/21 V1.8c by Harald Hanche-Olsen and Anders Chr
 istensen
@@ -259,12 +259,12 @@ Before submitting the final camera ready copy, remember to:
 
 ] (./senseapp_2015.aux) ) 
 Here is how much of TeX's memory you used:
- 2209 strings out of 494985
- 35154 string characters out of 6180356
- 97442 words of memory out of 5000000
- 5412 multiletter control sequences out of 15000+600000
+ 2209 strings out of 493304
+ 35154 string characters out of 6139871
+ 101578 words of memory out of 5000000
+ 5654 multiletter control sequences out of 15000+600000
  34143 words of font info for 63 fonts, out of 8000000 for 9000
- 39 hyphenation exceptions out of 8191
+ 960 hyphenation exceptions out of 8191
  37i,6n,23p,1406b,211s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r
 .enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
