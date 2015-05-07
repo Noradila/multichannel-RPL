@@ -17,6 +17,8 @@ ContikiMAC \cite{contikimac} is the default low power listening MAC protocol in 
 
 //loss and retransmission - how it deals with it
 
+//be clear about when protocol suffers a loss
+
 MiCMAC \cite{micmac} is an asynchronous protocol, ContikiMAC \cite{contikimac} channel hopping variant. On every wakeup cycle, the channel is periodically switched according to a pseudo-random sequence. MiCMAC introduces channel lock for the channel reception at the sender. There is a dedicated broadcast channel for a duration at every wake up period. MiCMAC can be used with RPL without any changes to RPL. %However, RPL might not formed properly because the nodes need to be on the broadcast channel at different time for different node according to the trickle timer to receive RPL control messages which are sent through unicast and broadcast.
 
 In order to maximise the good use of (???) multichannel, routing topology play a big role - for scalability, to save energy (efficient) while sending on an optimised routes, maximise the chance of packets being received (minimise loss).
@@ -46,7 +48,8 @@ In RPL terminology, the node distance to the root and other nodes is defined as 
 
 Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. The RPL control messages are sent through unicast in order to reduce unnecessary transmitting in broadcast. Our work makes use of RPL topology formation and improves on the channel within the topology formed. The nodes do not need to sync with one another as they would know the listening channel of the other nodes.
 
-//why ours is better??
+//why ours is better?? compare with MiCMAC, Chrysso, MuChMac. "We are different because because we are cross layer with a centralised co-ordinator. RPL is typically used with ContikiMAC, a single channel protocol"
+
 We don't blacklist any channels; checks before using the channel. Centralised channel change decision; at LPBR. Nodes decide if the channel recheck LPBR decision of the channel and change. LPBR has the intelligence in choosing the channel for the node as it has the full overview of the condition of all nodes based on a periodic information from the nodes. LPBR will have the information of the good and bad channel for each node. 
 Cross layer; channel changes on network layer while others use layer 2 (?), the MAC layer. This enables us to do cleverly? and deciding the channel cross layer - can do complicated decisions than if with MAC layer channel.
 
