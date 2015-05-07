@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  7 MAY 2015 16:25
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  7 MAY 2015 23:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -213,19 +213,19 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [2]) (./MultichannelProtocol.tex
-<Diagram1.png, id=13, 735.45354pt x 423.70059pt>
+ [2]) (./MultichannelProtocol.tex [3]
+<Diagram1.png, id=18, 735.45354pt x 423.70059pt>
 File: Diagram1.png Graphic file (type png)
  <use Diagram1.png>
-Package pdftex.def Info: Diagram1.png used on input line 106.
+Package pdftex.def Info: Diagram1.png used on input line 105.
 (pdftex.def)             Requested size: 216.81pt x 124.90654pt.
- [3])
-(./Evaluation.tex
+)
+(./Evaluation.tex [4 <./Diagram1.png>]
 Underfull \hbox (badness 1796) in paragraph at lines 48--49
 []\OT1/ptm/m/n/10 We vary the in-ter-fer-ence rate, which is re-ferred as
  []
 
-[4 <./Diagram1.png>]) (./Conclusion.tex) (./senseapp_2015.bbl
+) (./Conclusion.tex) (./senseapp_2015.bbl
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
@@ -238,6 +238,7 @@ Missing character: There is no “ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
+ [5]
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no ¶ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
@@ -246,7 +247,7 @@ Missing character: There is no “ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
- [5])
+)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -276,7 +277,7 @@ hare/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on senseapp_2015.pdf (6 pages, 113590 bytes).
+Output written on senseapp_2015.pdf (6 pages, 114280 bytes).
 PDF statistics:
  49 PDF objects out of 1000 (max. 8388607)
  33 compressed objects within 1 object stream
