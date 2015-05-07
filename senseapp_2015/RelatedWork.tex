@@ -6,6 +6,7 @@ Radio duty cycling mechanism can be classified into two categories; synchronous 
 
 //!!why asynchronous vs synchronous important?
 This is important as in synchronous multichannel, the nodes need to be globally synchronise which is hard to achieve with frequent channel changes as the nodes need to maintain a tight synchronisation and need to synchronise the network clock periodically not to drift in time. Need to have a time-scheduled communication. Asynchronous multichannel on the other hand, can be either sender or receiver initiated communications. This shifts the global synchronise to local and does not affect the whole network.
+-simple setup, self-configurable as it does not need tight synchronisation.
 
 //distributed vs centralised
 Most of the (available?) multichannel protocols are fully distributed (self configuration?) and does not has a centralised system. This is the way it should be as sensors have limited battery life and memory but centralised would enable real time decisions more efficient - moving decisions making to a central point and reduce unnecessary processing on the nodes.
@@ -13,7 +14,14 @@ Most of the (available?) multichannel protocols are fully distributed (self conf
 Chrysso \cite{chrysso} is a multichannel protocol for data collection applications. The nodes are organised into parent-children groups where each parent-children uses two channel for transmitting and receiving packets. Both parent and children nodes can hop to another channel when interference is detected based on the channel switching policies. If a node loses connectivity, Chrysso calls the scan mode to enable neighbour discovery over multiple channel. Chrysso’s functionality comprises a set of channel switching policies that interface to both the MAC layer and the network layer (Collect)
 //?Chrysso concentrates on data collection while our work tries to improve RPL single channel into multichannel without dealing with the MAC layer. RPL is typically used in ContikiMAC which is a single channel.
 
-ContikiMAC \cite{contikimac} is the default low power listening MAC protocol in Contiki. It was proved to be efficient in a single channel \cite{micmac}\cite{orpl}. ContikiMAC uses periodical wakeups to listen to the neighbours transmission packet. It has a phase-lock mechanism to learn the neighbours wake-up phase to enable efficient transmissions and a fast sleep optimisation in case of spurious radio interference is detected.
+ContikiMAC \cite{contikimac} is the default radio duty cycling protocol in Contiki that is responsible for the node wake-ups period. ContikiMAC is a power-saving radio duty cycling protocol. It was proved to be efficient in a single channel \cite{micmac}\cite{orpl}. ContikiMAC uses periodical wake-ups to listen to the neighbours transmission packet. It has a phase-lock mechanism to learn the neighbours wake-up phase to enable efficient transmissions and a fast sleep optimisation in case of spurious radio interference is detected.
+
+The sender use the knowledge of the wake-up phase of the receiver to optimise its transmission. When a packet is successfully received, the receiver sends a link layer acknowledgement. The sender repeatedly sends its packet until it receives a link layer acknowledgement from the receiver. 
+
+ContikiMAC relies on retransmissions for reliable transmissions. A Carrier Sense Multiple Access, CSMA is a MAC protocol that performs retransmissions when the underlying MAC layer has problems with collisions. When the sender does not receive the link layer acknowledgement, CSMA will retransmit the packets three times before dropping it from the buffer queue.
+%CSMA is the MAC layer that takes care of retransmission of lost packets. 
+%A packet is consider as loss when the sender does not receive the link layer acknowledgement. 
+
 
 //loss and retransmission - how it deals with it
 

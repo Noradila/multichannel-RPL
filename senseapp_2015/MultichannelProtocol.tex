@@ -23,14 +23,19 @@ Multichannel RPL concentrates on finding the best channels for nodes to listen a
 The design of Multichannel RPL are based on several crucial observations:
 
 \begin{itemize}
-\item Channel assignment - as the nodes are battery powered, the decision of selecting the channel is left to LPBR. This reduces the processing on the nodes and enable load balancing within channels as LPBR has a complete knowledge of the topology. LPBR keeps track of the channel conditions based on the feedback it receives from the nodes. All intelligence is done at LPBR.
+\item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is opted. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on the criteria that are explained in the next part. 
+%LPBR assigns channel to the nodes.
+%This centralised processes at the LPBR enable the other nodes that are battery powered to minimise the use of the energy in packets transmission. LPBR is fully powered which is the main reason for placing intelligence on it.
+%LPBR keeps track of the channel conditions based on the feedback it receives from the nodes. All intelligence is done at LPBR.
+%by considering load balancing in channels.
 
-\item Interference - external interference cannot be predicted, thus channel cannot be allocated beforehand as it varies over time. It is impossible to determine a single channel that is free from interference.
+\item Interference - External interference cannot be predicted, thus channels cannot be allocated beforehand as it varies over time and locations. It is impossible to determine a single channel that is free from interference at any location. Our protocol checks the channel condition each time before deciding on a channel change to reduce interference and maximise throughput.
 
-\item Frequency diversity - RPL only considers a single channel. Applying multichannel to the existing RPL may hinder neighbour detection and RPL control messages. We solved this by enabling unicast in neighbour detection and RPL control messages. We assume that no new nodes should join the topology after the initial setup.
+\item Frequency diversity - RPL is typically used with ContikiMAC which is a single channel protocol. By using multichannel, we increase the robustness of the network towards interference. However, applying multichannel to the existing RPL may hinder neighbour detection and RPL processes to maintain the network topology as it does not switch to the correct channel. We overcome this problem by enabling unicast in neighbour detection and RPL control messages. We assume that no new nodes should join the topology after the initial setup.
+%we need to ensure the node knows the correct channel to reach the neighbours. RPL forms and maintains the network topology through its control messages. Applying multichannel to the existing RPL may hinder neighbour detection and RPL processes and it does not have any means of switching to the correct channel. 
 \end{itemize}
 
-Multichannel RPL focuses on the application layer of the protocol. The selection of channels to the nodes are decided once the topology tree has been formed by LPBR.
+Multichannel RPL focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place once the topology tree has been formed by LPBR and stabilise.
 
 %Figure 1 shows the design of Multichannel RPL. The states are explained in the next sections.
 
@@ -60,7 +65,7 @@ There are two strategies that LPBR uses when deciding on a channel change; rando
 	
 %**TWO HOP COLOURING STRATEGY?
 \subsubsection{Two Hops Neighbour Strategy -}
-//be more detail - better description of 2-hop strategy reasoning. WHY??
+//be more detail - better description of 2-hop strategy reasoning. WHY?? keep them not to interference so much with each other
 
 In two hops neighbour strategy, similar to random channel selection, LPBR chooses a random channel for a node unless LPBR has full knowledge of the channels condition as mentioned in Random Channel Selection section. LPBR keeps the information of each node neighbours and channel in a table. The random channel that was selected is checked with the information in the table. to decide if there is another node that is two hops away using the same channel. If the channel is being used, a new channel is selected and checked. The reason for this is to spread the workload on different channels so that more transmissions are able to take place at the same time. However, if a two hops free channel is not found, the default channel 26 is used. Once the new channel is selected, the channel quality is checked before it is used to replace the previous channel.
 
