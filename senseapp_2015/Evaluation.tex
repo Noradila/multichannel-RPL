@@ -29,9 +29,9 @@ We run the simulation for a duration of 60-70 minutes to send 700 packets; 50 pa
 
 \begin{figure}
 \centering
-\subfigure[Mild Interference]{\label{fig:mild}\includegraphics[width=0.3\textwidth]{experiments/mild.eps}}                
-\subfigure[Moderate Interference]{\label{fig:mod}\includegraphics[width=0.3\textwidth]{experiments/moderate.eps}}
-\subfigure[Extreme Interference]{\label{fig:extreme}\includegraphics[width=0.3\textwidth]{experiments/extreme.eps}}
+\subfigure[Mild Interference]{\label{fig:mild}\includegraphics[width=0.45\textwidth]{experiments/mild.eps}}                
+\subfigure[Moderate Interference]{\label{fig:mod}\includegraphics[width=0.45\textwidth]{experiments/moderate.eps}}
+\subfigure[Extreme Interference]{\label{fig:extreme}\includegraphics[width=0.45\textwidth]{experiments/extreme.eps}}
 \caption{Level of packet loss for mild, moderate and extreme interference levels using single and multi-channel}
 \label{fig:interference}
 \end{figure}
@@ -40,7 +40,8 @@ We vary the interference rate, which is referred to as \emph{clear\textunderscor
 
 In the mild interference case, all probing messages are received even though there are interference in that channel. This is because, the probing gives good result which means that the channel can be used. As the interference rate is mild, all packets are received. This is also the case with a single channel. The interference does not affect the transmissions as the interference is not frequent enough that enables the node to recover. However, the interference would slightly effect the packet transmission over time. We plan to run channel change processes periodically to avoid this from happening. %The tests were done using MiCMAC and CSMA. The nodes will check the channel, backoff and retransmit as necessary.
 
-In the single channel, the node does not have enough time to recover from the interference and drops all packets. Figure \ref{fig:interference} shows that the rate of packet loss increases over time and when the interference is sufficient then packet reception will entirely stop. However, as the interference rate decreases (less interference), the single channel performance improves as it has more time to recover.
+In the single channel,  the system cannot cope with the interference and as time goes on the RPL topology cannot continue to function sending and receiving packets. Figure \ref{fig:interference} shows that the rate of packet loss increases over time and when the interference is sufficient then packet reception will entirely stop sometimes within the first twenty minutes of the interference starting.  Figure \ref{fig:interference}(a) shows that the single channel model can cope but has degraded performance when the interference is mild, but when the interference becomes moderate then more than half the packets are lost towards the end of the simulation period.  When the interference is extreme, the packet loss increases to 100\% 
+in all cases.
 
 \subsection{Setup Overhead}
 %//overhead?
@@ -52,4 +53,7 @@ In the single channel, the node does not have enough time to recover from the in
 
 %//mention that our protocol can transmit during the set up phase. so rpl set up forms the network then our protocol improves the network at a small cost in terms of messages and while leaving the network functional.
 
-Our protocol introduces extra set up overhead to the system. Default RPL on ContikiMAC has an overhead of average 281 packets while our protocol has an overhead of 844 including RPL overhead. Our protocol introduces 563 overhead. However, the overhead is a one-off which the channel changes might be use for hours or days which is not a lot in that comparison. (negligible?) RPL forms the network while our protocol improves the network at a small cost in terms of messages while leaving the network functional. Our protocol can transmit and receive messages during the set up phase - which means, normal transmission can run as usual while the set up is taking place at the same time.   
+Obviously the system of changing channels and probing to see if a channel is free of interference introduces a certain amount of overhead into
+the protocol.  This takes the form of (a) extra messages passed and (b) extra time taken to set up.  Default RPL on ContikiMAC for the topology considered in these experiments completed its set up using 281 packets.  Our multi-channel protocol completed its set up in 844 packets, that is an overhead of 563 packets on top of RPL. However, it is worth mentioning that this is a one-off cost.  This represents (in this experimental set up) approximately one hour of extra packets in the situation of a deployment that is meant to work for weeks or months.  In terms of set up time, our protocol begins to change channels only when the RPL set up process is complete (or at least stablises).  The set up time is X second beyond the 
+RPL set up time of Y seconds.  However, it should be noted that, in fact, our system remains fully functional and capable of sending packets during
+the set up so this set up overhead does not matter to data transmission.
