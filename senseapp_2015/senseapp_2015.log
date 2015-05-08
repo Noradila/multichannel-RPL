@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 MAY 2015 18:08
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 MAY 2015 20:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -248,19 +248,20 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-(./Abstract.tex) (./Introduction.tex
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 20.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 20.
-) (./RelatedWork.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+(./Abstract.tex) (./Introduction.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/
+pdftex.map}
 
 
-]
+]) (./RelatedWork.tex
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-) (./MultichannelProtocol.tex [2]
+ [2]) (./MultichannelProtocol.tex
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 12.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 12.
+ [3]
 Package epstopdf Info: Source file: <Diagram1.eps>
 (epstopdf)                    date: 2015-05-08 17:42:55
 (epstopdf)                    size: 15071 bytes
@@ -269,16 +270,16 @@ Package epstopdf Info: Source file: <Diagram1.eps>
 (epstopdf)                    size: 6634 bytes
 (epstopdf)             Command: <repstopdf --outfile=Diagram1-eps-converted-to.
 pdf Diagram1.eps>
-(epstopdf)             \includegraphics on input line 131.
+(epstopdf)             \includegraphics on input line 132.
 Package epstopdf Info: Output file is already uptodate.
 
-<Diagram1-eps-converted-to.pdf, id=15, 739.76375pt x 425.59pt>
+<Diagram1-eps-converted-to.pdf, id=17, 739.76375pt x 425.59pt>
 File: Diagram1-eps-converted-to.pdf Graphic file (type pdf)
 
 <use Diagram1-eps-converted-to.pdf>
-Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 131.
+Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 132.
 (pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
- [3]) (./Evaluation.tex
+) (./Evaluation.tex
 Package epstopdf Info: Source file: <experiments/mild.eps>
 (epstopdf)                    date: 2015-05-08 16:53:14
 (epstopdf)                    size: 21120 bytes
@@ -287,15 +288,15 @@ Package epstopdf Info: Source file: <experiments/mild.eps>
 (epstopdf)                    size: 7527 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/mild-eps-conve
 rted-to.pdf experiments/mild.eps>
-(epstopdf)             \includegraphics on input line 32.
+(epstopdf)             \includegraphics on input line 33.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/mild-eps-converted-to.pdf, id=19, 361.35pt x 201.75375pt>
+<experiments/mild-eps-converted-to.pdf, id=18, 361.35pt x 201.75375pt>
 File: experiments/mild-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/mild-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/mild-eps-converted-to.pdf used on input li
-ne 32.
+ne 33.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
 Package epstopdf Info: Source file: <experiments/moderate.eps>
 (epstopdf)                    date: 2015-05-08 16:53:14
@@ -306,15 +307,15 @@ Package epstopdf Info: Source file: <experiments/moderate.eps>
 (epstopdf)                    size: 7549 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/moderate-eps-c
 onverted-to.pdf experiments/moderate.eps>
-(epstopdf)             \includegraphics on input line 33.
+(epstopdf)             \includegraphics on input line 34.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/moderate-eps-converted-to.pdf, id=20, 361.35pt x 201.75375pt>
+<experiments/moderate-eps-converted-to.pdf, id=19, 361.35pt x 201.75375pt>
 File: experiments/moderate-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/moderate-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/moderate-eps-converted-to.pdf used on inpu
-t line 33.
+t line 34.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
 Package epstopdf Info: Source file: <experiments/extreme.eps>
 (epstopdf)                    date: 2015-05-08 16:53:14
@@ -324,21 +325,17 @@ Package epstopdf Info: Source file: <experiments/extreme.eps>
 (epstopdf)                    size: 7526 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/extreme-eps-co
 nverted-to.pdf experiments/extreme.eps>
-(epstopdf)             \includegraphics on input line 34.
+(epstopdf)             \includegraphics on input line 35.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/extreme-eps-converted-to.pdf, id=21, 361.35pt x 201.75375pt>
+<experiments/extreme-eps-converted-to.pdf, id=20, 361.35pt x 201.75375pt>
 File: experiments/extreme-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/extreme-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/extreme-eps-converted-to.pdf used on input
- line 34.
+ line 35.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
- [4 <./Diagram1-eps-converted-to.pdf>])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-(./Conclusion.tex) (./senseapp_2015.bbl
+ [4 <./Diagram1-eps-converted-to.pdf>]) (./Conclusion.tex) (./senseapp_2015.bbl
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
@@ -373,26 +370,24 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6
-
-] (./senseapp_2015.aux) ) 
+[6] (./senseapp_2015.aux) ) 
 Here is how much of TeX's memory you used:
- 2644 strings out of 493304
- 41363 string characters out of 6139871
- 108904 words of memory out of 5000000
- 6062 multiletter control sequences out of 15000+600000
+ 2649 strings out of 493304
+ 41448 string characters out of 6139871
+ 108948 words of memory out of 5000000
+ 6067 multiletter control sequences out of 15000+600000
  34143 words of font info for 63 fonts, out of 8000000 for 9000
  960 hyphenation exceptions out of 8191
  38i,6n,24p,1593b,243s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r
-.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on senseapp_2015.pdf (6 pages, 128194 bytes).
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/
+8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
+ri8a.pfb>
+Output written on senseapp_2015.pdf (6 pages, 128609 bytes).
 PDF statistics:
  76 PDF objects out of 1000 (max. 8388607)
  52 compressed objects within 1 object stream
