@@ -4,15 +4,15 @@ The results of our multichannel RPL protocol is compared against single-channel 
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
-We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 26; which is the channel LPBR is listening on. The interference model that we use is described in \cite{Boano:2010:MSM:2127940.2127963}. 
+We evaluate the protocol in Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 16 nodes are used to run the simulation where we have 1 border router node, 1 interference node, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. RPL border router is used as LPBR in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of 10K bytes and 48K bytes of flash memory. By using a border router, this allows channel changing to be decided in real time without draining the memory and battery on a sensor.The border router also acts as the root of the tree.
 
-We plan to run our protocol on the testbed as our future work to test on several interference channels.
+We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on channel 22. The interference model that we use is described in \cite{Boano:2010:MSM:2127940.2127963}. The interference has two states, clear state and interference state. In clear state where it does not do anything, the process stays in the state for a time that is uniformly distributed between $9/16$ seconds and $15/16$ seconds. In interference state, the interference node generates packets for a time that is uniformly distributed between $3/4 * clearTime$ and $5/4 * clearTime$ where $clearTime$ refers to the rate of interference. We use a single channel interference in our simulation to show our hypothesis that multiple channels can help avoid interference where we consider a scenario where an RPL system is subject to interference on its channel after set up has successfully completed.
 
-//be more clear about interference model; when it switches on, what is the experimental setup - systematic description of all stages and why. DON'T MENTION PROBLEMS!
+%We plan to run our protocol on the testbed as our future work to test on several interference channels.
 
-//why 1 channel? use a single channel interference "to show our hypothesis that multiple channels can help avoid interference we consider a scenario where an RPL system is subject to interference on its channel after set up has successfully completed"
 
-RPL border router is used in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of 10K bytes and 48K bytes of flash memory. By using a border router, this allows channel changing to be decided in real time without draining the memory and battery on a sensor. 
+%//why 1 channel? use a single channel interference "to show our hypothesis that multiple channels can help avoid interference we consider a scenario where an RPL system is subject to interference on its channel after set up has successfully completed"
+
 
 %RPL border router is used to interface a regular IPv6 with a regular RPL.
 
@@ -26,6 +26,8 @@ RPL border router is used in order to move most processing decisions on a PC as 
 %We evaluate multichannel RPL variant using two performance metrics: end to end packet delivery and latency. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. %We compare our multichannel protocol with Contiki's default ContikiMAC and RPL, and MiCMAC.
 
 We evaluate multichannel RPL variant using end to end packet delivery performance metric. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. We also look at the loss over time to observe the protocols react to interference.
+
+//be more clear about interference model; when it switches on, what is the experimental setup - systematic description of all stages and why. DON'T MENTION PROBLEMS!
 
 We run the simulation for a duration of 60 minutes to send 700 packets; 50 packets for each node. RPL runs the initial network setup for a few minutes before it is stable. We set the RPL setup time to be 5 minutes before our multichannel protocol runs for 10 minutes. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 3 times.
 
