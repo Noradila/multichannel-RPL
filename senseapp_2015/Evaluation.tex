@@ -14,22 +14,11 @@ We simulated a controlled interference node that generates semi-periodic bursty 
 %//why 1 channel? use a single channel interference "to show our hypothesis that multiple channels can help avoid interference we consider a scenario where an RPL system is subject to interference on its channel after set up has successfully completed"
 
 
-%RPL border router is used to interface a regular IPv6 with a regular RPL.
+We evaluate multichannel RPL variant using end to end packet delivery performance metric. The transmission success rate is calculated from the sender to the receiver over multiple hops. We also look at the loss over time to observe the protocols react to interference and set up overhead.
 
-%(explain border router etc????) that always stays on and it is the sink of the tree, also the root node of RPL. There are 14 duty cycled nodes that acts as UDP clients that send packets to LPBR. We simulated a controlled interference node that generates semi-periodic bursty interference on channel 26; which is the channel LPBR is listening on. 
+%//be more clear about interference model; when it switches on, what is the experimental setup - systematic description of all stages and why. DON'T MENTION PROBLEMS!
 
-%several channels, mainly on the parents channel as the packets travel upward to measure the benefits of multi-channel operation of changing channel when failure happens within a given period. 
-
-%- throughput?
-
-%//!!! only need 1 metric; to be changed!
-%We evaluate multichannel RPL variant using two performance metrics: end to end packet delivery and latency. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. %We compare our multichannel protocol with Contiki's default ContikiMAC and RPL, and MiCMAC.
-
-We evaluate multichannel RPL variant using end to end packet delivery performance metric. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. We also look at the loss over time to observe the protocols react to interference.
-
-//be more clear about interference model; when it switches on, what is the experimental setup - systematic description of all stages and why. DON'T MENTION PROBLEMS!
-
-We run the simulation for a duration of 60 minutes to send 700 packets; 50 packets for each node. RPL runs the initial network setup for a few minutes before it is stable. We set the RPL setup time to be 5 minutes before our multichannel protocol runs for 10 minutes. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 3 times.
+We run the simulation for a duration of 60-70 minutes to send 700 packets; 50 packets for each node. When the nodes are switched on for the first time, all nodes are initialised to channel 26 by default. RPL runs the initial network set up for a few minutes before it is stable. We set the RPL set up time to be 5 minutes. RPL topology is formed in a minute. We wait for another 4 minutes to allow trickle timer to doubles the interval length so that RPL control messages are less frequently invoke. We then let our multichannel protocol runs for 10 minutes. In our 15 nodes simulation, our protocol takes 7-8 minutes to run the channel change set up. We allow another 2 minutes wait time if channel changes retransmission happen. In a single channel simulation, all the nodes are changed to channel 22 after 5 minutes of RPL set up time. This allows RPL to have enough time to discover all nodes to form an optimised topology. The topology formation does not formed completely if the interference node interferes from the beginning. The interference node starts sending packets to interfere after 3 minutes the system is switched on so that the interference channel is involve in the channel changes decision. We proved that our protocol tries to avoid from changing to the interference channel through time out and probing failures. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 10 times.
 
 %We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
 
