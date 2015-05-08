@@ -16,75 +16,24 @@ ContikiMAC \cite{contikimac} is the default radio duty cycling protocol in Conti
 
 %//be clear about when protocol suffers a loss
 
-MiCMAC \cite{micmac} is an asynchronous protocol, ContikiMAC \cite{contikimac} channel hopping variant. On every wakeup cycle, the channel is periodically switched according to a pseudo-random sequence. MiCMAC introduces channel lock for the channel reception at the sender. There is a dedicated broadcast channel for a duration at every wake up period. %MiCMAC can be used with RPL without any changes to RPL. %However, RPL might not formed properly because the nodes need to be on the broadcast channel at different time for different node according to the trickle timer to receive RPL control messages which are sent through unicast and broadcast.
+MiCMAC \cite{micmac} is a ContikiMAC \cite{contikimac} channel hopping variant. On every wakeup cycle, the channel is periodically switched according to a pseudo-random sequence. MiCMAC introduces channel lock for the channel reception at the sender. There is a dedicated broadcast channel for a duration at every wake up period. %MiCMAC can be used with RPL without any changes to RPL. %However, RPL might not formed properly because the nodes need to be on the broadcast channel at different time for different node according to the trickle timer to receive RPL control messages which are sent through unicast and broadcast.
 
-Chrysso \cite{chrysso} is a multichannel protocol for data collection applications. The nodes are organised into parent-children groups where each parent-children uses two channels for transmitting and receiving packets. Our work also uses two channels as in Chrysso. Both parent and children nodes can hop to another channel when interference is detected based on the channel switching policies. If a node loses connectivity, Chrysso calls the scan mode to enable neighbour discovery over multiple channel. Chrysso’s functionality comprises a set of channel switching policies that interface to both the MAC layer and the network layer.
+Chrysso \cite{chrysso} is a multichannel protocol for data collection applications. The nodes are organised into parent-children groups where each parent-children uses two channels for transmitting and receiving packets. Our work also uses two separate channels as in Chrysso. Both parent and children nodes can hop to another channel when interference is detected based on the channel switching policies. If a node loses connectivity, Chrysso calls the scan mode to enable neighbour discovery over multiple channel. Chrysso’s functionality comprises a set of channel switching policies that interface to both the MAC layer and the network layer.
 
-However, MiCMAC and Chrysso are fully distributed which allows the nodes to self configure and change to another channel when interference happen. Our protocol is centralised where most of the processes in channel assignment decisions are done by the LPBR. LPBR, which is the central point, is fully powered and does not have limited memory. We are able to produce real time channel selection decisions where we can consider all available channels to be used in transmissions without blacklisting any of them.  
+However, MiCMAC and Chrysso are fully distributed which allow the nodes to self configure and change to another channel when interference happen. The channels that the protocols can used are fixed to several channel that were decided beforehand. Our protocol is centralised where most of the processes in channel assignment decisions are done by the LPBR. LPBR, which is the central point, is fully powered and does not have limited memory. We are able to produce real time channel selection decisions where we can consider all available channels to be used in transmissions without blacklisting any of them.  
 
-//distributed vs centralised
-Most of the (available?) multichannel protocols are fully distributed (self configuration?) and does not has a centralised system. This is the way it should be as sensors have limited battery life and memory but centralised would enable real time decisions more efficient - moving decisions making to a central point and reduce unnecessary processing on the nodes.
-
-MiCMAC can be used with RPL without any changes to RPL.
- 
+%MiCMAC can be used with RPL without any changes to RPL.
+%RPL do topology maintenance*. 
 %//(Collect)//?Chrysso concentrates on data collection while our work tries to improve RPL single channel into multichannel without dealing with the MAC layer. RPL is typically used in ContikiMAC which is a single channel.
 
-In order to maximise the good use of (???) multichannel, routing topology play a big role - for scalability, to save energy (efficient) while sending on an optimised routes, maximise the chance of packets being received (minimise loss).
-
-RPL do topology maintenance*.
-
-There are many studies that were done on routing protocol such as tree based LEACH \cite{leach}, PEGASIS \cite{pegasis}, CTP \cite{ctp} and RPL which is designed largely based on CTP.
-
-Dynamic/static routing topology?
-
-
-However, only recent multichannel protocols such as MiCMAC uses RPL as the routing protocol. Chrysso uses Contiki collect which is a CTP-like data collection protocol in Contiki. We choose to use RPL as it is the standard for IPv6 routing in low power and lossy networks. RPL forms the network topology dynamically.
+In order to maximise the use of multichannel in improving packet delivery, routing topology plays a big role in providing an optimised routing tree on the network that is scalable and energy efficient. There are many studies that were done on routing protocol such as LEACH \cite{leach}, PEGASIS \cite{pegasis}, CTP \cite{ctp} and RPL which is designed largely based on CTP. Recent multichannel protocols such as MiCMAC uses RPL as the routing protocol. Chrysso uses Contiki collect which is a CTP-like data collection protocol in Contiki. We choose to use RPL as it is the standard for IPv6 routing in low power and lossy networks. %RPL forms the network topology dynamically.
 
 %routing in RPL
-Routing protocol for low power and lossy networks (RPL) is a gradient based routing protocol forming any-to-any routing for low power IPv6 networks. RPL topology is a Destination-Oriented Directed Acyclic Graph (DODAG), rooted at LPBR with no cycles. The root has the overall view of the network. The other nodes however, only has knowledge of its neighbours and default router. RPL is a rooted topology which any-to-any traffic is directed towards the root unless the common ancestor is found which the traffic is then routed downwards towards the destination. This strategy is used in order to scale large networks by reducing the routing overhead at the cost of increased hop count through common ancestor. 
+RPL is a gradient based routing protocol forming any-to-any routing for low power IPv6 networks. RPL topology is a Destination-Oriented Directed Acyclic Graph (DODAG), rooted at LPBR with no cycles. The root has the overall view of the network. The other nodes however, only has knowledge of its neighbours and default router. RPL is a rooted topology which any-to-any traffic is directed towards the root unless the common ancestor is found which the traffic is then routed downwards towards the destination. This strategy is used in order to scale large networks by reducing the routing overhead at the cost of increased hop count through common ancestor. In RPL terminology, the node distance to the root and other nodes is defined as the node's rank. RPL finds the path with the minimum number of transmissions that a node expect to successfully deliver a packet to the destination and switches only if it is less than the current rank to prevent frequent changes~\cite{mrhof}. 
 
-In RPL terminology, the node distance to the root and other nodes is defined as the node's rank. RPL finds the path with the minimum number of transmissions that a node expect to successfully deliver a packet to the destination and switches only if it is less than the current rank to prevent frequent changes~\cite{mrhof}. 
+Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. We enable the RPL control messages to be sent through unicast in order to reduce unnecessary transmitting in broadcast. Our work makes use of RPL topology formation and improves on the channel of the nodes in the topology. Our protocol is a cross layer protocol with a centralised co-ordinator that enables us to make real time decisions without being constraint by the layer capabilities. Our centralised LPBR has the intelligence in choosing the channel for the node as it has the full overview of the network. We also do not blacklist any channel as we do channel checking each time a channel change occur in order to have the update on the channel condition.
 
-%**NOT YET ADDED - Multichannel protocol such as MC-LMAC, Y-MAC, MuChMAC, EM-MAC. What these works do?
+%//why ours is better?? compare with MiCMAC, Chrysso, MuChMac. "We are different because because we are cross layer with a centralised co-ordinator. RPL is typically used with ContikiMAC, a single channel protocol"
 
-%TSCH (Time Synchronized Channel Hopping) employs TDMA and channel hopping such that it schedules communications in 2 dimensions: time and frequency.
-
-%Timeslotted Channel Hopping (TSCH) \cite{tsch} focuses on the MAC layer which can be used with RPL. It uses time synchronisation and channel hopping for ultra low power operation and high reliability. TSCH schedules the communication in time and frequency slot. However, it requires tight synchronisation to the neighbour nodes. In order to use TSCH with RPL, there are several problems to be addressed in term of the topology and network maintenance as RPL determines the multihop route and has it's own control messages.
-
-%Chrysso is a multi-channel solution that is specifically designed for mitigating external interference in data collection WSNs. The core of Chrysso’s functionality comprises a set of channel switching policies that interface to both the MAC layer and the network layer (Collect).
-
-
-Our proposed protocol takes into account RPL topology formation scheme and the control messages exchange between nodes that take place frequently to maintain the quality of the tree. The RPL control messages are sent through unicast in order to reduce unnecessary transmitting in broadcast. Our work makes use of RPL topology formation and improves on the channel within the topology formed. The nodes do not need to sync with one another as they would know the listening channel of the other nodes.
-
-//why ours is better?? compare with MiCMAC, Chrysso, MuChMac. "We are different because because we are cross layer with a centralised co-ordinator. RPL is typically used with ContikiMAC, a single channel protocol"
-
-We don't blacklist any channels; checks before using the channel. Centralised channel change decision; at LPBR. Nodes decide if the channel recheck LPBR decision of the channel and change. LPBR has the intelligence in choosing the channel for the node as it has the full overview of the condition of all nodes based on a periodic information from the nodes. LPBR will have the information of the good and bad channel for each node. 
-Cross layer; channel changes on network layer while others use layer 2 (?), the MAC layer. This enables us to do cleverly? and deciding the channel cross layer - can do complicated decisions than if with MAC layer channel.
-
-
-%- channel? repetition of time slot over 2-hop range? TDMA-W?
-%- S-MAC? contend for the channel during listen cycles? meaning?
-%- pair wise synchronisation?
-%- energy savings - obtained by allowing radio for data communication to enter the low power sleep mode
-%- ContikiMAC + CSMA - it does the backoff (solve deafness problem?) check how CSMA deals with deafness. When deafness happen in our case?
-%- overhearing avoided as nodes are assigned different channels
-%- transmit at a constant power level?
-%- nodes are allocated channels that overlap at 3 hops or more through the execution of a suitable channel assignment algorithm
-%- channel negotiation is only when selecting channel to listen on - based on LPBR channel change message
-%- collision - if nodes try to send to the same parent/node. Collision won't happen even during the phase for control channel exchange (receive channel change from LPBR) since it won't happen all at once
-
-%\subsection{RPL Topology}
-
-%routing in RPL
-%Routing protocol for low power and lossy networks (RPL) is a gradient based routing protocol forming any-to-any routing for low power IPv6 networks. RPL topology is a Destination-Oriented Directed Acyclic Graph (DODAG), rooted at a single destination, called the Low Power and lossy network Border Router (LPBR) with no cycles. The root has the overall view of the network. The other nodes however, only has knowledge of its neighbours and default router. RPL is a rooted topology which any-to-any traffic is directed towards the root unless the common ancestor is found which the traffic is then routed downwards towards the destination. This strategy is used in order to scale large networks by reducing the routing overhead at the cost of increased hop count through common ancestor. However, RPL has drawbacks. It takes a while before a broken link is detected and global repair to take place.
-
-%objective function
-%routing metrics
-%RPL separates the routing optimisation objectives with the packet processing and forwarding policies. This allows the networks to have different optimisation objectives which include the rank computation, node selection, parents selection and route optimisation. However, RPL Objective Function (OF) is not an algorithm. It is the process to optimise the routes. In RPL terminology, the node distance to the root and other nodes is defined as the node's rank. The rank increases downwards and decreases towards the root. There are two Objective Functions specified as the standard, which are the Objective Function Zero (OF0) and Minimum Rank with Hysteresis Objective Function (MRHOF). OF0 is based on the shortest amount of hops to the root~\cite{of0}. MRHOF uses hysteresis with the Expected Transmission Count (ETX) metric. ETX is the number of transmissions that a node expect to successfully deliver a packet to the destination. It finds the path with the minimum rank and switches only if the rank is less than the current rank to prevent frequent changes~\cite{mrhof}. Hop count and ETX are node and link metrics which is a direct conversion of metric to rank values. By default, Contiki uses MRHOF.
-
-%rpl messages
-%RPL defines three main types of ICMPv6 based control messages used in topology formation and maintenance which are the DODAG Information Object (DIO), Destination Advertisement Object (DAO) and DODAG Information Solicitation (DIS). DIO contains the information needed by the node such as the configuration parameters, parent selection and rank. DAO is used to enable packets to propagate towards the root. DIS is used by a node to require  DIO messages from its neighbour in order to join the DODAG. 
-
-%topology formation
-%trickle timer
-%The topology starts that the root node that sends DIO messages to its neighbours. The nodes that receive the message choose it's parent based on the OF, updates the DIO message before sending to its neighbours. The same processes are repeated until all nodes have joined the tree. DIO message is also used for topology maintenance. However, calling the messages frequently would make the network congested. Thus, Trickle timer is used. Trickle algorithm controls the transmission rate of DIO messages. When the timer expires, Trickle doubles the timer interval until it reaches the maximum value. However, when an event occurs, the timer is reset to the minimum value~\cite{trickle}. By default, Contiki uses $2^{12}$ milliseconds as the minimum interval between DIO messages and $2^{20}$ milliseconds as the maximum value.
+%We don't blacklist any channels; checks before using the channel. Centralised channel change decision; at LPBR. Nodes decide if the channel recheck LPBR decision of the channel and change. LPBR has the intelligence in choosing the channel for the node as it has the full overview of the condition of all nodes based on a periodic information from the nodes. LPBR will have the information of the good and bad channel for each node. 
+%Cross layer; channel changes on network layer while others use layer 2 (?), the MAC layer. This enables us to do cleverly? and deciding the channel cross layer - can do complicated decisions than if with MAC layer channel.
