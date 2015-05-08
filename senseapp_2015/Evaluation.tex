@@ -1,6 +1,6 @@
 \section{Evaluation}
 %ours, RPL + ContikiMAC, MiCMAC
-The results of our multichannel RPL protocol is compared against single-channel tree protocol and MiCMAC.
+The results of our multichannel RPL protocol is compared against a single-channel tree protocol.
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
@@ -22,22 +22,24 @@ We run the simulation for a duration of 60-70 minutes to send 700 packets; 50 pa
 
 %We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
 
-\subsection{Setup overhead (?)}
-//overhead?
-trickle - doubled each time but wait for a while so that it won't (affect?) with our protocol (sending messages; need to change channel which might be a problem?)
-
-//mention how much overhead there is agains RPL. 
-
-//say it is a one-off and compare it with data transmitted in one hour. packet transmitted high, overhead is negligible - real world, for low bit rate i.e video run for hours/months. "The.. is much smaller compared to the data period and during the data period the nodes can transmit multiple packets to do normal transmission"
-
-//mention that our protocol can transmit during the set up phase. so rpl set up forms the network then our protocol improves the network at a small cost in terms of messages and while leaving the network functional.
-
 
 \subsection{Effect of Multi-channel}
-//with existings - better? worse? what about RAM, ROM used?
+%//with existings - better? worse? what about RAM, ROM used?
 
 We vary the interference rate, which is referred as \textit{clear\_time} in \cite{Boano:2010:MSM:2127940.2127963} to 0\% (no interference), 25\% (extreme), 50\% (moderate) and 75\% (mild) where the percentage is the ratio of the time the channel is cleared from interference. The test is done to evaluate our protocol behaviour in different interference rate and to compare the result with a single channel case. Figure (xxxxx) shows the averaged results from three runs that we did. We observed that during high interference and moderate interference, when the LPBR generate a random two hop channel for a node to change into, the receiving node will probe on the channel. It will either timed out or the probing messages received are less than a threshold that allows for the node to change it's listening channel to the new channel. This is as expected as our protocol checks the channel each time before deciding on the new channel to avoid interference channel. By doing this, we can be sure that the node listening channel is a good channel. This enable us to use all available channels without blacklisting any channel until we are sure it is a bad channel through our probing process. The channel quality table is built at the LPBR that over time, can be used to learn good and bad channels based on several probing processes. 
 
 In the mild interference case, all probing messages are received even though there are interference in that channel. This is because, the probing gives good result which means that the channel can be used. As the interference rate is mild, all packets are received. This is also the case with a single channel. The interference does not affect the transmissions as the interference is not frequent enough that enables the node to recover. However, the interference would slightly effect the packet transmission over time. We plan to run channel change processes periodically to avoid this from happening. %The tests were done using MiCMAC and CSMA. The nodes will check the channel, backoff and retransmit as necessary.
 
 In the single channel, the node does not have enough time to recover from the interference and drops all packets. Figure (xxxx)shows that there are more packets drop over time and it stops receiving packets as it doesn't have enough buffer to store the incoming packet and the channel becomes congested. However, as the interference rate increases (less interference), the single channel performance improves as it has more time to recover.
+
+\subsection{Setup Overhead}
+%//overhead?
+%trickle - doubled each time but wait for a while so that it won't (affect?) with our protocol (sending messages; need to change channel which might be a problem?)
+
+%//mention how much overhead there is agains RPL. 
+
+%//say it is a one-off and compare it with data transmitted in one hour. packet transmitted high, overhead is negligible - real world, for low bit rate i.e video run for hours/months. "The.. is much smaller compared to the data period and during the data period the nodes can transmit multiple packets to do normal transmission"
+
+%//mention that our protocol can transmit during the set up phase. so rpl set up forms the network then our protocol improves the network at a small cost in terms of messages and while leaving the network functional.
+
+Our protocol introduces extra set up overhead to the system. Default RPL on ContikiMAC has an overhead of average 281 packets while our protocol has an overhead of 844 including RPL overhead. Our protocol introduces 563 overhead. However, the overhead is a one-off which the channel changes might be use for hours or days which is not a lot in that comparison. (negligible?) RPL forms the network while our protocol improves the network at a small cost in terms of messages while leaving the network functional. Our protocol can transmit and receive messages during the set up phase - which means, normal transmission can run as usual while the set up is taking place at the same time.   
