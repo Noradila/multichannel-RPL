@@ -1,15 +1,11 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 MAY 2015 17:12
-=======
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.5)  8 MAY 2015 16:42
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 MAY 2015 17:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **senseapp_2015.tex
 (./senseapp_2015.tex
-LaTeX2e <2014/05/01>
-Babel <3.9l> and hyphenation patterns for 2 languages loaded.
+LaTeX2e <2011/06/27>
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (./IEEEtran.cls
 Document Class: IEEEtran 2012/11/21 V1.8c by Harald Hanche-Olsen and Anders Chr
 istensen
@@ -97,10 +93,10 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \c@IEEEbiography=\count90
 \@IEEEtranrubishbin=\box26
 ) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks15
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
@@ -141,7 +137,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@floatcapt=\box28
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks18
 \c@algorithm=\count93
@@ -273,19 +269,11 @@ Package pdftex.def Info: Diagram1.png used on input line 131.
  [3])
 (./Evaluation.tex
 Package epstopdf Info: Source file: <experiments/mild.eps>
-<<<<<<< HEAD
 (epstopdf)                    date: 2015-05-08 16:53:14
 (epstopdf)                    size: 21120 bytes
 (epstopdf)             Output file: <experiments/mild-eps-converted-to.pdf>
 (epstopdf)                    date: 2015-05-08 17:02:27
 (epstopdf)                    size: 7527 bytes
-=======
-(epstopdf)                    date: 2015-05-06 18:49:54
-(epstopdf)                    size: 21120 bytes
-(epstopdf)             Output file: <experiments/mild-eps-converted-to.pdf>
-(epstopdf)                    date: 2015-05-08 16:41:52
-(epstopdf)                    size: 7546 bytes
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
 (epstopdf)             Command: <repstopdf --outfile=experiments/mild-eps-conve
 rted-to.pdf experiments/mild.eps>
 (epstopdf)             \includegraphics on input line 32.
@@ -299,21 +287,12 @@ Package pdftex.def Info: experiments/mild-eps-converted-to.pdf used on input li
 ne 32.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
 Package epstopdf Info: Source file: <experiments/moderate.eps>
-<<<<<<< HEAD
 (epstopdf)                    date: 2015-05-08 16:53:14
 (epstopdf)                    size: 21156 bytes
 (epstopdf)             Output file: <experiments/moderate-eps-converted-to.pdf>
 
 (epstopdf)                    date: 2015-05-08 17:02:28
 (epstopdf)                    size: 7549 bytes
-=======
-(epstopdf)                    date: 2015-05-06 18:49:54
-(epstopdf)                    size: 21156 bytes
-(epstopdf)             Output file: <experiments/moderate-eps-converted-to.pdf>
-
-(epstopdf)                    date: 2015-05-08 16:41:53
-(epstopdf)                    size: 7568 bytes
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
 (epstopdf)             Command: <repstopdf --outfile=experiments/moderate-eps-c
 onverted-to.pdf experiments/moderate.eps>
 (epstopdf)             \includegraphics on input line 33.
@@ -327,19 +306,11 @@ Package pdftex.def Info: experiments/moderate-eps-converted-to.pdf used on inpu
 t line 33.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
 Package epstopdf Info: Source file: <experiments/extreme.eps>
-<<<<<<< HEAD
 (epstopdf)                    date: 2015-05-08 16:53:14
 (epstopdf)                    size: 21128 bytes
 (epstopdf)             Output file: <experiments/extreme-eps-converted-to.pdf>
 (epstopdf)                    date: 2015-05-08 17:02:28
 (epstopdf)                    size: 7526 bytes
-=======
-(epstopdf)                    date: 2015-05-06 18:49:54
-(epstopdf)                    size: 21128 bytes
-(epstopdf)             Output file: <experiments/extreme-eps-converted-to.pdf>
-(epstopdf)                    date: 2015-05-08 16:41:53
-(epstopdf)                    size: 7545 bytes
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
 (epstopdf)             Command: <repstopdf --outfile=experiments/extreme-eps-co
 nverted-to.pdf experiments/extreme.eps>
 (epstopdf)             \includegraphics on input line 34.
@@ -360,16 +331,11 @@ Missing character: There is no “ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
- [5 <./experiments/mild-eps-converted-to.pdf> <./experiments/moderate-eps-conve
-rted-to.pdf> <./experiments/extreme-eps-converted-to.pdf>]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
-<<<<<<< HEAD
-=======
  [5 <./experiments/mild-eps-converted-to.pdf> <./experiments/moderate-eps-conve
 rted-to.pdf> <./experiments/extreme-eps-converted-to.pdf>]
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
@@ -395,28 +361,27 @@ Before submitting the final camera ready copy, remember to:
 
 [6
 
-] (./senseapp_2015.aux) ) 
+] (./senseapp_2015.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2645 strings out of 495020
- 41307 string characters out of 6181325
- 104643 words of memory out of 5000000
- 5818 multiletter control sequences out of 15000+600000
+ 2645 strings out of 493304
+ 41299 string characters out of 6139871
+ 108904 words of memory out of 5000000
+ 6062 multiletter control sequences out of 15000+600000
  34143 words of font info for 63 fonts, out of 8000000 for 9000
- 17 hyphenation exceptions out of 8191
+ 960 hyphenation exceptions out of 8191
  38i,6n,24p,1593b,243s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r
-.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri
-8a.pfb>
-<<<<<<< HEAD
-Output written on senseapp_2015.pdf (6 pages, 137878 bytes).
-=======
-Output written on senseapp_2015.pdf (6 pages, 137351 bytes).
->>>>>>> b5070b9a2370d95960d32a196515ae85bd7bf1c3
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
+/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on senseapp_2015.pdf (6 pages, 137565 bytes).
 PDF statistics:
  71 PDF objects out of 1000 (max. 8388607)
  48 compressed objects within 1 object stream
