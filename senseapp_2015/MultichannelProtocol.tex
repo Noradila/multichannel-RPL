@@ -149,8 +149,8 @@ In describing the channel quality checking process it is worth emphasising the R
 The channel quality checking is invoked each time a node changes channel after receiving a message from the LPBR.  A node $N$ changing to channel $D$ informs all neighbours in turn, of the new channel $D$ it will be listening on as described in the previous section.  It then enters the Probe Wait state and begins channel quality checking with each tree neighbour in turn.  
 
 In the Probe Wait state node $N$ sends a Probe message to each neighbour in turn.  That neighbour will respond
-to the message by sending ten packets to $N$ on the new channel $D$.  If this process times out (because of some communication failure) or the number of probe packets received is below a threshold (currently set to
-eight) then node $N$ immediately exits Probe Wait, does not request more probes and reverts to channel $C$ its
+to the message by sending eight packets to $N$ on the new channel $D$.  If this process times out (because of some communication failure) or the number of probe packets received is below a threshold (currently set to
+seven) then node $N$ immediately exits Probe Wait, does not request more probes and reverts to channel $C$ its
 previous channel.  All neighbours are informed of the change back to channel $C$ and the LPBR is informed of
 the quality check failure with a summary of all probes received.
 If, on the other hand, all channel quality checks succeed the change to channel $D$ becomes permanent for node $N$ and it informs the LPBR of the results of the probing (numbers of packets received) and the channel change.
