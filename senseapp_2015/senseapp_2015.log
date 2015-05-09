@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  9 MAY 2015 13:22
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  9 MAY 2015 13:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -279,7 +279,7 @@ File: Diagram1-eps-converted-to.pdf Graphic file (type pdf)
 <use Diagram1-eps-converted-to.pdf>
 Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 132.
 (pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
-) (./Evaluation.tex
+) (./Evaluation.tex [4 <./Diagram1-eps-converted-to.pdf>]
 Package epstopdf Info: Source file: <experiments/mild.eps>
 (epstopdf)                    date: 2015-05-08 16:53:14
 (epstopdf)                    size: 21120 bytes
@@ -291,7 +291,7 @@ rted-to.pdf experiments/mild.eps>
 (epstopdf)             \includegraphics on input line 33.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/mild-eps-converted-to.pdf, id=18, 361.35pt x 201.75375pt>
+<experiments/mild-eps-converted-to.pdf, id=28, 361.35pt x 201.75375pt>
 File: experiments/mild-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/mild-eps-converted-to.pdf>
@@ -310,7 +310,7 @@ onverted-to.pdf experiments/moderate.eps>
 (epstopdf)             \includegraphics on input line 34.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/moderate-eps-converted-to.pdf, id=19, 361.35pt x 201.75375pt>
+<experiments/moderate-eps-converted-to.pdf, id=29, 361.35pt x 201.75375pt>
 File: experiments/moderate-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/moderate-eps-converted-to.pdf>
@@ -328,19 +328,15 @@ nverted-to.pdf experiments/extreme.eps>
 (epstopdf)             \includegraphics on input line 35.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/extreme-eps-converted-to.pdf, id=20, 361.35pt x 201.75375pt>
+<experiments/extreme-eps-converted-to.pdf, id=30, 361.35pt x 201.75375pt>
 File: experiments/extreme-eps-converted-to.pdf Graphic file (type pdf)
 
 <use experiments/extreme-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/extreme-eps-converted-to.pdf used on input
  line 35.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
- [4 <./Diagram1-eps-converted-to.pdf>]
-Underfull \vbox (badness 1701) has occurred while \output is active []
-
-)
-(./Conclusion.tex) [5 <./experiments/mild-eps-converted-to.pdf> <./experiments/
-moderate-eps-converted-to.pdf> <./experiments/extreme-eps-converted-to.pdf>]
+) (./Conclusion.tex [5 <./experiments/mild-eps-converted-to.pdf> <./experiments
+/moderate-eps-converted-to.pdf> <./experiments/extreme-eps-converted-to.pdf>]) 
 (./senseapp_2015.bbl
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
@@ -391,7 +387,7 @@ texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on senseapp_2015.pdf (6 pages, 128849 bytes).
+Output written on senseapp_2015.pdf (6 pages, 128991 bytes).
 PDF statistics:
  76 PDF objects out of 1000 (max. 8388607)
  52 compressed objects within 1 object stream
