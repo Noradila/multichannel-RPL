@@ -130,11 +130,11 @@ Probing is an important part in making the channel change decision. It gives a q
 \begin{figure}
 \centering
 \includegraphics[width=3.5in]{Diagram1.eps}
-\caption{Channel switching process}
+\caption{Channel switching processes}
 \label{fig_sim}
 \end{figure}
 
-Figure 1 shows the states in channel switching. As explained in the previous sections, LPBR chooses a channel based on the two-hop colouring strategy and sends the change channel message to the node. The node saves it's current and new channel separately to allow the channel to be restored if require. The node contacts its tree neighbours and starts the channel quality checking. The channel that is decided on is informed to the neighbours and LPBR, and waits for acknowledgement. If the acknowledgement does not arrive after the timeout, the change channel confirmation message is retransmitted. The neighbour's node is ignored if the retransmissions has timed out. 
+Figure 1 shows the states in channel switching. As explained in the previous sections, LPBR chooses a channel based on the two-hop colouring protocol and sends the change channel message to the node. The node saves it's current and new channel separately to allow the channel to be restored if require. The node contacts its tree neighbours and starts the channel quality checking. The channel that is decided on is informed to the neighbours and LPBR, and waits for acknowledgement. If the acknowledgement does not arrive after the timeout, the change channel confirmation message is retransmitted. The neighbour's node is ignored if the retransmissions has timed out. 
 
 %It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
 
