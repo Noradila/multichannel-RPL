@@ -1,54 +1,46 @@
-This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2015/dev/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: senseapp_2015.aux
 The style file: plain.bst
 Database file #1: Bibliography.bib
-Warning--to sort, need author or key in ieee_2012
-Warning--empty author in ieee_2012
-Warning--empty booktitle in leach
-Warning--can't use both volume and number fields in leach
-Warning--empty journal in mrhof
-Warning--empty journal in tsch
-Warning--empty journal in of0
 You've used 25 entries,
             2118 wiz_defined-function locations,
-            632 strings with 9252 characters,
-and the built_in function-call counts, 10403 in all, are:
-= -- 1043
-> -- 483
-< -- 18
-+ -- 196
-- -- 166
-* -- 668
-:= -- 1580
-add.period$ -- 80
+            630 strings with 9293 characters,
+and the built_in function-call counts, 10101 in all, are:
+= -- 973
+> -- 489
+< -- 15
++ -- 198
+- -- 168
+* -- 666
+:= -- 1556
+add.period$ -- 75
 call.type$ -- 25
-change.case$ -- 158
+change.case$ -- 159
 chr.to.int$ -- 0
-cite$ -- 32
-duplicate$ -- 473
-empty$ -- 774
-format.name$ -- 166
-if$ -- 2313
+cite$ -- 25
+duplicate$ -- 397
+empty$ -- 812
+format.name$ -- 168
+if$ -- 2214
 int.to.chr$ -- 0
 int.to.str$ -- 25
-missing$ -- 24
-newline$ -- 126
-num.names$ -- 48
-pop$ -- 192
+missing$ -- 18
+newline$ -- 128
+num.names$ -- 50
+pop$ -- 211
 preamble$ -- 1
-purify$ -- 133
+purify$ -- 134
 quote$ -- 0
-skip$ -- 405
+skip$ -- 335
 stack$ -- 0
-substring$ -- 554
-swap$ -- 196
-text.length$ -- 18
+substring$ -- 600
+swap$ -- 147
+text.length$ -- 15
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 100
-warning$ -- 7
-while$ -- 87
+warning$ -- 0
+while$ -- 93
 width$ -- 27
-write$ -- 285
-(There were 7 warnings)
+write$ -- 277
