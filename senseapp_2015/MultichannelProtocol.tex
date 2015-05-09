@@ -1,6 +1,6 @@
 \section{Multichannel RPL Protocol}
 \label{sec:multichannel}
-Multichannel RPL concentrates on finding the best channels for nodes to listen and transmit on, given policies that needs to be complied. 
+Multichannel RPL concentrates on finding the best channels for nodes to listen and transmit on, given policies that need to be complied. 
 
 \subsection{Overview}
 
@@ -9,7 +9,7 @@ Multichannel RPL concentrates on finding the best channels for nodes to listen a
 The design of Multichannel RPL are based on several crucial observations:
 
 \begin{itemize}
-\item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is opted. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on the criteria that are explained in the next part. 
+\item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is opted. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on the criteria that are explained in the next section. 
 %LPBR assigns channel to the nodes.
 %This centralised processes at the LPBR enable the other nodes that are battery powered to minimise the use of the energy in packets transmission. LPBR is fully powered which is the main reason for placing intelligence on it.
 %LPBR keeps track of the channel conditions based on the feedback it receives from the nodes. All intelligence is done at LPBR.
@@ -104,11 +104,11 @@ If the first hop succeeds, LPBR will check the nodes that are two hops away from
 %channel quality check = probing
 %//Channel condition is checked by probing before deciding to switch unless LPBR has the information regarding the specific channel based on probing that were done previously.
 
-The channel quality checking is invoke each time the node receives the channel change message from LPBR. The node informs all the route neighbours in turn, of the new channel it will be listening on. The route neighbours will update their neighbour table to hold the new channel value as the node current channel for transmission. The node sends a message to the route neighbour to send probes and switches to the listening channel ready to receive any incoming messages. The node's route neighbour starts sending the probe messages to the node and the node collects the information on the success or failure rate of the channel. These information is then, sent to LPBR to updates LPBR's knowledge on the channel condition for the specific node and its neighbours. The node uses the results from probing to decide if the new channel is better than the current channel. All the neighbours and LPBR are informed of the decision and update the node's channel.
+The channel quality checking is invoke each time the node receives the channel change message from LPBR. The node informs all the tree neighbours in turn, of the new channel it will be listening on. The tree neighbours will update their neighbour table to hold the new channel value as the node current channel for transmission. The node sends a message to the tree neighbour to send probes and switches to the listening channel ready to receive any incoming messages. The node's tree neighbour starts sending the probe messages to the node and the node collects the information on the success or failure rate of the channel. These information is then, sent to LPBR to updates LPBR's knowledge on the channel condition for the specific node and its neighbours. The node uses the results from probing to decide if the new channel is better than the current channel. All the neighbours and LPBR are informed of the decision and update the node's channel.
 
 A channel is not chosen as a good channel to change into either if it timed out or the probing messages received are below a threshold. The node will revert to the previous channel as it is better than the new channel selected. The interference channel might be used by some nodes if during the probing, all probing messages are received. The channel change will be invoked again in this case.
 
-Probing is an important part in making the channel changes decision. It gives a quick overview of the channel condition based on the number of probing messages received. It is worth noting that probing is only done between the node and the route neighbours. Neighbours that are not route neighbours will not use the node as a route during their transmission thus there is no need for probing to take place for those neighbours. However, the neighbours still need to know the channel value as RPL control messages are sent to neighbours directly without using the routes.
+Probing is an important part in making the channel change decision. It gives a quick overview of the channel condition based on the number of probing messages received. It is worth noting that probing is only done between the node and the tree neighbours. Neighbours that are not tree neighbours will not use the node as a route during their transmission thus there is no need for probing to take place with those neighbours. However, the neighbours still need to know the channel value as RPL control messages are sent to neighbours directly without using the routes.
 %***probing tries to avoid the interference channel.
 
 
@@ -134,7 +134,7 @@ Probing is an important part in making the channel changes decision. It gives a 
 \label{fig_sim}
 \end{figure}
 
-Figure 1 shows the states in channel switching. As explained in the previous sections, LPBR chooses a channel based on the two hops strategy and sends the change channel message to the node. The node saves it's current and new channel separately to allow the channel to be restored if require. The node contacts its route neighbours and start the channel quality checking. The channel that is decided on is informed to the neighbours and LPBR and waits for acknowledgement. If the acknowledgement does not arrive after the timeout, the change channel confirmation message is retransmitted. The neighbour node is ignored if the retransmissions has timed out. 
+Figure 1 shows the states in channel switching. As explained in the previous sections, LPBR chooses a channel based on the two hops strategy and sends the change channel message to the node. The node saves it's current and new channel separately to allow the channel to be restored if require. The node contacts its tree neighbours and starts the channel quality checking. The channel that is decided on is informed to the neighbours and LPBR, and waits for acknowledgement. If the acknowledgement does not arrive after the timeout, the change channel confirmation message is retransmitted. The neighbour's node is ignored if the retransmissions has timed out. 
 
 %It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
 
