@@ -23,7 +23,7 @@ The design of the multichannel protocol is based on several crucial observations
 \end{itemize}
 
 Our cross-layer multi-channel protocol focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place only after the topology tree has been formed by RPL and stabilised.  The system
-has two parts: a central algorithm which can be colocated with the LPBR and selects which channel each node should listen on; and a protocol which allows the network to communicate the channel change decision, probe the new channel and either communicate the success of the change or fall back to the previous channel. 
+has two parts: a central algorithm which can be collocated with the LPBR and selects which channel each node should listen on; and a protocol which allows the network to communicate the channel change decision, probe the new channel and either communicate the success of the change or fall back to the previous channel. 
 
 %Figure 1 shows the design of Multichannel RPL. The states are explained in the next sections.
 
@@ -137,7 +137,7 @@ be made.
 \end{figure}
 
 Figure \ref{fig_sim} shows the state machine for the channel switching protocol.
-As explained in the previous section, a choice of a new channel by the channel selction algorithm causes a change channel message to be sent to the appropriate node. 
+As explained in the previous section, a choice of a new channel by the channel selection algorithm causes a change channel message to be sent to the appropriate node. 
 On receiving a channel change message a node $N$ stores its current channel $C$ and communicates to all its neighbours the new channel $D$ it wishes to change to.  Those neighbours will update their neighbour tables to ensure that they now send to node $N$ on channel $D$.  The node $N$ now begins the channel quality checking process (see section \ref{sec:channelquality} with each neighbour in turn by sending them a probe request.  If this process fails for any neighbour then the node reverts to channel $C$.  Node $N$ informs its neighbours of this reversion to channel $C$ and informs the LPBR of the channel checking results and its reversion to listening on channel $C$.  If all channel quality checks succeed the node $N$.  It is important to emphasise that the network remains fully functional and connected at all stages of this protocol (however, the channel checking process uses probe packets that might interfere with other transmissions temporarily).
 
 \subsection{Channel Quality Checking}
