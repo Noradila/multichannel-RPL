@@ -1,12 +1,12 @@
-\section{Multichannel Cross-Layer Routing}
+\section{Cross-Layer Multi-Channel Protocol}
 \label{sec:multichannel}
-Multichannel cross-layer routing concentrates on finding the best channels for nodes to listen and transmit on, given policies that need to be complied. 
+Cross-layer multi-channel protocol concentrates on finding the best channels for nodes to listen and transmit on, given policies that need to be complied. 
 
 \subsection{Overview}
 
 %\explain the ideas (state machine?), reasons for doing
 
-The design of multichannel cross-layer routing is based on several crucial observations:
+The design of the multichannel protocol is based on several crucial observations:
 
 \begin{itemize}
 \item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is opted. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on the criteria that are explained in the next section. 
@@ -21,7 +21,7 @@ The design of multichannel cross-layer routing is based on several crucial obser
 %we need to ensure the node knows the correct channel to reach the neighbours. RPL forms and maintains the network topology through its control messages. Applying multichannel to the existing RPL may hinder neighbour detection and RPL processes and it does not have any means of switching to the correct channel. 
 \end{itemize}
 
-Multichannel cross-layer routing focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place once the topology tree has been formed by LPBR and stabilise.
+Our cross-layer multi-channel protocol focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place once the topology tree has been formed by LPBR and stabilise.
 
 %Figure 1 shows the design of Multichannel RPL. The states are explained in the next sections.
 
