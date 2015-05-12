@@ -370,7 +370,7 @@ void doSending(struct unicast_message *msg) {
     i = 0;
   }
 
-  while(channelOK == 0) {
+/*  while(channelOK == 0) {
     randomNewCh = (random_rand() % 16) + 11;
     while(msg2.value == randomNewCh) {
       randomNewCh = (random_rand() % 16) + 11;
@@ -381,8 +381,8 @@ void doSending(struct unicast_message *msg) {
 
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
-
-//msg2.value = 22;
+*/
+msg2.value = 22;
 
   printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
   uip_debug_ipaddr_print(&msg2.address);
@@ -421,6 +421,8 @@ static void howManyRoutes() {
     r = uip_ds6_route_next(r)) {
 
     noOfRoutes = noOfRoutes + 1;
+
+//printf("1:%x 2:%x 3:%x 4:%x 5:%x 6:%x 7:%x 8:%x 9:%x 10:%x 11:%x 12:%x 13:%x 14:%x 15:%x\n", r->ipaddr.u8[1], r->ipaddr.u8[2], r->ipaddr.u8[3], r->ipaddr.u8[4], r->ipaddr.u8[5], r->ipaddr.u8[6], r->ipaddr.u8[7], r->ipaddr.u8[8], r->ipaddr.u8[9], r->ipaddr.u8[10], r->ipaddr.u8[11], r->ipaddr.u8[12], r->ipaddr.u8[13], r->ipaddr.u8[14], r->ipaddr.u8[15]);
     //printf("%d NO OF ROUTE ", noOfRoutes);
     //uip_debug_ipaddr_print(&r->ipaddr);
     //printf("\n");
@@ -689,7 +691,7 @@ receiver(struct simple_udp_connection *c,
     printf("\n\n");
 
     for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
-      if(sender_addr->u8[11] == r->ipaddr.u8[11]) {
+      if(sender_addr->u8[13] == r->ipaddr.u8[13]) {
       //if(uip_ipaddr_cmp(sender_addr, &r->ipaddr)) {
         r->routeCh = msg->value;
         //printf("UPDATE ROUTING TABLE: ");
@@ -703,7 +705,7 @@ receiver(struct simple_udp_connection *c,
     //! updates LPBR RT
     for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
       nbr = nbr_table_next(ds6_neighbors,nbr)) {
-      if(sender_addr->u8[11] == nbr->ipaddr.u8[11]) {
+      if(sender_addr->u8[13] == nbr->ipaddr.u8[13]) {
         nbr->nbrCh = msg->value;
         //printf("UPDATE NBR TABLE: ");
         //uip_debug_ipaddr_print(&nbr->ipaddr);

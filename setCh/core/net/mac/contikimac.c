@@ -648,7 +648,9 @@ nbr = nbr_table_next(ds6_neighbors,nbr)) {
 //uip_debug_ipaddr_print(r->ipaddr);
 //printf("\n");
 
-if((nbr->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+//ADIAL EDIT 11/05/15
+//if((nbr->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {
+if((nbr->ipaddr.u8[13]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5])) {
 
 //printf("contikimac CHANNEL %d\n", cc2420_get_channel());
 //if((r->ipaddr.u8[11]) == (packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6])) {

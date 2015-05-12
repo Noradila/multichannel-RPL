@@ -747,7 +747,7 @@ uint8_t delayTime = 0;
             for(r = uip_ds6_route_head(); r != NULL; 
 	      r = uip_ds6_route_next(r)) {
 
-              if(nbr->ipaddr.u8[11] == r->ipaddr.u8[11]){
+              if(nbr->ipaddr.u8[13] == r->ipaddr.u8[13]){
 
 		msg2.type = keepType;
                 msg2.value = changeTo;

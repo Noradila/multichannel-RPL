@@ -101,8 +101,8 @@ As in standard RPL all nodes are initialised to channel 26 by default. The usual
 \end{algorithm}
 \fi
 
-In the two-hop colouring algorithm, the LPBR chooses a node to which it will assign a channel to listen on.  
-This selection is random from channels 11 to 26 (the full range available). The algorithm checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be black listed.  Knowledge of channel interference (gained by probing, see later description) can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is used (see section \ref{sec:channelswitch}). If no channel can be found meeting these conditions the current
+In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on.  
+This selection is random from channels 11 to 26 (the full range available). The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be black listed.  Knowledge of channel interference (gained by probing, see later description) can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is used (see section \ref{sec:channelswitch}). If no channel can be found meeting these conditions the current
 channel is kept.  
 
 The node selection algorithm must only attempt one channel change at a time. The protocol ensures that the
@@ -137,7 +137,7 @@ be made.
 \end{figure}
 
 Figure \ref{fig_sim} shows the state machine for the channel switching protocol.
-As explained in the previous section, a choice of a new channel by the channel selection algorithm causes a change channel message to be sent to the appropriate node. 
+As explained in the previous section, a choice of a new channel by the channel selection protocol causes a change channel message to be sent to the appropriate node. 
 On receiving a channel change message a node $N$ stores its current channel $C$ and communicates to all its neighbours the new channel $D$ it wishes to change to.  Those neighbours will update their neighbour tables to ensure that they now send to node $N$ on channel $D$.  The node $N$ now begins the channel quality checking process (see section \ref{sec:channelquality} with each neighbour in turn by sending them a probe request.  If this process fails for any neighbour then the node reverts to channel $C$.  Node $N$ informs its neighbours of this reversion to channel $C$ and informs the LPBR of the channel checking results and its reversion to listening on channel $C$. If all channel quality checks succeed the node $N$. It is important to emphasise that the network remains fully functional and connected at all stages of this protocol (however, the channel checking process uses probe packets that might interfere with other transmissions temporarily).
 
 \subsection{Channel Quality Checking}
