@@ -132,7 +132,7 @@ struct unicast_message {
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
 
-	char paddingBuf[30];
+	//char paddingBuf[30];
 };
 
 /*---------------------------------------------------------------------------*/
@@ -215,8 +215,9 @@ static void checkAckProbeResultTable(uint8_t theChannel) {
     msg2.type = CONFIRM_CH;
     msg2.value = theChannel;
     msg2.addrPtr = &sendTo1;
-    msg2.paddingBuf[30] = " ";
+//    msg2.paddingBuf[30] = " ";
 
+printf("S confirm\n");
 //    printf("To LPBR Sending CONFIRM_CH to ");
 //    uip_debug_ipaddr_print(msg2.addrPtr);
 //    printf(" channel %d\n", msg2.value);
@@ -267,7 +268,7 @@ static void readProbeResult() {
 
 
   //if((sum/divide) >= ((sum/divide)/2)) {
-/*  if((sum/divide) == 8) {
+  if((sum/divide) == 8) {
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   }
   else {
@@ -277,7 +278,7 @@ static void readProbeResult() {
 uip_ds6_if.addr_list[1].currentCh = uip_ds6_if.addr_list[1].prevCh;
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
-*/
+
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   process_post(&test1, event_data_ready, &msg2);
 
@@ -738,7 +739,7 @@ uint8_t delayTime = 0;
 
 	    msg2.type = keepType;
             msg2.value = changeTo;
-            msg2.paddingBuf[30] = " ";
+            //msg2.paddingBuf[30] = " ";
             msg2.addrPtr = &nbr->ipaddr;
 
             ww = 1;
@@ -751,7 +752,7 @@ uint8_t delayTime = 0;
 
 		msg2.type = keepType;
                 msg2.value = changeTo;
-                msg2.paddingBuf[30] = " ";
+                //msg2.paddingBuf[30] = " ";
                 msg2.addrPtr = &nbr->ipaddr;
 
                 ww = 1;
@@ -770,6 +771,7 @@ uint8_t delayTime = 0;
 	    else if(x == 1) {
 	    //if(keepType == STARTPROBE) {
 	      msg2.type = STARTPROBE;
+printf("S starprobe\n");
 	      //printf("%d Sending STARTPROBE %d to tree neighbour ", nbr->nbrCh, msg2.value);
 	      //delayTime = 1;
 	    }
@@ -831,13 +833,13 @@ uint8_t delayTime = 0;
       //printf("AFTER 0.125s\n\n");
       y = 1;
       //! for padding as shortest packet size is 43 bytes (defined in contikimac.c)
-      msg2.paddingBuf[30] = " ";
+      //msg2.paddingBuf[30] = " ";
       for(x = 1; x <= 8; x++) {
       msg2.type = NBRPROBE;
 	msg2.value = changeTo;
 	msg2.value2 = y;
 	msg2.addrPtr = &holdAddr;
-        msg2.paddingBuf[30] = " ";
+        //msg2.paddingBuf[30] = " ";
 
 	//@
         //cc2420_set_channel(msg2.value);
@@ -886,7 +888,7 @@ uint8_t delayTime = 0;
 
 	//msg2.type = keepType;
         msg2.value = changeTo;
-        msg2.paddingBuf[30] = " ";
+        //msg2.paddingBuf[30] = " ";
         msg2.addrPtr = &nbr->ipaddr;
 
 	//if(nbr->ipaddr.u8[13] == 1) {
@@ -894,6 +896,7 @@ uint8_t delayTime = 0;
 	//}
 
 	msg2.type = CONFIRM_CH;
+printf("S confirm ch\n");
 //	printf("%d Sending CONFIRM CH to all neighbours ", nbr->nbrCh);
 //        uip_debug_ipaddr_print(msg2.addrPtr);
 //        printf("\n");
@@ -937,6 +940,7 @@ uint8_t delayTime = 0;
 
       msg2.value = changeTo;
 
+printf("S get ack\n");
       //!cc2420_set_channel(msg2.value);
 //      printf("Sending GET_ACK back %d ", changeTo);
       //cc2420_set_channel(uip_ds6_defrt_ch());

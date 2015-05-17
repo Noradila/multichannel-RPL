@@ -136,7 +136,7 @@ struct unicast_message {
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
 
-	char paddingBuf[30];
+//	char paddingBuf[30];
 
 uint8_t value3;
 };
@@ -344,7 +344,7 @@ void doSending(struct unicast_message *msg) {
   msg2.value = randomNewCh;
   //msg2.address = r->ipaddr;
   msg2.address = msg->address;
-  msg2.paddingBuf[30] = " ";
+//  msg2.paddingBuf[30] = " ";
 
   channelOK = twoHopsLPBR(&msg2.address, msg2.value);
   channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
@@ -370,7 +370,7 @@ void doSending(struct unicast_message *msg) {
     i = 0;
   }
 
-/*  while(channelOK == 0) {
+  while(channelOK == 0) {
     randomNewCh = (random_rand() % 16) + 11;
     while(msg2.value == randomNewCh) {
       randomNewCh = (random_rand() % 16) + 11;
@@ -381,8 +381,8 @@ void doSending(struct unicast_message *msg) {
 
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
-*/
-msg2.value = 22;
+
+//msg2.value = 22;
 
   printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
   uip_debug_ipaddr_print(&msg2.address);
@@ -959,6 +959,12 @@ PROCESS_THREAD(border_router_process, ev, data)
   static uip_ds6_route_t *r;
   uint8_t number = 1;
 
+static unsigned int message_number;
+char buf[40];
+struct unicast_message msg2;
+  uip_ipaddr_t sendTo1;
+  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7405, 0x0005, 0x0505);
+
   PROCESS_BEGIN();
   prefix_set = 0;
 
@@ -1012,7 +1018,7 @@ PROCESS_THREAD(border_router_process, ev, data)
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
   etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
-//  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
+//  etimer_set(&changeChTimer, 200 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
 
@@ -1031,6 +1037,23 @@ PROCESS_THREAD(border_router_process, ev, data)
     startChChange(sendingTo);
     //process_post_synch(&chChange_process, event_data_ready, NULL);
 
+//  for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+
+/*  msg2.value = 10;
+//  msg2.address = r->ipaddr;
+  //msg2.address = msg->address;
+  //msg2.paddingBuf[30] = " ";
+
+printf("Sending NORMAL packet from LPBR to ");
+uip_debug_ipaddr_print(&sendTo1);
+printf("\n");
+//sprintf(buf, "Sending the message %d", message_number);
+//message_number++;
+//simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &r->ipaddr);
+
+simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
+//}
+*/
     /* do anything here??? */
   }
   PROCESS_END();

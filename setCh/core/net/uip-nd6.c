@@ -75,6 +75,8 @@
 #include "lib/random.h"
 
 #if UIP_CONF_IPV6
+
+//uint8_t nd6V = 0;
 /*------------------------------------------------------------------*/
 #define DEBUG 0
 #include "net/uip-debug.h"
@@ -327,6 +329,9 @@ create_na:
 //printf("\n");
 //-------------------
 
+//nd6V = nd6V + 1;
+//printf("RPL %d NA\n", nd6V);
+
   PRINTF("Sending NA to ");
   PRINT6ADDR(&UIP_IP_BUF->destipaddr);
   PRINTF(" from ");
@@ -413,6 +418,9 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
 //uip_debug_ipaddr_print(&UIP_IP_BUF->destipaddr);
 //printf("\n");
 //-------------------
+
+//nd6V = nd6V + 1;
+//printf("RPL %d NS\n", nd6V);
 
   PRINTF("Sending NS to");
   PRINT6ADDR(&UIP_IP_BUF->destipaddr);
@@ -764,6 +772,7 @@ uip_nd6_ra_output(uip_ipaddr_t * dest)
   UIP_ICMP_BUF->icmpchksum = ~uip_icmp6chksum();
 
   UIP_STAT(++uip_stat.nd6.sent);
+
   PRINTF("Sending RA to");
   PRINT6ADDR(&UIP_IP_BUF->destipaddr);
   PRINTF("from");

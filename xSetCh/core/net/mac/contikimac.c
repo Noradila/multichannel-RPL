@@ -244,7 +244,7 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
 
-//uint8_t hasSent = 0;
+uint8_t hasSent = 0;
 
 #define DEBUG 0
 //#define DEBUG_DEBUG ALL
@@ -590,7 +590,7 @@ uint8_t theChIs = 0;
   if(rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER), &rimeaddr_null)) {
     is_broadcast = 1;
 //hasSent = hasSent + 1;
-//printf("contikimac: send broadcast %d\n", hasSent);
+printf("contikimac: send broadcast %d\n", hasSent);
     PRINTDEBUG("contikimac: send broadcast\n");
 
     if(broadcast_rate_drop()) {
@@ -631,7 +631,7 @@ theChIs,
 //------------------
 
 //hasSent = hasSent + 1;
-//printf("contikimac: send unicast %d\n", hasSent);
+printf("contikimac: send unicast %d\n", hasSent);
 #else /* UIP_CONF_IPV6 */
     PRINTDEBUG("contikimac: send unicast to %u.%u\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
@@ -913,6 +913,9 @@ theChIs,
     ret = MAC_TX_NOACK;
   } else {
     ret = MAC_TX_OK;
+hasSent = hasSent + 1;
+printf("RET = MAC TX OK %d\n", hasSent);
+
 //ADILA EDIT 02/03/14
 //printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
 //-------------------
