@@ -953,7 +953,7 @@ cc2420_get_channel(),
   } else {
     ret = MAC_TX_OK;
 //ADILA EDIT 02/03/14
-printf("RET = MAC TX OK from %d sender %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5], packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[5]);
+//printf("RET = MAC TX OK from %d sender %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5], packetbuf_addr(PACKETBUF_ADDR_SENDER)->u8[5]);
 //-------------------
   }
 

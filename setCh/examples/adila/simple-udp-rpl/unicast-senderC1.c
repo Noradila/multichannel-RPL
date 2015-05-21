@@ -72,6 +72,8 @@ struct probeResult {
   uint8_t rxValue;
 
   uint8_t checkAck;
+
+  uint8_t lpbrAck;
 };
 
 LIST(probeResult_table);
@@ -242,9 +244,12 @@ static void readProbeResult() {
     printf("\n\n");
   }*/
 
-  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+//msg2.type = PROBERESULT;
+//process_post_synch(&test1, event_data_ready, &msg2);
+
+/*  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
    if(pr->chNum != 0) {
-    printf("Sending PROBERESULT to ");
+    /*printf("Sending PROBERESULT to ");
     uip_debug_ipaddr_print(&sendTo1);
     printf("\n");
 
@@ -255,12 +260,16 @@ static void readProbeResult() {
 
     //! Sending PROBERESULT to LPBR without deciding the change yet
     simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1);
-
-    sum = sum + pr->rxValue;
+    //process_post_synch(&test1, event_data_ready, &msg2);
+    */
+/*    sum = sum + pr->rxValue;
     divide++;
    }
    //nbrNo++;
   }
+*/
+//20may
+printf("AFTER 1 PROBERESULT\n");
 
   //keepListNo = divide;
   msg2.type = CONFIRM_CH;
@@ -279,6 +288,8 @@ uip_ds6_if.addr_list[1].currentCh = uip_ds6_if.addr_list[1].prevCh;
 cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
   }
 
+//20may
+printf("AFTER 2 PROBERESULT\n");
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   process_post(&test1, event_data_ready, &msg2);
 
@@ -534,6 +545,28 @@ receiver(struct simple_udp_connection *c,
     keepProbeResult(sender_addr, msg->value, 0);
   }
 
+//21 may
+  else if(msg->type == PROBERESULT) {
+    msg2.address = msg->address;
+    //msg2.value2 = msg->value2;
+
+printf("RECV LPBR PROBERESULT ");
+uip_debug_ipaddr_print(&msg2.address);
+printf("\n\n");
+    for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+      if(uip_ipaddr_cmp(&msg2.address, &pr->pAddr)) {
+	pr->lpbrAck = 1;
+	return;
+      }
+    }
+
+    for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+	printf("PROBERESULT TABLE %d ", pr->lpbrAck);
+	uip_debug_ipaddr_print(&pr->pAddr);
+	printf("\n\n");
+    }
+  }
+
   else if(msg->type == CONFIRM_CH) {
     //printf("%d: Received CONFIRM_CH from ", cc2420_get_channel());
     //uip_debug_ipaddr_print(sender_addr);
@@ -543,6 +576,17 @@ receiver(struct simple_udp_connection *c,
     msg2.addrPtr = sender_addr;
     msg2.value = msg->value;
 
+//20may
+/*        for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+
+	  if(sender_addr->u8[13] == nbr->ipaddr.u8[13]) {
+	    nbr->nbrCh = msg2.value;
+	    printf("THE CH %d\n\n", nbr->nbrCh);
+	    break;
+	  }
+	}
+*/
+    //uip_ds6_if.addr_list[1].currentCh = msg2.value;
     process_post_synch(&test1, event_data_ready, &msg2);
   }
 
@@ -693,8 +737,8 @@ PROCESS_THREAD(test1, ev, data)
   //uip_ipaddr_t sendTo1;
   uip_ip6addr(&sendTo1, 0xfe80, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
-  //uip_ipaddr_t sendTo1G;
-  //uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
+  uip_ipaddr_t sendTo1G;
+  uip_ip6addr(&sendTo1G, 0xaaaa, 0, 0, 0, 0x212, 0x7401, 0x0001, 0x0101);
 
   static struct ctimer timer;
   struct probeResult *pr;
@@ -794,6 +838,32 @@ printf("S starprobe\n");
 
       if(keepType == NBR_CH_CHANGE || keepType == STARTPROBE) {
       //if(keepType == STARTPROBE) {
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+   if(pr->chNum != 0) {
+    printf("Sending PROBERESULT to ");
+    uip_debug_ipaddr_print(&sendTo1G);
+    printf("\n");
+
+    msg2.type = PROBERESULT;
+    msg2.address = pr->pAddr;
+    msg2.value = pr->chNum;
+    msg2.value2 = pr->rxValue; 
+
+    //! Sending PROBERESULT to LPBR without deciding the change yet
+    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1G);
+    //etimer_set(&time, 1 * CLOCK_SECOND);
+    //PROCESS_YIELD_UNTIL(etimer_expired(&time));
+    //process_post_synch(&test1, event_data_ready, &msg2);
+
+    sum = sum + pr->rxValue;
+    divide++;
+   }
+   //nbrNo++;
+  }
+
+    etimer_set(&time, 1 * CLOCK_SECOND);
+    PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
         readProbeResult();
       }
 
@@ -856,7 +926,60 @@ printf("S starprobe\n");
       etimer_set(&time, 0.15 * CLOCK_SECOND);
       //etimer_set(&time, 1 * CLOCK_SECOND);
       PROCESS_YIELD_UNTIL(etimer_expired(&time));
+printf("FINISH SENDING PROBE\n\n");
+
+//20may
+/*        for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+          nbr = nbr_table_next(ds6_neighbors,nbr)) {
+
+	  if(sender_addr->u8[13] == nbr->ipaddr.u8[13]) {
+	    nbr->nbrCh = msg2.value;
+	    printf("THE CH %d\n\n", nbr->nbrCh);
+	    break;
+	  }
+	}
+*/
+//cc2420_set_channel(26);
     }//end if(msg->type == NBRPROBE)
+
+/*if(msg->type == PROBERESULT) {
+
+  for(pr = list_head(probeResult_table); pr != NULL; pr = pr->next) {
+   if(pr->chNum != 0) {
+    printf("Sending PROBERESULT to ");
+    uip_debug_ipaddr_print(&sendTo1);
+    printf("\n");
+
+    msg2.type = PROBERESULT;
+    msg2.address = pr->pAddr;
+    msg2.value = pr->chNum;
+    msg2.value2 = pr->rxValue; 
+
+    //! Sending PROBERESULT to LPBR without deciding the change yet
+    simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &sendTo1G);
+    etimer_set(&time, 0.7 * CLOCK_SECOND);
+    PROCESS_YIELD_UNTIL(etimer_expired(&time));
+    //process_post_synch(&test1, event_data_ready, &msg2);
+
+    //sum = sum + pr->rxValue;
+    //divide++;
+   }
+   //nbrNo++;
+  }
+
+//simple_udp_sendto(&unicast_connection, msg, sizeof(msg) + 1, &sendTo1G);	
+
+//etimer_set(&time, 0.7 * CLOCK_SECOND);
+//PROCESS_YIELD_UNTIL(etimer_expired(&time));
+
+    /*msg2.type = msg->type;
+    msg2.address = msg->address;
+    msg2.value = msg->value;
+    msg2.value2 = msg->value2; 
+*/
+    //! Sending PROBERESULT to LPBR without deciding the change yet
+    
+//}
 
     if(msg->type == CONFIRM_CH) {
       msg2.type = msg->type;
