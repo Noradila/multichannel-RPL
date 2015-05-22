@@ -29,4 +29,4 @@ epstopdf single_channel.pdf
 ./filterdata2.py multi_channel_scenario2.dat > multi_channel_scenario2.proc
 
 gnuplot multi_channel.gnu > multi_channel.eps
-epstopdf multi_channel.pdf
+epstopdf multi_channel.eps
