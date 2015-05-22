@@ -229,7 +229,8 @@ printf("S confirm\n");
   }
 }
 /*---------------------------------------------------------------------------*/
-static void readProbeResult() {
+//static void readProbeResult() {
+static void readProbeResult(uint8_t a, uint8_t b) {
   struct probeResult *pr;
   struct unicast_message msg2;
   sum = 0;
@@ -277,7 +278,8 @@ printf("AFTER 1 PROBERESULT\n");
 
 
   //if((sum/divide) >= ((sum/divide)/2)) {
-  if((sum/divide) == 8) {
+  //if((sum/divide) == 8) {
+  if((a/b) == 8) {
     msg2.value = uip_ds6_if.addr_list[1].currentCh;
   }
   else {
@@ -864,7 +866,7 @@ printf("S starprobe\n");
     etimer_set(&time, 1 * CLOCK_SECOND);
     PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
-        readProbeResult();
+        readProbeResult(sum, divide);
       }
 
 /*      if(keepType == CONFIRM_CH) {
