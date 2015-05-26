@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  26 MAY 2015 01:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  26 MAY 2015 04:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -283,8 +283,8 @@ Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 134.
 (pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
  [3]) (./Evaluation.tex [4 <./Diagram1-eps-converted-to.pdf>]
 Package epstopdf Info: Source file: <experiments/multi_channel.eps>
-(epstopdf)                    date: 2015-05-26 01:16:30
-(epstopdf)                    size: 21212 bytes
+(epstopdf)                    date: 2015-05-26 04:07:49
+(epstopdf)                    size: 21214 bytes
 (epstopdf)             Output file: <experiments/multi_channel-eps-converted-to
 .pdf>
 (epstopdf)                    date: 2015-05-26 01:32:51
@@ -292,7 +292,13 @@ Package epstopdf Info: Source file: <experiments/multi_channel.eps>
 (epstopdf)             Command: <repstopdf --outfile=experiments/multi_channel-
 eps-converted-to.pdf experiments/multi_channel.eps>
 (epstopdf)             \includegraphics on input line 35.
-Package epstopdf Info: Output file is already uptodate.
+runsystem(repstopdf --outfile=experiments/multi_channel-eps-converted-to.pdf ex
+periments/multi_channel.eps)...executed safely (allowed).
+
+Package epstopdf Info: Result file: <experiments/multi_channel-eps-converted-to
+.pdf>
+(epstopdf)                    date: 2015-05-26 04:11:49
+(epstopdf)                    size: 7375 bytes.
 
 <experiments/multi_channel-eps-converted-to.pdf, id=28, 361.35pt x 201.75375pt>
 File: experiments/multi_channel-eps-converted-to.pdf Graphic file (type pdf)
@@ -356,7 +362,7 @@ texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on senseapp_2015.pdf (6 pages, 124474 bytes).
+Output written on senseapp_2015.pdf (6 pages, 124510 bytes).
 PDF statistics:
  70 PDF objects out of 1000 (max. 8388607)
  48 compressed objects within 1 object stream
