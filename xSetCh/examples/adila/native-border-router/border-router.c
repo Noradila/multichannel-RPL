@@ -1022,10 +1022,11 @@ struct unicast_message msg2;
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
-  //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+//  etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
   etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
+//etimer_set(&changeChTimer, 200 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 750 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
@@ -1097,8 +1098,8 @@ uint8_t wTime;
     //etimer_set(&time, 10 * CLOCK_SECOND); //1 min
 //    etimer_set(&time, 3 * CLOCK_SECOND);
 
-//    etimer_set(&time, 5 * CLOCK_SECOND);
-    etimer_set(&time, 70 * CLOCK_SECOND);
+    etimer_set(&time, 5 * CLOCK_SECOND);
+//    etimer_set(&time, 70 * CLOCK_SECOND);
     PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
 /*etimer_set(&time, 1 * CLOCK_SECOND);

@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.5)  26 MAY 2015 14:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  26 MAY 2015 15:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **senseapp_2015.tex
 (./senseapp_2015.tex
-LaTeX2e <2014/05/01>
-Babel <3.9l> and hyphenation patterns for 2 languages loaded.
+LaTeX2e <2011/06/27>
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (./IEEEtran.cls
 Document Class: IEEEtran 2012/11/21 V1.8c by Harald Hanche-Olsen and Anders Chr
 istensen
@@ -93,10 +93,10 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \c@IEEEbiography=\count90
 \@IEEEtranrubishbin=\box26
 ) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks15
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
@@ -137,7 +137,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@floatcapt=\box28
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks18
 \c@algorithm=\count93
@@ -261,10 +261,10 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 15.
 Package epstopdf Info: Source file: <Diagram1.eps>
-(epstopdf)                    date: 2015-05-08 17:57:20
+(epstopdf)                    date: 2015-05-08 17:42:55
 (epstopdf)                    size: 15071 bytes
 (epstopdf)             Output file: <Diagram1-eps-converted-to.pdf>
-(epstopdf)                    date: 2015-05-26 14:22:55
+(epstopdf)                    date: 2015-05-08 17:43:55
 (epstopdf)                    size: 6634 bytes
 (epstopdf)             Command: <repstopdf --outfile=Diagram1-eps-converted-to.
 pdf Diagram1.eps>
@@ -278,44 +278,44 @@ File: Diagram1-eps-converted-to.pdf Graphic file (type pdf)
 Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 134.
 (pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
  [3]) (./Evaluation.tex [4 <./Diagram1-eps-converted-to.pdf>]
-Package epstopdf Info: Source file: <experiments/multi_channel.eps>
-(epstopdf)                    date: 2015-05-26 14:22:28
-(epstopdf)                    size: 21214 bytes
-(epstopdf)             Output file: <experiments/multi_channel-eps-converted-to
-.pdf>
-(epstopdf)                    date: 2015-05-26 14:22:56
-(epstopdf)                    size: 7391 bytes
-(epstopdf)             Command: <repstopdf --outfile=experiments/multi_channel-
-eps-converted-to.pdf experiments/multi_channel.eps>
-(epstopdf)             \includegraphics on input line 35.
-Package epstopdf Info: Output file is already uptodate.
-
-<experiments/multi_channel-eps-converted-to.pdf, id=28, 361.35pt x 201.75375pt>
-File: experiments/multi_channel-eps-converted-to.pdf Graphic file (type pdf)
-<use experiments/multi_channel-eps-converted-to.pdf>
-Package pdftex.def Info: experiments/multi_channel-eps-converted-to.pdf used on
- input line 35.
-(pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
 Package epstopdf Info: Source file: <experiments/single_channel.eps>
-(epstopdf)                    date: 2015-05-22 16:23:15
+(epstopdf)                    date: 2015-05-22 17:25:28
 (epstopdf)                    size: 21783 bytes
 (epstopdf)             Output file: <experiments/single_channel-eps-converted-t
 o.pdf>
-(epstopdf)                    date: 2015-05-26 14:22:56
-(epstopdf)                    size: 7800 bytes
+(epstopdf)                    date: 2015-05-25 16:35:18
+(epstopdf)                    size: 7782 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/single_channel
 -eps-converted-to.pdf experiments/single_channel.eps>
-(epstopdf)             \includegraphics on input line 42.
+(epstopdf)             \includegraphics on input line 40.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/single_channel-eps-converted-to.pdf, id=29, 361.35pt x 201.75375pt
+<experiments/single_channel-eps-converted-to.pdf, id=28, 361.35pt x 201.75375pt
 >
 File: experiments/single_channel-eps-converted-to.pdf Graphic file (type pdf)
  <use experiments/single_channel-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/single_channel-eps-converted-to.pdf used o
-n input line 42.
+n input line 40.
 (pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
-) [5 <./experiments/multi_channel-eps-converted-to.pdf> <./experiments/single_c
+Package epstopdf Info: Source file: <experiments/multi_channel.eps>
+(epstopdf)                    date: 2015-05-26 04:07:49
+(epstopdf)                    size: 21214 bytes
+(epstopdf)             Output file: <experiments/multi_channel-eps-converted-to
+.pdf>
+(epstopdf)                    date: 2015-05-26 04:11:49
+(epstopdf)                    size: 7375 bytes
+(epstopdf)             Command: <repstopdf --outfile=experiments/multi_channel-
+eps-converted-to.pdf experiments/multi_channel.eps>
+(epstopdf)             \includegraphics on input line 51.
+Package epstopdf Info: Output file is already uptodate.
+
+<experiments/multi_channel-eps-converted-to.pdf, id=29, 361.35pt x 201.75375pt>
+File: experiments/multi_channel-eps-converted-to.pdf Graphic file (type pdf)
+<use experiments/multi_channel-eps-converted-to.pdf>
+Package pdftex.def Info: experiments/multi_channel-eps-converted-to.pdf used on
+ input line 51.
+(pdftex.def)             Requested size: 235.84328pt x 131.68019pt.
+) [5 <./experiments/single_channel-eps-converted-to.pdf> <./experiments/multi_c
 hannel-eps-converted-to.pdf>] (./Conclusion.tex) (./senseapp_2015.bbl
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 39.
@@ -337,13 +337,13 @@ Before submitting the final camera ready copy, remember to:
 
 [6] (./senseapp_2015.aux) ) 
 Here is how much of TeX's memory you used:
- 2727 strings out of 495020
- 42335 string characters out of 6181325
- 106752 words of memory out of 5000000
- 5892 multiletter control sequences out of 15000+600000
+ 2727 strings out of 493304
+ 42327 string characters out of 6139871
+ 110013 words of memory out of 5000000
+ 6136 multiletter control sequences out of 15000+600000
  35966 words of font info for 69 fonts, out of 8000000 for 9000
- 17 hyphenation exceptions out of 8191
- 38i,6n,24p,1560b,326s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 960 hyphenation exceptions out of 8191
+ 38i,6n,24p,1506b,326s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/
 8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
@@ -352,7 +352,7 @@ texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
 ri8a.pfb>
-Output written on senseapp_2015.pdf (6 pages, 124456 bytes).
+Output written on senseapp_2015.pdf (6 pages, 124239 bytes).
 PDF statistics:
  70 PDF objects out of 1000 (max. 8388607)
  48 compressed objects within 1 object stream
