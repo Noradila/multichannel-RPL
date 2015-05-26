@@ -382,7 +382,7 @@ void doSending(struct unicast_message *msg) {
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
 
-//msg2.value = 22;
+msg2.value = 22;
 
   printf("%d: %d BR Sending channel to change for ", sizeof(msg2), msg2.value);
   uip_debug_ipaddr_print(&msg2.address);
@@ -1024,9 +1024,9 @@ struct unicast_message msg2;
 
   //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
-//  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
+  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
-  etimer_set(&changeChTimer, 750 * CLOCK_SECOND);
+//  etimer_set(&changeChTimer, 750 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
 
