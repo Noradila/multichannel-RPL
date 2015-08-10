@@ -30,4 +30,5 @@ uip-udp-packet.c				\
 uip.c						\
 uip6.c						\
 uip_arp.c					\
-uiplib.c
+uiplib.c					\
+retx-table.c

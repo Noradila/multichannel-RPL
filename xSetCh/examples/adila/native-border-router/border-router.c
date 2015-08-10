@@ -68,6 +68,10 @@
 #include "lib/list.h"
 #include "lib/memb.h"
 
+#include "sys/etimer.h"
+//#include "sys/node-id.h"
+//#include "lib/random.h"
+
 #include "simple-udp.h"
 #define UDP_PORT 1234
 #define SERVICE_ID 190
@@ -116,6 +120,15 @@ LIST(sentRecv_table);
 //MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
 MEMB(sentRecv_mem, struct sentRecv, 50); //for now, only sent to LPBR
 
+struct nodesTable {
+  struct nodesTable *next;
+  uip_ipaddr_t nodeNbr;
+  uip_ipaddr_t nodeAddr;
+};
+
+LIST(nodesTable_table);
+MEMB(nodesTable_mem, struct nodesTable, 10);
+
 enum {
 	CH_CHANGE,
 	NBR_CH_CHANGE,
@@ -124,7 +137,8 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
-SENTRECV
+SENTRECV,
+SEND_NBR
 };
 
 struct unicast_message {
@@ -337,7 +351,10 @@ void doSending(struct unicast_message *msg) {
   //printf("\n\n");
   uip_ipaddr_copy(&holdAddr, &msg->address);
 
-  randomNewCh = (random_rand() % 16) + 11;
+//random_init((random_rand() % 6) + 20);
+random_init(16);
+  //!!randomNewCh = (random_rand() % 16) + 11;
+  randomNewCh = (random_rand() % 6) + 20;
   //! check if randomNewCh is blacklisted (if it's on the list, low success rate)
 
   msg2.type = CH_CHANGE;
@@ -352,9 +369,11 @@ void doSending(struct unicast_message *msg) {
   //channel will be selected and checked with 2 hops for 4 times
   //if failed, it will use the default channel, 26
   while(channelOK == 0 && i < 4) {
-    randomNewCh = (random_rand() % 16) + 11;
+    //!!randomNewCh = (random_rand() % 16) + 11;
+  randomNewCh = (random_rand() % 6) + 20;
     while(msg2.value == randomNewCh) {
-      randomNewCh = (random_rand() % 16) + 11;
+      //!!randomNewCh = (random_rand() % 16) + 11;
+  randomNewCh = (random_rand() % 6) + 20;
       //printf("RANDOMNEWCH %d i %d\n\n", randomNewCh, i);
     }
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
@@ -371,9 +390,11 @@ void doSending(struct unicast_message *msg) {
   }
 
   while(channelOK == 0) {
-    randomNewCh = (random_rand() % 16) + 11;
+    //!!randomNewCh = (random_rand() % 16) + 11;
+  randomNewCh = (random_rand() % 6) + 20;
     while(msg2.value == randomNewCh) {
-      randomNewCh = (random_rand() % 16) + 11;
+      //!!randomNewCh = (random_rand() % 16) + 11;
+  randomNewCh = (random_rand() % 6) + 20;
     }
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
     channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
@@ -388,6 +409,7 @@ void doSending(struct unicast_message *msg) {
   uip_debug_ipaddr_print(&msg2.address);
   //printf(" via ");
   //uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
+//uip_debug_ipaddr_print(&msg2.addrPtr);
   printf("\n");
 
   simple_udp_sendto(&unicast_connection, &msg2, sizeof(msg2) + 1, &msg2.address);
@@ -405,6 +427,8 @@ static void startChChange(uint8_t currentNode) {
     i++;
     if(i == currentNode) {
       msg2.address = r->ipaddr;
+//msg2.addrPtr = uip_ds6_route_nexthop(r);
+//uip_ipaddr_copy(msg2.addrPtr, uip_ds6_route_nexthop(r));
       //printf("i %d currentNode %d ", i, currentNode);
       //uip_debug_ipaddr_print(&r->ipaddr);
       //printf("\n\n");
@@ -504,6 +528,10 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
   uint8_t checkOK = 0;
   //uip_ipaddr_t *theMissedAddr;
 
+    sendingTo = sendingTo + 1;
+    //noOfRetransmit = 0;
+    startChChange(sendingTo);
+
   for(l = list_head(lpbrList_table); l != NULL; l = l->next) {
     if(uip_ipaddr_cmp(&l->routeAddr, ipAddress)) {
       //printf("SAME ");
@@ -528,21 +556,22 @@ static void recheck(const uip_ipaddr_t *ipAddress) {
     startChChange(sendingTo);
 
     //!!!!! if sending done recheck the whole table again?
-/*    if(sendingTo == (noOfRoutes + 1)) {
+    if(sendingTo == (noOfRoutes + 1)) {
       //recheck again
       //printf("SENDINGTO-1 %d NOOFROUTES %d\n\n", sendingTo, noOfRoutes + 1);
       recheck2();
     }
-*/
+
   }
   else {
     //repeat sending to the same node
     //startChChange(sendingTo);
-    //printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
+    printf("NOOFRETRANSMIT %d\n\n", noOfRetransmit);
     //printf("CHANNELOK 0 SENDING TO %d\n\n", sendingTo);
     noOfRetransmit = noOfRetransmit + 1;
     startChChange(sendingTo);
   }
+
 }
 /*---------------------------------------------------------------------------*/
 static void readProbe(uint8_t checkValue) {
@@ -623,6 +652,23 @@ static void keepSentRecv(const uip_ipaddr_t *sendToAddr, uint8_t pktSent, uint8_
     sr->noRecv = pktRecv;
     uip_ipaddr_copy(&sr->sendToAddr, sendToAddr);
     list_add(sentRecv_table, sr);
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void set_nodes_table(const uip_ipaddr_t *nodeAddr, const uip_ipaddr_t nodeNbr) {
+  struct nodesTable *nt;
+
+  /*for(nt = list_head(nodes_table_table); nt != NULL; nt = nt->next) {
+    if(uip_ipaddr_cmp(nodeNbr, nt->nodeNbr)) {
+
+    }
+  }*/
+
+  nt = memb_alloc(&nodesTable_mem);
+  if(nt != NULL) {
+    uip_ipaddr_copy(&nt->nodeAddr, nodeAddr);
+    uip_ipaddr_copy(&nt->nodeNbr, &nodeNbr);
+    list_add(nodesTable_table, nt);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -751,6 +797,15 @@ receiver(struct simple_udp_connection *c,
 //    recheckChChange(&msg2);
 
 //  }
+else if(msg->type == SEND_NBR) {
+printf("MSG SEND_NBR FROM ");
+uip_debug_ipaddr_print(sender_addr);
+printf(" nbr ");
+uip_debug_ipaddr_print(&msg->address);
+printf("\n");
+
+set_nodes_table(sender_addr, msg->address);
+}
 
   else {
     printf("Data received from ");
@@ -970,8 +1025,11 @@ PROCESS_THREAD(border_router_process, ev, data)
 static unsigned int message_number;
 char buf[40];
 struct unicast_message msg2;
-  uip_ipaddr_t sendTo1;
-  uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7405, 0x0005, 0x0505);
+  //uip_ipaddr_t sendTo1;
+  //uip_ip6addr(&sendTo1, 0xaaaa, 0, 0, 0, 0x212, 0x7405, 0x0005, 0x0505);
+
+
+  struct nodesTable *nt;
 
   PROCESS_BEGIN();
   prefix_set = 0;
@@ -1022,20 +1080,41 @@ struct unicast_message msg2;
   simple_udp_register(&unicast_connection, UDP_PORT,
                       NULL, UDP_PORT, receiver);
 
-  //etimer_set(&changeChTimer, 20 * CLOCK_SECOND);
+/* //normal sending/receiving
+  while(1) {
+    etimer_set(&et, CLOCK_SECOND * 2);
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+    /* do anything here??? */
+
+//  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
+  etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
+//check if it changes parent (15 nodes, 1 interference(button-xadila-unicast1.c))
+////  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
+
   //60 is 3.25 min. 40 is 2 min (15 nodes) 20 is 2 min (9 nodes)?????
 //  etimer_set(&changeChTimer, 40 * CLOCK_SECOND);
 //  etimer_set(&changeChTimer, 60 * CLOCK_SECOND);
-  etimer_set(&changeChTimer, 750 * CLOCK_SECOND);
+//16 INTERFERENCE USE 750
+  //etimer_set(&changeChTimer, 750 * CLOCK_SECOND);
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&changeChTimer));
 
+printf("AFTER 120 SECOND\n\n");
+  for(nt = list_head(nodesTable_table); nt != NULL; nt = nt->next) {
+    printf("NODES TABLE: ");
+    uip_debug_ipaddr_print(&nt->nodeAddr);
+    printf(" NBR ");
+    uip_debug_ipaddr_print(&nt->nodeNbr);
+    printf("\n");
+  }
 
   //check with all LPBR neighbours
   printf("LPBR ROUTES\n");
   for(r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
     printf("%d: ", number);
     uip_debug_ipaddr_print(&r->ipaddr);
+    printf(" via ");
+    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
     printf("\n");
     number++;
   }
@@ -1097,8 +1176,15 @@ uint8_t wTime;
     //etimer_set(&time, 10 * CLOCK_SECOND); //1 min
 //    etimer_set(&time, 3 * CLOCK_SECOND);
 
-//    etimer_set(&time, 5 * CLOCK_SECOND);
-    etimer_set(&time, 70 * CLOCK_SECOND);
+ //  etimer_set(&time, 5 * CLOCK_SECOND);
+
+//    etimer_set(&time, 10 * CLOCK_SECOND);
+
+etimer_set(&time, 40 * CLOCK_SECOND); //simulation
+//etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
+
+//16 INTERFERENCE USE 70
+//    etimer_set(&time, 70 * CLOCK_SECOND);
     PROCESS_YIELD_UNTIL(etimer_expired(&time));
 
 /*etimer_set(&time, 1 * CLOCK_SECOND);
@@ -1111,10 +1197,19 @@ PROCESS_YIELD_UNTIL(etimer_expired(&time));
 etimer_reset(&time);
 }
 x = 0;*/
-    //printf("RECHECK for ");
-    //uip_debug_ipaddr_print(&holdAddr);
-    //printf("\n\n");
-    recheck(&holdAddr);
+    printf("RECHECK for ");
+    uip_debug_ipaddr_print(&holdAddr);
+    printf("\n\n");
+
+
+
+ //   recheck(&holdAddr);
+
+    sendingTo = sendingTo + 1;
+    //noOfRetransmit = 0;
+    startChChange(sendingTo);
+
+//etimer_reset(&time);
   }
   PROCESS_END();
 }

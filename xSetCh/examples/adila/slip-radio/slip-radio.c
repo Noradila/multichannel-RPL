@@ -162,6 +162,9 @@ simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEI
 
 	//@
         cc2420_set_channel(data[3]);
+
+//ADILA EDIT JULY 15
+printf("XSETCH %d\n\n", cc2420_get_channel());
       }
       //else {
 	//printf("DATA[3] IS 0!!!\n\n");
@@ -326,6 +329,7 @@ PROCESS_THREAD(slip_radio_process, ev, data)
   printf("Slip Radio started...\n");
 
 cc2420_set_txpower(11);
+//cc2420_set_txpower(2);
 
   etimer_set(&et, CLOCK_SECOND * 3);
 

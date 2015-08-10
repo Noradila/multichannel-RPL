@@ -247,6 +247,8 @@ static volatile unsigned char radio_is_on = 0;
 //uint8_t hasSent = 0;
 
 #define DEBUG 0
+#define DEBUG DEBUG_NONE
+//#define DEBUG 1
 //#define DEBUG_DEBUG ALL
 //#define DEBUG DEBUG_FULL
 
@@ -614,6 +616,10 @@ uint8_t theChIs = 0;
 //extern void simplified_nbr_table_get_channel();
 theChIs = simplified_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
 cc2420_set_channel(theChIs);
+
+//ADILA EDIT JULY 15
+printf("XSETCH CONTIKIMAC %d\n\n", cc2420_get_channel());
+
 //printf("ADILA ATTR %d AND %d\n\n", packetbuf_attr(PACKETBUF_ADILA), packetbuf_attr(PACKETBUF_ADILA2));
 //printf("ADILA ATTR %d %d\n\n", packetbuf_attr(PACKETBUF_ADILA), cc2420_get_channel());
 /*    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",

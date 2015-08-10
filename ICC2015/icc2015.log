@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  6 AUG 2015 19:01
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  10 AUG 2015 02:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -129,9 +129,31 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 320.
 LaTeX Font Info:    ... okay on input line 320.
 
 -- Lines per column: 56 (exact).
-(./Abstract.tex) (./Introduction.tex) (./RelatedWork.tex)
-(./MultichannelProtocol.tex) (./Evaluation.tex) (./Conclusion.tex)
-(./icc2015.bbl
+(./Abstract.tex) (./Introduction.tex
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+) (./RelatedWork.tex)
+(./MultichannelProtocol.tex) (./Evaluation.tex [1{/var/lib/texmf/fonts/map/pdft
+ex/updmap/pdftex.map}
+
+
+]) (./Conclusion.tex) (./icc2015.bbl
 ! Undefined control sequence.
 l.39   \url
            {http://dunkels.com/adam/dunkels11contikimac.pdf}, 2011.
@@ -211,27 +233,24 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
-
-
-] (./icc2015.aux) ) 
+[2] (./icc2015.aux) ) 
 Here is how much of TeX's memory you used:
  1066 strings out of 493304
  19213 string characters out of 6139871
- 80898 words of memory out of 5000000
+ 81898 words of memory out of 5000000
  4575 multiletter control sequences out of 15000+600000
  33007 words of font info for 62 fonts, out of 8000000 for 9000
  960 hyphenation exceptions out of 8191
- 26i,7n,19p,202b,236s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}<
-/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
-w/times/utmri8a.pfb>
-Output written on icc2015.pdf (1 page, 49208 bytes).
+ 26i,7n,19p,462b,236s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc
+}</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/times/utmri8a.pfb>
+Output written on icc2015.pdf (2 pages, 55612 bytes).
 PDF statistics:
- 25 PDF objects out of 1000 (max. 8388607)
- 17 compressed objects within 1 object stream
+ 28 PDF objects out of 1000 (max. 8388607)
+ 19 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

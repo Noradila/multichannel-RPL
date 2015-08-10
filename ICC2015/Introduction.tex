@@ -1,2 +1,52 @@
 \section{Introduction}
 \label{sec:introduction}
+
+The description of the RPL protocols is extremely poorly done, even with misleading sentences. For example, "RPL is a routing protocol for WSN based on IEEE 802.15.4". No, RPL has been constructed independently from the MAC layer. Also, "As in standard RPL all nodes are initialized to channel 26 by default". No, the MAC layer defines the channel, and not RPL. Finally, I think the whole paragraph on RPL should be re-written.
+
+The authors state that they enabled "the RPL control messages to be sent through unicast in order to reduce unnecessary transmitting in broadcast". However, how can a node discover new neighbors if it does not know its address to send packets in unicast? Also, the increase in overhead is not at all studied. 
+
+Here is a list of some examples of wrong assumptions in the paper, and some comments about them: 
+- In its most usual mode of operation, RPL operates with a layer two which uses only a single channel.
+—- RPL is a routing layer that is independent from the underlying MAC.
+
+- Chrysso [12] uses channel 11, 14, 20, 22 and 26, and MiCMAC [1] uses channel 15, 20, 25 and 26.
+—- There is nothing preventing you from using all the available channels in these protocols.
+
+- Multichannel synchronous protocols include MC-LMAC [11] which uses a time slot to transmit on a particular channel and Y-MAC [13], EM-MAC [17] and TSCH
+—- EM-MAC is NOT synchronous. It is asynchronous.
+
+- Recent multichannel protocols such as MiCMAC uses RPL as the routing protocol.
+—- The MAC layer does not use a routing protocol. MiCMAC does not depend on RPL to work. It is up to the developer to select the routing protocol.
+
+- RPL finds the path with the minimum number of transmissions ..
+—- This is true only for the ETX metric which the default one, but RPL could another metric such as number of hops.
+
+- As in standard RPL all nodes are initialised to channel 26 by default.
+—- Channel 26 is not part of the standard. It is just the default one in Contiki.
+
+* Link qualities are known to fluctuate. For this reason, RPL uses beacons,
+  which allow nodes to determine link quality estimates. The paper doesn't
+  explain if and how beacons are still used, and what is the overhead
+  w.r.t. plain RPL. Indeed, in the latter a single beacon reaches all
+  neighbors; instead, in a multichannel approach, the beacon must in principle
+  be re-sent N times, if N is the number of distinct channels a node's
+  neighbors are listening on.
+  Actually, it appears that the authors assume that the tree is "frozen", and
+  only channels are changed. This "feeling" is reinforced by the discussion
+  at the end of IV.C where the authors argue that the channel checking cost is
+  a "one-off" cost. This may be a very poor choice, as the parent may
+  have been determined at a time when the corresponding link was good, and
+  later change to dead (e.g., due to an obstruction appearing on the link,
+  environmental conditions, etc.). The authors should discuss and evaluate
+  this aspect. 
+  
+- what's the rationale of "a node listens on a single channel but sends on
+many channels"?
+- in the related work, a citation to TSCH is needed as well. Also, about
+LEACH: the original work by Heinzelman et al. should be cited instead of the
+derivative work by others chosen by the authors
+- LPBR: this is mentioned in the abstract without being defined
+- the authors resort too much to forward references in the text, which impairs
+readability. 
+- some English problems: "trickle timer to doubleS", "are less frequently
+invoke", "does not formed"

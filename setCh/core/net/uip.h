@@ -1579,6 +1579,10 @@ struct uip_tcpip_hdr {
   uint8_t len[2];
   uint8_t proto, ttl;
   uip_ip6addr_t srcipaddr, destipaddr;
+
+//ADILA EDIT 3 AUG 2015
+//uint8_t node_channel;
+
 #else /* UIP_CONF_IPV6 */
   /* IPv4 header. */
   uint8_t vhl,

@@ -1,2 +1,14 @@
 \section{Multichannel Cross-Layer Routing Protocol}
 \label{sec:multichannel}
+
+Please consider the following notes on the design:
+- What if the current channel that you are using to communicate channel-switch decision is  too bad that you could not get the message through?
+- Channel conditions change rapidly with time. What about the communication time from the central coordinator to the node?
+
+* The authors state that channel quality checking is performed by sending 8
+  packets to each neighbor. Apart from the evaluation of this overhead, the
+  authors fail to state the inter-packet interval, which (if too short) may
+  have an effect on the estimate. Also, the threshold of 7 appears to be quite
+  high. What happens if no neighbors meets the threshold (see above examples)?
+  
+  

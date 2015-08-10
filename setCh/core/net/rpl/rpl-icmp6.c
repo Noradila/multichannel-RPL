@@ -57,6 +57,10 @@
 
 //uint8_t rplV = 0;
 
+//ADILA JULY
+static clock_time_t start_time;
+static uint8_t ch;
+
 #include "net/uip-debug.h"
 
 #if UIP_CONF_IPV6
@@ -153,10 +157,29 @@ dis_input(void)
   rpl_instance_t *end;
 
 //ADILA EDIT 02/03/15
+//printf("R DIS\n\n");
 //printf("Recv DIS ");
 //uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
 //printf("\n");
 //-------------------
+
+
+//ADILA JULY
+//IF TIME > 60
+//SEND UNICAST DIO
+/*start_time = clock_seconds();
+
+if(start_time > 60) {
+cc2420_set_channel(26);
+//printf("x DIO\n\n");
+printf("xDIO ");
+uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
+printf("\n\n");
+dio_output(instance, &UIP_IP_BUF->srcipaddr);
+
+}*/
+//----------
+
 
   /* DAG Information Solicitation */
   PRINTF("RPL: Received a DIS from ");
@@ -191,6 +214,10 @@ dis_output(uip_ipaddr_t *addr)
   unsigned char *buffer;
   uip_ipaddr_t tmpaddr;
 
+//ADILA JULY
+//uint8_t ch;
+
+
   /* DAG Information Solicitation  - 2 bytes reserved      */
   /*      0                   1                   2        */
   /*      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3  */
@@ -214,11 +241,64 @@ dis_output(uip_ipaddr_t *addr)
 //printf("\n");
 //-------------------
 
+//printf("DIS ");
+//uip_debug_ipaddr_print(addr);
+//printf("\n");
+
+//!!ADILA JULY
+/*start_time = clock_seconds();
+
+if(start_time > 60) {
+if(ch == 0) { 
+ch = 25;
+}
+//else if (cc2420_get_channel() >= 12 && cc2420_get_channel() <= 26) {
+else if(ch < 26 && ch >= 12) {
+//else {
+ch = ch - 1;
+}
+//for(ch = 26; ch >= 11; ch--) {
+//for(try = 0; try <= 100; try++) {
+//if(try <= 10) {
+cc2420_set_channel(ch);
+
+printf("DIS %d\n\n", cc2420_get_channel());
+
+  PRINTF("RPL: DIS %d ", cc2420_get_channel());
+  PRINT6ADDR(addr);
+  PRINTF("\n");
+
+//ADILA EDIT 3 AUG 2015
+  uip_icmp6_send(addr, ICMP6_RPL, RPL_CODE_DIS, 2);
+  //uip_icmp6_send(addr, ICMP6_RPL, RPL_CODE_DIS, 2, NULL);
+
+
+
+//try++;
+//}
+//try = 0;
+//}
+}
+else {
+//printf("D\n\n");
+//printf("B S DIS\n\n");
+  PRINTF("RPL: Sending a DIS to ");
+  PRINT6ADDR(addr);
+  PRINTF("\n");
+
+//ADILA EDIT 3 AUG 2015
+  uip_icmp6_send(addr, ICMP6_RPL, RPL_CODE_DIS, 2);
+//  uip_icmp6_send(addr, ICMP6_RPL, RPL_CODE_DIS, 2, NULL);
+
+}
+*/
+
   PRINTF("RPL: Sending a DIS to ");
   PRINT6ADDR(addr);
   PRINTF("\n");
 
   uip_icmp6_send(addr, ICMP6_RPL, RPL_CODE_DIS, 2);
+
 }
 /*---------------------------------------------------------------------------*/
 static void
@@ -290,6 +370,12 @@ dio_input(void)
   /* Process the DIO base option. */
   i = 0;
   buffer = UIP_ICMP_PAYLOAD;
+
+//ADILA EDIT 02/03/15
+//printf("%d Recv DIO ", buffer[buffer_length]);
+//uip_debug_ipaddr_print(&from);
+//printf("\n");
+//-------------------
 
   dio.instance_id = buffer[i++];
   dio.version = buffer[i++];
@@ -565,6 +651,13 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
            dag->prefix_info.length);
   }
 
+//buffer[pos++] = 5;
+//!!!buffer[pos++] = uip_ds6_if.addr_list[1].currentCh;
+//buffer[pos] = uip_ds6_if.addr_list[1].currentCh;
+//memcpy(&buffer[pos], &uip_ds6_if.addr_list[1].currentCh, 1);
+
+//printf("pos %d %d %d m DIO\n\n", pos, buffer[pos], uip_ds6_if.addr_list[1].currentCh);
+
 #if RPL_LEAF_ONLY
 #if (DEBUG) & DEBUG_PRINT
   if(uc_addr == NULL) {
@@ -577,11 +670,16 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //rplV = rplV + 1;
 //printf("RPL %d UNICAST DIO\n", rplV);
 
+//printf("unicast DIO\n\n");
+
   PRINTF("RPL: Sending unicast-DIO with rank %u to ",
       (unsigned)dag->rank);
   PRINT6ADDR(uc_addr);
   PRINTF("\n");
+//ADILA EDIT 3 AUG 2015
   uip_icmp6_send(uc_addr, ICMP6_RPL, RPL_CODE_DIO, pos);
+//  uip_icmp6_send(uc_addr, ICMP6_RPL, RPL_CODE_DIO, pos, NULL);
+
 #else /* RPL_LEAF_ONLY */
   /* Unicast requests get unicast replies! */
   if(uc_addr == NULL) {
@@ -590,10 +688,29 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //rplV = rplV + 1;
 //printf("RPL %d MULTICAST DIO\n", rplV);
 //
+
+    //memcpy(&buffer[pos], uip_ds6_if.addr_list[1].currentCh, 1);
+
+    //memcpy(buffer[pos++], 2, 1);
+    //pos += 1;
+//!buffer[pos++] = 5;
+
+//!printf("pos %d %d %d m DIO\n\n", pos, buffer[pos-1], uip_ds6_if.addr_list[1].currentCh);
+//buffer[pos++] = uip_ds6_if.addr_list[1].currentCh;
+//   memcpy(&buffer[pos], uip_ds6_if.addr_list[1].currentCh, uip_ds6_if.addr_list[1].currentCh);
+//   pos += 1;
+
+//UIP_IP_BUF->node_channel = uip_ds6_if.addr_list[1].currentCh;
+
+//!!!buffer[pos++] = uip_ds6_if.addr_list[1].currentCh;
+
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
         (unsigned)instance->current_dag->rank);
     uip_create_linklocal_rplnodes_mcast(&addr);
+//ADILA EDIT 3 AUG 2015
     uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos);
+    //uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos, uip_ds6_if.addr_list[1].currentCh);
+
   } else {
 //printf("uDIO\n\n");
 
@@ -604,12 +721,15 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //uip_debug_ipaddr_print(uc_addr);
 //printf("\n");
 //-------------------
+//printf("u DIO\n\n");
 
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
         (unsigned)instance->current_dag->rank);
     PRINT6ADDR(uc_addr);
     PRINTF("\n");
+//ADILA EDIT 3 AUG 2015
     uip_icmp6_send(uc_addr, ICMP6_RPL, RPL_CODE_DIO, pos);
+//    uip_icmp6_send(uc_addr, ICMP6_RPL, RPL_CODE_DIO, pos, NULL);
   }
 #endif /* RPL_LEAF_ONLY */
 }
@@ -787,8 +907,11 @@ dao_input(void)
       PRINTF("RPL: Forwarding DAO to parent ");
       PRINT6ADDR(rpl_get_parent_ipaddr(dag->preferred_parent));
       PRINTF("\n");
+//ADILA EDIT 3 AUG 2015
       uip_icmp6_send(rpl_get_parent_ipaddr(dag->preferred_parent),
                      ICMP6_RPL, RPL_CODE_DAO, buffer_length);
+//      uip_icmp6_send(rpl_get_parent_ipaddr(dag->preferred_parent),
+  //                   ICMP6_RPL, RPL_CODE_DAO, buffer_length, NULL);
     }
     if(flags & RPL_DAO_K_FLAG) {
       dao_ack_output(instance, &dao_sender_addr, sequence);
@@ -901,7 +1024,9 @@ dao_output_target(rpl_parent_t *parent, uip_ipaddr_t *prefix, uint8_t lifetime)
   PRINTF("\n");
 
   if(rpl_get_parent_ipaddr(parent) != NULL) {
+//ADILA EDIT 3 AUG 2015
     uip_icmp6_send(rpl_get_parent_ipaddr(parent), ICMP6_RPL, RPL_CODE_DAO, pos);
+//    uip_icmp6_send(rpl_get_parent_ipaddr(parent), ICMP6_RPL, RPL_CODE_DAO, pos, NULL);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -948,7 +1073,9 @@ dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence)
   buffer[2] = sequence;
   buffer[3] = 0;
 
+//ADILA EDIT 3 AUG 2015
   uip_icmp6_send(dest, ICMP6_RPL, RPL_CODE_DAO_ACK, 4);
+//  uip_icmp6_send(dest, ICMP6_RPL, RPL_CODE_DAO_ACK, 4, NULL);
 }
 /*---------------------------------------------------------------------------*/
 void

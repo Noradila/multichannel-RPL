@@ -180,6 +180,9 @@ dio_output(instance, &nbr->ipaddr);
 /*ctimer_set(&time2, CLOCK_SECOND/4, NULL, NULL);
 printf("BACK IN RPL-TIMER\n\n");*/
 }//for()
+
+//printf("M DIO\n\n");
+//!dio_output(instance, NULL);
 }//if(start_time > 20)
 else {
 //printf("MULTICAST DIO\n\n");

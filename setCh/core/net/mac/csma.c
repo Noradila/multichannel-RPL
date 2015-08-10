@@ -57,6 +57,7 @@
 
 //ADILA EDIT 10/11/14
 #include "net/uip-ds6.h"
+#include "net/retx-table.h"
 //-------------------
 
 #define DEBUG 0
@@ -208,6 +209,11 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 //ADILA EDIT
 //printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
 //cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+
+
+////if Q == 0; call function() check if it's still probing?
+//in probing, put an indicator (if probe != 8, var p = 0)
+//if p = 1; not in probing anymore
 //----------
 
     PRINTF("csma: free_queued_packet, queue length %d\n",
@@ -252,6 +258,7 @@ packet_sent(void *ptr, int status, int num_transmissions)
 
 //ADILA EDIT
 //rdc_is_transmitting = 0;
+uint8_t ackOk = 0;
 
   n = ptr;
   if(n == NULL) {
@@ -269,6 +276,23 @@ packet_sent(void *ptr, int status, int num_transmissions)
     n->deferrals++;
     break;
   }
+
+//ADILA JULY 2015
+//printf("RX %d\n\n", n->transmissions);
+//printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, n->deferrals);
+//retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], n->transmissions);
+
+if(status == MAC_TX_OK) {
+//printf("ok\n\n");
+ackOk = 1;
+}
+else {
+ackOk = 0;
+}
+
+printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, n->deferrals);
+retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)), ackOk);
+
 
   for(q = list_head(n->queued_packet_list);
       q != NULL; q = list_item_next(q)) {
@@ -294,12 +318,24 @@ packet_sent(void *ptr, int status, int num_transmissions)
         switch(status) {
         case MAC_TX_COLLISION:
           PRINTF("csma: rexmit collision %d\n", n->transmissions);
+
+//ADILA
+          //printf("csma: rexmit collision %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
+//printf("csma: rexmit collision %d\n", n->transmissions);
+
           break;
         case MAC_TX_NOACK:
           PRINTF("csma: rexmit noack %d\n", n->transmissions);
+//ADILA
+          //printf("csma: rexmit noack %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
+//printf("csma: rexmit noack %d\n", n->transmissions);
+
           break;
         default:
           PRINTF("csma: rexmit err %d, %d\n", status, n->transmissions);
+
+//ADILA
+//printf("csma: rexmit err %d\n", n->transmissions);
         }
 
         /* The retransmission time must be proportional to the channel
@@ -336,12 +372,26 @@ packet_sent(void *ptr, int status, int num_transmissions)
       } else {
         if(status == MAC_TX_OK) {
           PRINTF("csma: rexmit ok %d\n", n->transmissions);
+
+//ADILA
+          //printf("csma: rexmit ok %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
+
         } else {
           PRINTF("csma: rexmit failed %d: %d\n", n->transmissions, status);
+
+//ADILA
+          //printf("csma: rexmit failed %d: %d seqno %d\n", n->transmissions, status, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
         }
+
+//ADILA
+//printf("csma: n->transmissions %d\n\n", n->transmissions);
+
         free_packet(n, q);
         mac_call_sent_callback(sent, cptr, status, num_tx);
       }
+//ADILA
+//printf("csma: n->transmissions %d\n\n", n->transmissions);
+
     }
   }
 }
