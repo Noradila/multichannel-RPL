@@ -111,9 +111,9 @@ A.~Sivanantha, B.~Hamdaoui, M.~Guizani, Xiuzhen Cheng, and T.~Znati.
 
 \bibitem{tsch}
 Luigi Alfredo~Grieco Thomas~Watteyne, Maria Rita~Palattella.
-\newblock Using {IEEE802.15.4e} {TSCH} in an {LLN} context: Overview, problem
-  statement and goals.
-\newblock \url{https://tools.ietf.org/html/draft-ietf-6tisch-tsch-05}, 2014.
+\newblock Using {IEEE802.15.4e} time-slotted channel hopping {(TSCH)} in an
+  internet of things {(IoT)}: Problem statement.
+\newblock \url{https://tools.ietf.org/html/rfc7554}, May 2015.
 
 \bibitem{of0}
 Pascal Thubert.
@@ -135,11 +135,11 @@ Tsvetko Tsvetkov.
 \newblock {\em Sensor Nodes--Operation, Network and Application (SN)}, 59:2,
   2011.
 
-\bibitem{vasseur2011routing}
+\bibitem{routingmetrics}
 J~Vasseur, M~Kim, K~Pister, N~Dejean, and D~Barthel.
 \newblock Routing metrics used for path calculation in low power and lossy
   networks.
-\newblock https://tools.ietf.org/html/draft-ietf-roll-routing-metrics-19, 2011.
+\newblock https://tools.ietf.org/html/rfc6551, 2012.
 
 \bibitem{watteyne}
 Thomas Watteyne, Ankur Mehta, and Kris Pister.

@@ -258,7 +258,7 @@ packet_sent(void *ptr, int status, int num_transmissions)
 
 //ADILA EDIT
 //rdc_is_transmitting = 0;
-uint8_t ackOk = 0;
+//uint8_t ackOk = 0;
 
   n = ptr;
   if(n == NULL) {
@@ -282,17 +282,19 @@ uint8_t ackOk = 0;
 //printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, n->deferrals);
 //retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], n->transmissions);
 
-if(status == MAC_TX_OK) {
+/*if(status == MAC_TX_OK) {
 //printf("ok\n\n");
 ackOk = 1;
 }
 else {
 ackOk = 0;
 }
+*/
+//printf("N->TX %d C %d D %d %d\n", n->transmissions, n->collisions, n->deferrals, ((n->transmissions) + (n->collisions)));
+printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, ((n->transmissions) + (n->collisions)));
+retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)));
 
-printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, n->deferrals);
-retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)), ackOk);
-
+//printf("NBRPROBE %d\n\n", retx_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]));
 
   for(q = list_head(n->queued_packet_list);
       q != NULL; q = list_item_next(q)) {
