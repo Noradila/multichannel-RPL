@@ -626,7 +626,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
 //ADILA EDIT 3 AUG 2015
 //printf("SEND BROADCAST\n\n");
-//cc2420_set_channel(26);
+cc2420_set_channel(26);
 
     if(broadcast_rate_drop()) {
       return MAC_TX_COLLISION;

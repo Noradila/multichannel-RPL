@@ -291,7 +291,7 @@ ackOk = 0;
 }
 */
 //printf("N->TX %d C %d D %d %d\n", n->transmissions, n->collisions, n->deferrals, ((n->transmissions) + (n->collisions)));
-printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, ((n->transmissions) + (n->collisions)));
+//!!!!printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, ((n->transmissions) + (n->collisions)));
 retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)));
 
 //printf("NBRPROBE %d\n\n", retx_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]));

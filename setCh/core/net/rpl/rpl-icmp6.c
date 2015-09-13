@@ -57,9 +57,34 @@
 
 //uint8_t rplV = 0;
 
+#include "simple-udp.h"
+static struct simple_udp_connection broadcast_connection;
+
 //ADILA JULY
 static clock_time_t start_time;
 static uint8_t ch;
+
+enum {
+	CH_CHANGE,
+	NBR_CH_CHANGE,
+	STARTPROBE,
+	NBRPROBE,
+	PROBERESULT,
+	CONFIRM_CH,
+	GET_ACK,
+SENTRECV,
+SEND_NBR,
+SEND_CH
+};
+
+struct unicast_message {
+	uint8_t type;
+	uint8_t value;
+	uint8_t value2;
+
+	uip_ipaddr_t address;
+	uip_ipaddr_t *addrPtr; 
+};
 
 #include "net/uip-debug.h"
 
@@ -330,6 +355,7 @@ dio_input(void)
   /* DAG Information Object */
 
 //ADILA EDIT 02/03/15
+printf("R DIO\n\n");
 //printf("Recv DIO ");
 //uip_debug_ipaddr_print(&from);
 //printf("\n");
@@ -531,6 +557,8 @@ dio_input(void)
 void
 dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 {
+  struct unicast_message msg;
+
   unsigned char *buffer;
   int pos;
   rpl_dag_t *dag = instance->current_dag;
@@ -684,7 +712,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   /* Unicast requests get unicast replies! */
   if(uc_addr == NULL) {
 //ADILA EDIT
-//printf("Sending m DIO\n");
+printf("Sending m DIO\n");
 //rplV = rplV + 1;
 //printf("RPL %d MULTICAST DIO\n", rplV);
 //
@@ -710,6 +738,20 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //ADILA EDIT 3 AUG 2015
     uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos);
     //uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos, uip_ds6_if.addr_list[1].currentCh);
+
+//ADILA EDIT 7 SEPT 2015
+
+  simple_udp_register(&broadcast_connection, 1234,
+                      NULL, 1234,
+                      NULL);
+
+uip_create_linklocal_allnodes_mcast(&addr);
+
+msg.type = SEND_CH;
+msg.value = uip_ds6_if.addr_list[1].currentCh;
+
+//printf("SEND ALL %d\n\n", msg.value);
+simple_udp_sendto(&broadcast_connection, &msg, sizeof(msg), &addr);
 
   } else {
 //printf("uDIO\n\n");

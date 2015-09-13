@@ -165,18 +165,21 @@ static struct ctimer time2;
 //start_time = clock_seconds();
 //printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
 
-//if(start_time > 360) {
+//!!if(start_time > 360) {
 nbr = nbr_table_head(ds6_neighbors);
 if(nbr != NULL) {
   for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
     nbr = nbr_table_next(ds6_neighbors,nbr)) {
-    //printf("RPL-TIMER NBR TABLE: ");
-    //uip_debug_ipaddr_print(&nbr->ipaddr);
+    //!!printf("RPL-TIMER NBR TABLE: ");
+    //!!uip_debug_ipaddr_print(&nbr->ipaddr);
+    //!!printf("\n");
     dio_output(instance, &nbr->ipaddr);
 
 //ctimer_set(&time2, CLOCK_SECOND/4, NULL, NULL);
 //printf("BACK IN RPL-TIMER\n\n");
   }
+//printf("M DIO\n\n");
+dio_output(instance, NULL);
 }
 else {
 dio_output(instance, NULL);

@@ -182,7 +182,7 @@ printf("BACK IN RPL-TIMER\n\n");*/
 }//for()
 
 //printf("M DIO\n\n");
-//!dio_output(instance, NULL);
+dio_output(instance, NULL);
 }//if(start_time > 20)
 else {
 //printf("MULTICAST DIO\n\n");

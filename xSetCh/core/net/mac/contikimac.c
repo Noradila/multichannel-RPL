@@ -595,6 +595,9 @@ uint8_t theChIs = 0;
 //printf("contikimac: send broadcast %d\n", hasSent);
     PRINTDEBUG("contikimac: send broadcast\n");
 
+cc2420_set_channel(26);
+printf("CHANNEL %d\n\n", cc2420_get_channel());
+
     if(broadcast_rate_drop()) {
       return MAC_TX_COLLISION;
     }

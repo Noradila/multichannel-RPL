@@ -12,3 +12,6 @@ Please consider the following notes on the design:
   high. What happens if no neighbors meets the threshold (see above examples)?
   
   
+RPL modification - as we are using multichannel, sending a broadcast on every channels would waste the bandwidth. RPL messages are instead being sent through unicast when the neighbours are known and broadcast in the default Contiki channel 26 in order to reduce unnecessary transmitting in broadcast. By sending a broadcast on only one channel which the new neighbours are going to start on, the nodes can be discovered and the channel changes processes can be done. 
+
+The topology is not fixed. We are still using RPL messages to form the best tree based on the parents. The nodes can still change the parents as usual as all neighbours know each other new channels. The neighbours that are not part of the route do not probe the parent when making the channel decision. 

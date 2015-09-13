@@ -610,6 +610,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 //printf("RPL %d MULTICAST DIO\n", rplV);
 //---------
 
+//!printf("MULTICAST DIO\n");
+
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
         (unsigned)instance->current_dag->rank);
     uip_create_linklocal_rplnodes_mcast(&addr);
@@ -623,6 +625,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 
 //rplV = rplV + 1;
 //printf("RPL %d DIO\n", rplV);
+
+//!printf("UNICAST DIO\n");
 
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
         (unsigned)instance->current_dag->rank);

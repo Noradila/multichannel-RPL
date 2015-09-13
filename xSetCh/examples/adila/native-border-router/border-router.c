@@ -138,7 +138,8 @@ enum {
 	CONFIRM_CH,
 	GET_ACK,
 SENTRECV,
-SEND_NBR
+SEND_NBR,
+SEND_CH
 };
 
 struct unicast_message {
@@ -805,6 +806,10 @@ uip_debug_ipaddr_print(&msg->address);
 printf("\n");
 
 set_nodes_table(sender_addr, msg->address);
+}
+
+else if(msg->type == SEND_CH) {
+printf("R SEND CH %d\n\n", msg->value);
 }
 
   else {

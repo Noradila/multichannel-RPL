@@ -54,6 +54,8 @@
 #include "net/mac/contikimac.h"
 #include "net/mac/simplified_nbr_table.h"
 //-------------------
+//#include "net/uip-ds6-nbr.h"
+//#include "net/uip-ds6-route.h"
 
 #ifdef SLIP_RADIO_CONF_SENSORS
 extern const struct slip_radio_sensors SLIP_RADIO_CONF_SENSORS;
@@ -87,6 +89,30 @@ packet_sent(void *ptr, int status, int transmissions)
 //xxx->theIPAddr = 23;
 
 //-------------------
+
+//  static uip_ds6_nbr_t *nbr;
+//  static uip_ds6_route_t *r;
+
+/*    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+      nbr = nbr_table_next(ds6_neighbors,nbr)) {
+        printf("NBR: ");
+        uip_debug_ipaddr_print(&nbr->ipaddr);
+        printf(" nbrCh %d", nbr->nbrCh);
+	printf("\n");
+	//nbr->nbrCh = msg->value;
+        //printf(" nbrCh new %d\n", nbr->nbrCh);
+}
+
+  for(r = uip_ds6_route_head();
+      r != NULL;
+      r = uip_ds6_route_next(r)) {
+        printf("ROUTE: ");
+        uip_debug_ipaddr_print(&r->ipaddr);
+        printf("\n");
+}
+*/
+simplified_nbr_table_get_channel();
+
 
   PRINTF("Slip-radio: packet sent! sid: %d, status: %d, tx: %d\n",
   	 sid, status, transmissions);
