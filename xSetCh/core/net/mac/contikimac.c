@@ -53,7 +53,6 @@
 
 #include "net/mac/simplified_nbr_table.h"
 
-
 #include <string.h>
 
 /* TX/RX cycles are synchronized with neighbor wake periods */
@@ -182,14 +181,10 @@ static int we_are_receiving_burst = 0;
    WITH_FAST_SLEEP is enabled. */
 #define MAX_NONACTIVITY_PERIODS            10
 
-
-
 /* STROBE_TIME is the maximum amount of time a transmitted packet
    should be repeatedly transmitted as part of a transmission. */
 #define STROBE_TIME                        (CYCLE_TIME + 2 * CHECK_TIME)
-//ADILA EDIT 24/02/14
-//#define STROBE_TIME                        (CYCLE_TIME)
-//-------------------
+
 /* GUARD_TIME is the time before the expected phase of a neighbor that
    a transmitted should begin transmitting packets. */
 #define GUARD_TIME                         10 * CHECK_TIME + CHECK_TIME_TX
@@ -226,11 +221,7 @@ static int we_are_receiving_burst = 0;
 #define SHORTEST_PACKET_SIZE  CONTIKIMAC_CONF_SHORTEST_PACKET_SIZE
 #else
 #define SHORTEST_PACKET_SIZE               43
-//ADILA EDIT
-//#define SHORTEST_PACKET_SIZE               23
-
 #endif
-
 
 #define ACK_LEN 3
 
@@ -243,8 +234,6 @@ static volatile uint8_t contikimac_keep_radio_on = 0;
 
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
-
-//uint8_t hasSent = 0;
 
 #define DEBUG 0
 #define DEBUG DEBUG_NONE
@@ -375,10 +364,6 @@ static void
 powercycle_turn_radio_on(void)
 {
   if(we_are_sending == 0 && we_are_receiving_burst == 0) {
-
-//ADILA EDIT
-//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
     on();
   }
 }
@@ -553,9 +538,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 	    struct rdc_buf_list *buf_list,
             int is_receiver_awake)
 {
-uint8_t theChIs = 0;
-
-//printf("DEBUG CONTIKIMAC SEND_PACKET\n\n");
+  uint8_t theChIs = 0;
 
   rtimer_clock_t t0;
   rtimer_clock_t encounter_time = 0;
@@ -591,19 +574,19 @@ uint8_t theChIs = 0;
 #endif
   if(rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER), &rimeaddr_null)) {
     is_broadcast = 1;
-
-//printf("contikimac: send broadcast %d\n", hasSent);
     PRINTDEBUG("contikimac: send broadcast\n");
 
-cc2420_set_channel(26);
-printf("CHANNEL %d\n\n", cc2420_get_channel());
+    //ADILA EDIT 14/09/15
+    /* If sending a broadcast packet, default channel, 26 is used */
+    cc2420_set_channel(26);
+    //printf("CHANNEL %d\n\n", cc2420_get_channel());
 
     if(broadcast_rate_drop()) {
       return MAC_TX_COLLISION;
     }
   } else {
 #if UIP_CONF_IPV6
-/*    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+    PRINTDEBUG("contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],
@@ -612,35 +595,15 @@ printf("CHANNEL %d\n\n", cc2420_get_channel());
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
-*/
 
-//ADILA EDIT 16/02/15
-//nbr_table *nt,
-//extern void simplified_nbr_table_get_channel();
-theChIs = simplified_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
-cc2420_set_channel(theChIs);
+    //ADILA EDIT 16/02/15
+    /* Call simplified_getCh(...) to get the channel of the receiver */
+    theChIs = simplified_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
+    cc2420_set_channel(theChIs);
 
-//ADILA EDIT JULY 15
-printf("XSETCH CONTIKIMAC %d\n\n", cc2420_get_channel());
+    //ADILA EDIT JULY 15
+    //printf("XSETCH CONTIKIMAC %d\n\n", cc2420_get_channel());
 
-//printf("ADILA ATTR %d AND %d\n\n", packetbuf_attr(PACKETBUF_ADILA), packetbuf_attr(PACKETBUF_ADILA2));
-//printf("ADILA ATTR %d %d\n\n", packetbuf_attr(PACKETBUF_ADILA), cc2420_get_channel());
-/*    printf("%d contikimac: send unicast to %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-theChIs,
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[1],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[2],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[3],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[4],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6],
-               packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]);
-*/
-//packetbuf_set_attr(PACKETBUF_ADILA2, PACKETBUF_ADILA);
-//------------------
-
-
-//printf("contikimac: send unicast %d\n", hasSent);
 #else /* UIP_CONF_IPV6 */
     PRINTDEBUG("contikimac: send unicast to %u.%u\n",
                packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0],
@@ -651,10 +614,6 @@ theChIs,
     packetbuf_attr(PACKETBUF_ATTR_ERELIABLE);
 
   packetbuf_set_attr(PACKETBUF_ATTR_MAC_ACK, 1);
-
-//ADILA EDIT 02/03/15
-//printf("packetbuf_attr(PACKETBUF_ATTR_MAC_ACK) %d\n\n", packetbuf_attr(PACKETBUF_ATTR_MAC_ACK));
-//-------------------
 
 #if WITH_CONTIKIMAC_HEADER
   hdrlen = packetbuf_totlen();
@@ -695,14 +654,9 @@ theChIs,
     ptr = packetbuf_dataptr();
     memset(ptr + packetbuf_datalen(), 0, SHORTEST_PACKET_SIZE - packetbuf_totlen());
 
-//ADILA
-    //printf("contikimac: shorter than shortest (%d)\n", packetbuf_totlen());
-
     PRINTF("contikimac: shorter than shortest (%d)\n", packetbuf_totlen());
     transmit_len = SHORTEST_PACKET_SIZE;
   }
-
-
   packetbuf_compact();
 
 #ifdef NETSTACK_ENCRYPT
@@ -729,8 +683,6 @@ theChIs,
     }
 #endif /* WITH_PHASE_OPTIMIZATION */ 
   }
-  
-
 
   /* By setting we_are_sending to one, we ensure that the rtimer
      powercycle interrupt do not interfere with us sending the packet. */
@@ -744,10 +696,6 @@ theChIs,
   if(NETSTACK_RADIO.receiving_packet() || NETSTACK_RADIO.pending_packet()) {
     we_are_sending = 0;
 
-//ADILA
-    /*printf("contikimac: collision receiving %d, pending %d\n",
-           NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
-*/
     PRINTF("contikimac: collision receiving %d, pending %d\n",
            NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
     return MAC_TX_COLLISION;
@@ -756,7 +704,6 @@ theChIs,
   /* Switch off the radio to ensure that we didn't start sending while
      the radio was doing a channel check. */
   off();
-
 
   strobes = 0;
 
@@ -807,12 +754,6 @@ theChIs,
     /* Turn radio on to receive expected unicast ack.  Not necessary
        with hardware ack detection, and may trigger an unnecessary cca
        or rx cycle */
-
-//ADILA
-//printf("ON TO RECEIVE EXPECTED UNICAST ACK\n\n");
-//printf("XXXXX: MAX_MAC %d S CONF %d\n\n", PACKETBUF_ATTR_MAX_MAC_TRANSMISSIONS, SICSLOWPAN_CONF_MAX_MAC_TRANSMISSIONS);
-//----------
-
      on();
   }
 #endif
@@ -828,9 +769,6 @@ theChIs,
 
     if(!is_broadcast && (is_receiver_awake || is_known_receiver) &&
        !RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + MAX_PHASE_STROBE_TIME)) {
-
-//ADILA
-      //printf("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6]);
 
       PRINTF("miss to %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0]);
       break;
@@ -922,12 +860,6 @@ theChIs,
     ret = MAC_TX_NOACK;
   } else {
     ret = MAC_TX_OK;
-//hasSent = hasSent + 1;
-//printf("RET = MAC TX OK %d\n", hasSent);
-
-//ADILA EDIT 02/03/14
-//printf("RET = MAC TX OK from %d\n\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
-//-------------------
   }
 
 #if WITH_PHASE_OPTIMIZATION
@@ -939,9 +871,6 @@ theChIs,
 
   if(!is_broadcast) {
     if(collisions == 0 && is_receiver_awake == 0) {
-
-//ADILA EDIT
-//printf("PHASE UPDATE IN CONTIKIMAC\n\n");
       phase_update(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
 		   encounter_time, ret);
     }
@@ -1022,9 +951,6 @@ recv_burst_off(void *ptr)
 static void
 input_packet(void)
 {
-
-//printf("DEBUG CONTIKIMAC INPUT_PACKET\n\n");
-
   static struct ctimer ct;
   if(!we_are_receiving_burst) {
     off();

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  14 SEP 2015 00:39
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  22 SEP 2015 14:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -493,21 +493,50 @@ e
 pdftex.map}
 
 
-]) (./RelatedWork.tex [2]) (./MultichannelProtocol.tex)
-(./Evaluation.tex) (./Conclusion.tex) (./icc2015.bbl [3]
+]) (./RelatedWork.tex [2]) (./MultichannelProtocol.tex
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 12.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 12.
+
+Underfull \vbox (badness 7133) has occurred while \output is active []
+
+ [3]
+Package epstopdf Info: Source file: <Diagram1.eps>
+(epstopdf)                    date: 2015-05-08 17:42:55
+(epstopdf)                    size: 15071 bytes
+(epstopdf)             Output file: <Diagram1-eps-converted-to.pdf>
+(epstopdf)                    date: 2015-09-22 13:18:55
+(epstopdf)                    size: 6634 bytes
+(epstopdf)             Command: <repstopdf --outfile=Diagram1-eps-converted-to.
+pdf Diagram1.eps>
+(epstopdf)             \includegraphics on input line 87.
+Package epstopdf Info: Output file is already uptodate.
+
+<Diagram1-eps-converted-to.pdf, id=17, 739.76375pt x 425.59pt>
+File: Diagram1-eps-converted-to.pdf Graphic file (type pdf)
+
+<use Diagram1-eps-converted-to.pdf>
+Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 87.
+(pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
+
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 87--88
+ [][] 
+ []
+
+[4 <./Diagram1-eps-converted-to.pdf>]) (./Evaluation.tex) (./Conclusion.tex)
+(./icc2015.bbl
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 39.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 39.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 39.
 
 Underfull \hbox (badness 1616) in paragraph at lines 36--40
 []\OT1/ptm/m/n/8 Adam Dunkels.  The Con-tiki-MAC ra-dio duty cy-cling pro-to-co
 l.
  []
 
-)
+[5])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -519,24 +548,28 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4] (./icc2015.aux) ) 
+[6
+
+] (./icc2015.aux) ) 
 Here is how much of TeX's memory you used:
- 3019 strings out of 493304
- 46165 string characters out of 6139871
- 116126 words of memory out of 5000000
- 6419 multiletter control sequences out of 15000+600000
- 34830 words of font info for 68 fonts, out of 8000000 for 9000
+ 3032 strings out of 493304
+ 46406 string characters out of 6139871
+ 118168 words of memory out of 5000000
+ 6429 multiletter control sequences out of 15000+600000
+ 35966 words of font info for 69 fonts, out of 8000000 for 9000
  960 hyphenation exceptions out of 8191
- 38i,7n,24p,1293b,329s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc
-}</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-di
-st/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-urw/times/utmri8a.pfb>
-Output written on icc2015.pdf (4 pages, 74720 bytes).
+ 38i,7n,24p,1293b,328s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}<
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri
+8a.pfb>
+Output written on icc2015.pdf (6 pages, 100565 bytes).
 PDF statistics:
- 34 PDF objects out of 1000 (max. 8388607)
- 23 compressed objects within 1 object stream
+ 54 PDF objects out of 1000 (max. 8388607)
+ 37 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

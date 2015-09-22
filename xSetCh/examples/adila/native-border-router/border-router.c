@@ -59,8 +59,6 @@
 #define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
-//#define MAX_SENSORS 4
-//#define MAX_SENSORS 20
 #define MAX_SENSORS 50
 
 //#include "random.h"
@@ -80,9 +78,6 @@ static struct simple_udp_connection unicast_connection;
 //the application specific event value
 static process_event_t event_data_ready;
 
-uint8_t a = 0;
-uip_ipaddr_t nextHopAddr;
-uip_ipaddr_t nH;
 uint8_t channelOK = 1;
 
 uint8_t noOfRoutes;
@@ -92,7 +87,6 @@ static uip_ipaddr_t holdAddr;
 uint8_t noOfRetransmit;
 
 uint8_t i;
-uint8_t x;
 
 struct lpbrList {
   struct lpbrList *next;
@@ -117,7 +111,6 @@ struct sentRecv {
 };
 
 LIST(sentRecv_table);
-//MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
 MEMB(sentRecv_mem, struct sentRecv, 50); //for now, only sent to LPBR
 
 struct nodesTable {
@@ -137,23 +130,18 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
-SENTRECV,
-SEND_NBR,
-SEND_CH
+	SENTRECV,
+	SEND_NBR,
+	SEND_CH
 };
 
 struct unicast_message {
 	uint8_t type;
 	uint8_t value;
-	//uint8_t holdV;
 	uint8_t value2;
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
-
-//	char paddingBuf[30];
-
-uint8_t value3;
 };
 
 uint16_t dag_id[] = {0x1111, 0x1100, 0, 0, 0, 0, 0, 0x0011};
@@ -241,7 +229,6 @@ uint8_t lpbrCheck2ndHop(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   return channelOK;
 }
 /*---------------------------------------------------------------------------*/
-//static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 uint8_t secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
 
@@ -367,7 +354,7 @@ random_init(16);
   channelOK = twoHopsLPBR(&msg2.address, msg2.value);
   channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
-  //channel will be selected and checked with 2 hops for 4 times
+/*  //channel will be selected and checked with 2 hops for 4 times
   //if failed, it will use the default channel, 26
   while(channelOK == 0 && i < 4) {
     //!!randomNewCh = (random_rand() % 16) + 11;
@@ -400,6 +387,11 @@ random_init(16);
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
     channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
   }
+*/
+//ADILA EDIT 21 SEPT 2015
+if(channelOK == 0) {
+ randomNewCh = 26;
+}
 
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
@@ -809,7 +801,7 @@ set_nodes_table(sender_addr, msg->address);
 }
 
 else if(msg->type == SEND_CH) {
-printf("R SEND CH %d\n\n", msg->value);
+//printf("R SEND CH %d\n\n", msg->value);
 }
 
   else {
@@ -1091,8 +1083,9 @@ struct unicast_message msg2;
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     /* do anything here??? */
 
-//  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
-  etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
+//!!!!!  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
+  etimer_set(&changeChTimer, 300 * CLOCK_SECOND); //real hardware
+  //+etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
 //check if it changes parent (15 nodes, 1 interference(button-xadila-unicast1.c))
 ////  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
 
@@ -1185,8 +1178,8 @@ uint8_t wTime;
 
 //    etimer_set(&time, 10 * CLOCK_SECOND);
 
-etimer_set(&time, 40 * CLOCK_SECOND); //simulation
-//etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
+//+etimer_set(&time, 40 * CLOCK_SECOND); //simulation
+etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
 
 //16 INTERFERENCE USE 70
 //    etimer_set(&time, 70 * CLOCK_SECOND);

@@ -115,9 +115,11 @@ send_packet(mac_callback_t sent, void *ptr)
 
   static uip_ds6_nbr_t *nbr;
 
-  //uint8_t buf[PACKETBUF_NUM_ATTRS * 4 + PACKETBUF_SIZE + 4];
-  uint8_t buf[PACKETBUF_NUM_ATTRS * 5 + PACKETBUF_SIZE + 5];
-  //------------------
+  //ADILA EDIT 01/12/14
+  /* Extended to buf[3], buf[4] and buf[5] to include channel in buf[3],
+     ipAddr[14] or packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6] in buf[4] and 
+     ipAddr[15] or packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7] in buf[5] */
+  uint8_t buf[PACKETBUF_NUM_ATTRS * 6 + PACKETBUF_SIZE + 6];
 
   uint8_t sid;
 
@@ -135,37 +137,22 @@ send_packet(mac_callback_t sent, void *ptr)
     /* here we send the data over SLIP to the radio-chip */
     size = 0;
 
-    //! reconstruct the local IP from MAC address
-    //! not sure what other way to get the RECEIVER (correct next hop) address
-    //! reading from routing table - it doesn't know where next
+    //ADILA EDIT 01/12/14
+    /* reconstruct the local IP from MAC address
+       not sure what other way to get the RECEIVER (correct next hop) address
+       reading from routing table - it doesn't know where next */
     uip_ip6addr_u8(&nH, 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
 
-
-//printf("1:%x 2:%x 3:%x 4:%x 5:%x 6:%x 7:%x\n\n", ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[1], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[2], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[4], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7]);
-//!!!!!!!!!!!!!!!!!!
-//ADILA EDIT 13/12/14
-//! NEED TO DO CHECKING SO THAT IT WON'T SEND IT THE DESTINATION IS UNKNOWN ff02::1a
-//! The all-RPL-nodes multicast address is a new address with a value of ff02::1a
-/*printf("\n\nTEST ");
-      uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
-      uip_debug_ipaddr_print(&nH);
-printf("\n\n");*/
-//------------------
-
 #if SERIALIZE_ATTRIBUTES
-    //size = packetutils_serialize_atts(&buf[3], sizeof(buf) - 3);
-
     //ADILA EDIT 1/12/14
-    //size = packetutils_serialize_atts(&buf[4], sizeof(buf) - 4);
-    size = packetutils_serialize_atts(&buf[5], sizeof(buf) - 5);
+    /* changed buf[3] to buf[6] */
+    size = packetutils_serialize_atts(&buf[6], sizeof(buf) - 6);
     //------------------
 
 #endif
-    //if(size < 0 || size + packetbuf_totlen() + 3 > sizeof(buf)) {
-
     //ADILA EDIT 1/12/14
-    //if(size < 0 || size + packetbuf_totlen() + 4 > sizeof(buf)) {
-    if(size < 0 || size + packetbuf_totlen() + 5 > sizeof(buf)) {
+    /* changed size from 3 to 6 */
+    if(size < 0 || size + packetbuf_totlen() + 6 > sizeof(buf)) {
     //------------------
       PRINTF("br-rdc: send failed, too large header\n");
       mac_call_sent_callback(sent, ptr, MAC_TX_ERR_FATAL, 1);
@@ -177,76 +164,32 @@ printf("\n\n");*/
       buf[2] = sid; /* sequence or session number for this packet */
 
       //ADILA EDIT 1/12/14
-      //! if receiver MAC address is not 0000.0000.0000.0000
-      //! it's supposed to be 0021.7402.0002.0202
-      if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5] != 0) {
-
+      /* if receiver MAC address is not 0000.0000.0000.0000
+         it's supposed to be 0021.7402.0002.02[6]02[7] 
+	 Passing values from NT to lower layer which can't access NT (upper layers + MAC Phy)*/
+      if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6] != 0 && 
+	((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7] != 0) {
 	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
 	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
-
-if(nbr->ipaddr.u8[13] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]) {
-	  //if(uip_ipaddr_cmp(&nbr->ipaddr, &nH)) {
-
-
-/*		printf("\n\nTEST ");
-//printf("11:%x 12:%x 13:%x 14:%x 15:%x \n\n", nbr->ipaddr.u8[11], nbr->ipaddr.u8[12], nbr->ipaddr.u8[13], nbr->ipaddr.u8[14], nbr->ipaddr.u8[15]);
-      		uip_debug_ipaddr_print(&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr);
-      		uip_debug_ipaddr_print(&nH);
-		uip_debug_ipaddr_print(&nbr->ipaddr);
-		printf("\n\n");
-		  printf("NBR->NBRCH %d\n\n", nbr->nbrCh);*/
-		  buf[3] = nbr->nbrCh;
-		buf[4] = nbr->ipaddr.u8[13];
-
-
-//simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], buf[3]);
-
-		  break;
-	    }
+	  if((nbr->ipaddr.u8[14] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[6]) && 
+	    (nbr->ipaddr.u8[15] == ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[7])) {
+		buf[3] = nbr->nbrCh;
+		buf[4] = nbr->ipaddr.u8[14];
+		buf[5] = nbr->ipaddr.u8[15];
+		break;
+	  }
 	}
-
-//!!!!!!!!!!!!!!!!!!!!!!
-//! SHOULD READ THE NEXTHOP CHANNEL FROM HERE!
-        /*for(r = uip_ds6_route_head(); r != NULL; 
-	  r = uip_ds6_route_next(r)) {
-
-	  if(uip_ipaddr_cmp((&((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])->destipaddr), &r->ipaddr)) {
-	  //if(uip_ipaddr_cmp(&nH, uip_ds6_route_nexthop(r))) {
-	    //printf("\n\nSAME ");
-	    printf("IN BORDER-ROUTER-RDC ");
-	    uip_debug_ipaddr_print(&r->ipaddr);
-	    uip_debug_ipaddr_print(uip_ds6_route_nexthop(r));
-	    printf(" nH ");
-	    uip_debug_ipaddr_print(&nH);
-	    printf("\n\n");
-	}
-	    //! get the transmitting channel from routing table
-	    //buf[3] = r->nbrCh;
-	    //break;
-	  //}
-        }*/
       }
       else {
 	buf[3] = 0;
 	buf[4] = 0;
+	buf[5] = 0;
       }
-
-      //printf("\n\n%d SEND DATA OVER SLIP TO RADIO-CHIP %x addr is ",buf[3], ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-
-      //memcpy(&buf[4 + size], packetbuf_hdrptr(), packetbuf_totlen());
-
-      //write_to_slip(buf, packetbuf_totlen() + size + 4);
-
-      memcpy(&buf[5 + size], packetbuf_hdrptr(), packetbuf_totlen());
-
-      write_to_slip(buf, packetbuf_totlen() + size + 5);
-
-//------------------
-
       /* Copy packet data */
-      //memcpy(&buf[3 + size], packetbuf_hdrptr(), packetbuf_totlen());
-
-      //write_to_slip(buf, packetbuf_totlen() + size + 3);
+      //ADILA EDIT 01/12/15
+      /* Changed default 4 to 6 */
+      memcpy(&buf[6 + size], packetbuf_hdrptr(), packetbuf_totlen());
+      write_to_slip(buf, packetbuf_totlen() + size + 6);
     }
   }
 }
