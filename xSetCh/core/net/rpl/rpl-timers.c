@@ -51,9 +51,6 @@
 //#define DEBUG 1
 #include "net/uip-debug.h"
 
-//ADILA EDIT
-static clock_time_t start_time;
-
 /*---------------------------------------------------------------------------*/
 static struct ctimer periodic_timer;
 
@@ -134,11 +131,8 @@ handle_dio_timer(void *ptr)
 {
   rpl_instance_t *instance;
 
-//ADILA EDIT
-uip_ds6_nbr_t *nbr;
-  uip_ipaddr_t nH;
-static struct ctimer time2;
-//----------
+  //ADILA EDIT
+  uip_ds6_nbr_t *nbr;
 
   instance = (rpl_instance_t *)ptr;
 
@@ -159,46 +153,22 @@ static struct ctimer time2;
 #if RPL_CONF_STATS
       instance->dio_totsend++;
 #endif /* RPL_CONF_STATS */
-  //    dio_output(instance, NULL);
 
-//ADILA EDIT
-//start_time = clock_seconds();
-//printf("DIO OUTPUT NULL? %u %u\n\n", instance, start_time);
-
-//!!if(start_time > 360) {
-nbr = nbr_table_head(ds6_neighbors);
-if(nbr != NULL) {
-  for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-    nbr = nbr_table_next(ds6_neighbors,nbr)) {
-    //!!printf("RPL-TIMER NBR TABLE: ");
-    //!!uip_debug_ipaddr_print(&nbr->ipaddr);
-    //!!printf("\n");
-    dio_output(instance, &nbr->ipaddr);
-
-//ctimer_set(&time2, CLOCK_SECOND/4, NULL, NULL);
-//printf("BACK IN RPL-TIMER\n\n");
-  }
-//printf("M DIO\n\n");
-dio_output(instance, NULL);
-}
-else {
-dio_output(instance, NULL);
-}
-
-/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-printf("RPL-TIMER NBR TABLE: ");
-uip_debug_ipaddr_print(&nbr->ipaddr);
-//dio_output(instance, &nbr->ipaddr);
-}//for()
-//}//if(start_time > 20)
-//else {
-//printf("MULTICAST DIO\n\n");
-
-//dio_output(instance, NULL);
-//}//else (start_time)
-//---------*/
-
+      //ADILA EDIT
+      /* Sends DIO as broadcast and unicast if there are neighbours
+	 Broadcast is done first, otherwise broadcast will be treated as unicast
+	 and will not be sent for the whole cycle */
+      nbr = nbr_table_head(ds6_neighbors);
+      if(nbr != NULL) {
+	dio_output(instance, NULL);
+	for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
+	  nbr = nbr_table_next(ds6_neighbors,nbr)) {
+	    dio_output(instance, &nbr->ipaddr);
+	}
+      }
+      else {
+	dio_output(instance, NULL);
+      }
     } else {
       PRINTF("RPL: Supressing DIO transmission (%d >= %d)\n",
              instance->dio_counter, instance->dio_redundancy);

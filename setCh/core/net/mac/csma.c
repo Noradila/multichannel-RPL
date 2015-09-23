@@ -111,14 +111,8 @@ MEMB(packet_memb, struct rdc_buf_list, MAX_QUEUED_PACKETS);
 MEMB(metadata_memb, struct qbuf_metadata, MAX_QUEUED_PACKETS);
 LIST(neighbor_list);
 
-
-//ADILA EDIT
-//static uint8_t rdc_is_transmitting;
-
 static void packet_sent(void *ptr, int status, int num_transmissions);
 static void transmit_packet_list(void *ptr);
-
-//uint8_t bufferSent = 0;
 /*---------------------------------------------------------------------------*/
 static struct neighbor_queue *
 neighbor_queue_from_addr(const rimeaddr_t *addr)
@@ -153,24 +147,6 @@ default_timebase(void)
 static void
 transmit_packet_list(void *ptr)
 {
-
-//!!!!!! ADILA EDIT
-/*  struct neighbor_queue *n = ptr;
-
-  if(rdc_is_transmitting) {
-    return;
-  }
-
-  struct rdc_buf_list *q = list_head(n->queued_packet_list);
-  if(q != NULL) {
-    PRINTF("csma: preparing number %d %p, queue len %d\n", n->transmissions, q,
-        list_length(n->queued_packet_list));
-    rdc_is_transmitting = 1;
-    /* Send packets in the neighbor's list */
-/*    NETSTACK_RDC.send_list(packet_sent, n, q);
-  }*/
-//!!!!!!!!!!!!!!!!
-
   struct neighbor_queue *n = ptr;
   if(n) {
     struct rdc_buf_list *q = list_head(n->queued_packet_list);
@@ -194,27 +170,13 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p)
     memb_free(&metadata_memb, p->ptr);
     memb_free(&packet_memb, p);
 
-//ADILA EDIT 09/02/14
-if((list_length(n->queued_packet_list)) == 0) {
-//printf("empty Q %d\n", list_length(n->queued_packet_list));
-////Reset to listening channel when queue is empty
-//Not really require as the radio will be switched off when
-//the queue is empty
-//@
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-}
-//-------------------
-
-
-//ADILA EDIT
-//printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
-//cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-
-
-////if Q == 0; call function() check if it's still probing?
-//in probing, put an indicator (if probe != 8, var p = 0)
-//if p = 1; not in probing anymore
-//----------
+    //ADILA EDIT 09/02/14
+    /* Reset to listening channel when queue is empty
+       Not really require as the radio will be switched off when
+       the queue is empty */
+    if((list_length(n->queued_packet_list)) == 0) {
+      cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+    }
 
     PRINTF("csma: free_queued_packet, queue length %d\n",
         list_length(n->queued_packet_list));
@@ -227,11 +189,9 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
       ctimer_set(&n->transmit_timer, default_timebase(),
                  transmit_packet_list, n);
 
-//printf("SET CH %d\n\n", list_length(n->queued_packet_list));
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-//printf("SET CH %d\n\n", list_length(n->queued_packet_list));
-//ADILA EDIT
-//ctimer_set(&n->transmit_timer, 0, transmit_packet_list, n);
+      //ADILA EDIT 09/02/14
+      /* Reset to listening channel before sending next in queue */
+      cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 
     } else {
       /* This was the last packet in the queue, we free the neighbor */
@@ -239,7 +199,9 @@ cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
       list_remove(neighbor_list, n);
       memb_free(&neighbor_memb, n);
 
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
+      //ADILA EDIT 09/02/14
+      /* Reset to listening channel */
+      cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
     }
   }
 }
@@ -256,9 +218,7 @@ packet_sent(void *ptr, int status, int num_transmissions)
   int num_tx;
   int backoff_transmissions;
 
-//ADILA EDIT
-//rdc_is_transmitting = 0;
-//uint8_t ackOk = 0;
+  uint8_t theSum;
 
   n = ptr;
   if(n == NULL) {
@@ -277,24 +237,10 @@ packet_sent(void *ptr, int status, int num_transmissions)
     break;
   }
 
-//ADILA JULY 2015
-//printf("RX %d\n\n", n->transmissions);
-//printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, n->deferrals);
-//retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], n->transmissions);
-
-/*if(status == MAC_TX_OK) {
-//printf("ok\n\n");
-ackOk = 1;
-}
-else {
-ackOk = 0;
-}
-*/
-//printf("N->TX %d C %d D %d %d\n", n->transmissions, n->collisions, n->deferrals, ((n->transmissions) + (n->collisions)));
-//!!!!printf("N->TX %d C %d D %d\n", n->transmissions, n->collisions, ((n->transmissions) + (n->collisions)));
-retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)));
-
-//printf("NBRPROBE %d\n\n", retx_getCh(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7]));
+  //ADILA EDIT JULY 2015
+  /* Keeping the last IP address fe80::xxx:xxxx:xxxx:0606 and number of 
+     packet transmissions and collisions to decide on channel changes */
+  retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[7], ((n->transmissions) + (n->collisions)));
 
   for(q = list_head(n->queued_packet_list);
       q != NULL; q = list_item_next(q)) {
@@ -320,24 +266,12 @@ retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(
         switch(status) {
         case MAC_TX_COLLISION:
           PRINTF("csma: rexmit collision %d\n", n->transmissions);
-
-//ADILA
-          //printf("csma: rexmit collision %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
-//printf("csma: rexmit collision %d\n", n->transmissions);
-
           break;
         case MAC_TX_NOACK:
           PRINTF("csma: rexmit noack %d\n", n->transmissions);
-//ADILA
-          //printf("csma: rexmit noack %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
-//printf("csma: rexmit noack %d\n", n->transmissions);
-
           break;
         default:
           PRINTF("csma: rexmit err %d, %d\n", status, n->transmissions);
-
-//ADILA
-//printf("csma: rexmit err %d\n", n->transmissions);
         }
 
         /* The retransmission time must be proportional to the channel
@@ -374,26 +308,13 @@ retx_set_channel(packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[6], packetbuf_addr(
       } else {
         if(status == MAC_TX_OK) {
           PRINTF("csma: rexmit ok %d\n", n->transmissions);
-
-//ADILA
-          //printf("csma: rexmit ok %d seqno %d\n", n->transmissions, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
-
         } else {
           PRINTF("csma: rexmit failed %d: %d\n", n->transmissions, status);
-
-//ADILA
-          //printf("csma: rexmit failed %d: %d seqno %d\n", n->transmissions, status, packetbuf_attr(PACKETBUF_ATTR_MAC_SEQNO));
         }
-
-//ADILA
-//printf("csma: n->transmissions %d\n\n", n->transmissions);
 
         free_packet(n, q);
         mac_call_sent_callback(sent, cptr, status, num_tx);
       }
-//ADILA
-//printf("csma: n->transmissions %d\n\n", n->transmissions);
-
     }
   }
 }
@@ -456,12 +377,6 @@ send_packet(mac_callback_t sent, void *ptr)
 	    list_push(n->queued_packet_list, q);
 	  } else {
 	    list_add(n->queued_packet_list, q);
-
-//ADILA EDIT
-//bufferSent = bufferSent + 1;
-//printf("BUFFERSENT %d\n", bufferSent);
-//printf("DEBUG Q %d\n\n", list_length(n->queued_packet_list));
-//----------
 	  }
 
 	  /* If q is the first packet in the neighbor's queue, send asap */
@@ -471,11 +386,9 @@ send_packet(mac_callback_t sent, void *ptr)
 	  return;
 	}
 	memb_free(&metadata_memb, q->ptr);
-//printf("D1 1\n\n");
 	PRINTF("csma: could not allocate queuebuf, dropping packet\n");
       }
       memb_free(&packet_memb, q);
-//printf("D1 2\n\n");
       PRINTF("csma: could not allocate queuebuf, dropping packet\n");
     }
     /* The packet allocation failed. Remove and free neighbor entry if empty. */
@@ -483,10 +396,7 @@ send_packet(mac_callback_t sent, void *ptr)
       list_remove(neighbor_list, n);
       memb_free(&neighbor_memb, n);
     }
-//printf("D1 3\n\n");
-//    printf("csma: could not allocate packet, dropping packet\n");
   } else {
-//!!printf("D1 4\n\n");
     PRINTF("csma: could not allocate neighbor, dropping packet\n");
   }
   mac_call_sent_callback(sent, ptr, MAC_TX_ERR, 1);
@@ -525,9 +435,6 @@ init(void)
   memb_init(&packet_memb);
   memb_init(&metadata_memb);
   memb_init(&neighbor_memb);
-
-//ADILA EDIT
-//rdc_is_transmitting = 0;
 }
 /*---------------------------------------------------------------------------*/
 const struct mac_driver csma_driver = {

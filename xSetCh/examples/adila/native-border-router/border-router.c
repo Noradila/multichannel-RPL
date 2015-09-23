@@ -59,8 +59,6 @@
 #define DEBUG DEBUG_FULL
 #include "net/uip-debug.h"
 
-//#define MAX_SENSORS 4
-//#define MAX_SENSORS 20
 #define MAX_SENSORS 50
 
 //#include "random.h"
@@ -80,9 +78,6 @@ static struct simple_udp_connection unicast_connection;
 //the application specific event value
 static process_event_t event_data_ready;
 
-uint8_t a = 0;
-uip_ipaddr_t nextHopAddr;
-uip_ipaddr_t nH;
 uint8_t channelOK = 1;
 
 uint8_t noOfRoutes;
@@ -92,7 +87,6 @@ static uip_ipaddr_t holdAddr;
 uint8_t noOfRetransmit;
 
 uint8_t i;
-uint8_t x;
 
 struct lpbrList {
   struct lpbrList *next;
@@ -117,7 +111,6 @@ struct sentRecv {
 };
 
 LIST(sentRecv_table);
-//MEMB(sentRecv_mem, struct sentRecv, 20); //for now, only sent to LPBR
 MEMB(sentRecv_mem, struct sentRecv, 50); //for now, only sent to LPBR
 
 struct nodesTable {
@@ -137,23 +130,18 @@ enum {
 	PROBERESULT,
 	CONFIRM_CH,
 	GET_ACK,
-SENTRECV,
-SEND_NBR,
-SEND_CH
+	SENTRECV,
+	SEND_NBR,
+	SEND_CH
 };
 
 struct unicast_message {
 	uint8_t type;
 	uint8_t value;
-	//uint8_t holdV;
 	uint8_t value2;
 
 	uip_ipaddr_t address;
 	uip_ipaddr_t *addrPtr; 
-
-//	char paddingBuf[30];
-
-uint8_t value3;
 };
 
 uint16_t dag_id[] = {0x1111, 0x1100, 0, 0, 0, 0, 0, 0x0011};
@@ -241,7 +229,6 @@ uint8_t lpbrCheck2ndHop(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   return channelOK;
 }
 /*---------------------------------------------------------------------------*/
-//static void secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
 uint8_t secondCheck(const uip_ipaddr_t *toSendAddr, uint8_t chCheck) {
   struct lpbrList *l;
 
@@ -809,7 +796,7 @@ set_nodes_table(sender_addr, msg->address);
 }
 
 else if(msg->type == SEND_CH) {
-printf("R SEND CH %d\n\n", msg->value);
+//printf("R SEND CH %d\n\n", msg->value);
 }
 
   else {

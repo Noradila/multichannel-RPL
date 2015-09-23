@@ -54,8 +54,6 @@
 #include "net/mac/contikimac.h"
 #include "net/mac/simplified_nbr_table.h"
 //-------------------
-//#include "net/uip-ds6-nbr.h"
-//#include "net/uip-ds6-route.h"
 
 #ifdef SLIP_RADIO_CONF_SENSORS
 extern const struct slip_radio_sensors SLIP_RADIO_CONF_SENSORS;
@@ -84,48 +82,16 @@ packet_sent(void *ptr, int status, int transmissions)
   int pos;
   sid = *((uint8_t *)ptr);
 
-//ADILA EDIT 27/02/15
-//nbr_table *xxx;
-//xxx->theIPAddr = 23;
-
-//-------------------
-
-//  static uip_ds6_nbr_t *nbr;
-//  static uip_ds6_route_t *r;
-
-/*    for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-      nbr = nbr_table_next(ds6_neighbors,nbr)) {
-        printf("NBR: ");
-        uip_debug_ipaddr_print(&nbr->ipaddr);
-        printf(" nbrCh %d", nbr->nbrCh);
-	printf("\n");
-	//nbr->nbrCh = msg->value;
-        //printf(" nbrCh new %d\n", nbr->nbrCh);
-}
-
-  for(r = uip_ds6_route_head();
-      r != NULL;
-      r = uip_ds6_route_next(r)) {
-        printf("ROUTE: ");
-        uip_debug_ipaddr_print(&r->ipaddr);
-        printf("\n");
-}
-*/
-simplified_nbr_table_get_channel();
+  //ADILA EDIT 27/02/15
+  //simplified_nbr_table_get_channel();
 
 
   PRINTF("Slip-radio: packet sent! sid: %d, status: %d, tx: %d\n",
   	 sid, status, transmissions);
 
-//ADILA EDIT 10/11/14
-//reset channel here?
-//simplified_nbr_table_get_channel();
-//printf("%d RESET TO LISTENING CH\n\n", uip_ds6_if.addr_list[1].currentCh);
-//cc2420_set_channel(26);
-//@
-cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
-//-------------------
-
+  //ADILA EDIT 10/11/14
+  /* Reset to own listening channel after transmitting packet */
+  cc2420_set_channel(uip_ds6_if.addr_list[1].currentCh);
 
   /* packet callback from lower layers */
   /*  neighbor_info_packet_sent(status, transmissions); */
@@ -142,8 +108,7 @@ static int
 slip_radio_cmd_handler(const uint8_t *data, int len)
 {
   int i;
-
-uint8_t aa = 0;
+  uint8_t setCh = 0;
 
   if(data[0] == '!') {
     /* should send out stuff to the radio - ignore it as IP */
@@ -153,63 +118,29 @@ uint8_t aa = 0;
       packet_ids[packet_pos] = data[2];
 
       //ADILA EDIT 1/12/14
+      /* Checks if channel value (data[3]) passed from border-router-rdc.c is not 0
+	 Checks if the IP and channel are already in the simplified_nbr_table */
       if(data[3] != 0) {
-
-//if(packetbuf_attr(PACKETBUF_ADILA2) == 0 || packetbuf_attr(PACKETBUF_ADILA2) > 26) {
-//packetbuf_set_attr(PACKETBUF_ADILA2, data[3]);
-//}
-
-//packetbuf_set_attr(PACKETBUF_ADILA, data[3]);
-//packetbuf_set_attr(PACKETBUF_ADILA_IP, packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[5]);
-//packetbuf_set_attr(PACKETBUF_ADILA_IP, ((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5]);
-//printf("IP:%d %d DATA[3] is %d\n", packetbuf_attr(PACKETBUF_ADILA_IP), packetbuf_attr(PACKETBUF_ADILA), data[3]);
-
-/*printf("IN SLIP-RADIO-------------\n");
-simplified_nbr_table_get_channel();
-printf("--------------------------\n\n");
-*/
-aa = simplified_check_table(data[4], data[3]);
-//printf("value aa %d\n\n", aa);
-//printf("DATA[3] %d DATA[4] %d\n\n", data[3], data[4]);
-        //printf("DATA[3] IS %d\n", data[3]);
-
-if(aa != 1) {
-simplified_nbr_table_set_channel(data[4], data[3]);
-}
-//ADILA EDIT 25/02/15
-//extern int theval;
-//theval = 15;
-//printf("%d\n\n", theval);
-//-------------------
-
-/*if(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5] != 0) {
-simplified_nbr_table_set_channel(((uint8_t *)packetbuf_addr(PACKETBUF_ADDR_RECEIVER))[5], data[3]);
-}*/
-
-	//@
+	setCh = simplified_check_table(data[4], data[5], data[3]);
+	if(setCh != 1) {
+	  simplified_nbr_table_set_channel(data[4], data[5], data[3]);
+	}
         cc2420_set_channel(data[3]);
-
-//ADILA EDIT JULY 15
-printf("XSETCH %d\n\n", cc2420_get_channel());
       }
-      //else {
-	//printf("DATA[3] IS 0!!!\n\n");
-      //}
 
       packetbuf_clear();
-      //pos = packetutils_deserialize_atts(&data[4], len - 4);
-      pos = packetutils_deserialize_atts(&data[5], len - 5);
+
+      //ADILA EDIT 01/12/14
+      /* Changed 3 to 6 (buf value) */
+      pos = packetutils_deserialize_atts(&data[6], len - 6);
       if(pos < 0) {
         PRINTF("slip-radio: illegal packet attributes\n");
         return 1;
       }
-      //pos += 4;
-      pos += 5;
+      //ADILA EDIT 01/12/14
+      /* Changed 3 to 6 (buf value) */
+      pos += 6;
       len -= pos;
-
-//ADILA EDIT 02/03/15
-//printf("PACKETBUF SIZE %d\n\n", PACKETBUF_SIZE);
-//-------------------
 
       if(len > PACKETBUF_SIZE) {
         len = PACKETBUF_SIZE;
@@ -219,7 +150,6 @@ printf("XSETCH %d\n\n", cc2420_get_channel());
 
       PRINTF("slip-radio: sending %u (%d bytes)\n",
              data[2], packetbuf_datalen());
-      //printf("RADIO sending packet\n");
 
       /* parse frame before sending to get addresses, etc. */
       no_framer.parse();
@@ -231,36 +161,6 @@ printf("XSETCH %d\n\n", cc2420_get_channel());
       }
 
       return 1;
-      //------------------
-
-/*      packetbuf_clear();
-      pos = packetutils_deserialize_atts(&data[3], len - 3);
-      if(pos < 0) {
-        PRINTF("slip-radio: illegal packet attributes\n");
-        return 1;
-      }
-      pos += 3;
-      len -= pos;
-      if(len > PACKETBUF_SIZE) {
-        len = PACKETBUF_SIZE;
-      }
-      memcpy(packetbuf_dataptr(), &data[pos], len);
-      packetbuf_set_datalen(len);
-
-      PRINTF("slip-radio: sending %u (%d bytes)\n",
-             data[2], packetbuf_datalen());
-      printf("RADIO sending packet\n");
-
-      /* parse frame before sending to get addresses, etc. */
-/*      no_framer.parse();
-      NETSTACK_MAC.send(packet_sent, &packet_ids[packet_pos]);
-
-      packet_pos++;
-      if(packet_pos >= sizeof(packet_ids)) {
-	packet_pos = 0;
-      }
-
-      return 1;*/
     }
   } else if(uip_buf[0] == '?') {
     PRINTF("Got request message of type %c\n", uip_buf[1]);
@@ -316,10 +216,6 @@ putchar(int c)
   if(!debug_frame) {            /* Start of debug output */
     slip_arch_writeb(SLIP_END);
     slip_arch_writeb('\r');     /* Type debug line == '\r' */
-
-//ADILA EDIT
-//slip_arch_writeb('\n'); 
-
     debug_frame = 1;
   }
 
@@ -354,8 +250,9 @@ PROCESS_THREAD(slip_radio_process, ev, data)
 #endif
   printf("Slip Radio started...\n");
 
-cc2420_set_txpower(11);
-//cc2420_set_txpower(2);
+  //ADILA EDIT 01/12/14
+  /* Set txpower to 11 to reduce the area */
+  cc2420_set_txpower(11);
 
   etimer_set(&et, CLOCK_SECOND * 3);
 

@@ -57,8 +57,6 @@
 //#define DEBUG DEBUG_ALL
 //#define DEBUG 1
 
-//uint8_t rplV = 0;
-
 #include "net/uip-debug.h"
 
 #if UIP_CONF_IPV6
@@ -155,13 +153,6 @@ dis_input(void)
   rpl_instance_t *end;
 
   /* DAG Information Solicitation */
-
-//ADILA EDIT
-/*printf("Received DIS ");
-uip_debug_ipaddr_print(&UIP_IP_BUF->srcipaddr);
-printf("\n");*/
-//----------
-
   PRINTF("RPL: Received a DIS from ");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF("\n");
@@ -177,10 +168,6 @@ printf("\n");*/
         rpl_reset_dio_timer(instance);
       } else {
 #endif /* !RPL_LEAF_ONLY */
-
-//rplV = rplV + 1;
-//printf("RPL %d REPLY DIS\n", rplV);
-
         PRINTF("RPL: Unicast DIS, reply to sender\n");
         dio_output(instance, &UIP_IP_BUF->srcipaddr);
       }
@@ -208,14 +195,6 @@ dis_output(uip_ipaddr_t *addr)
     uip_create_linklocal_rplnodes_mcast(&tmpaddr);
     addr = &tmpaddr;
   }
-
-//ADILA EDIT
-//rplV = rplV + 1;
-//printf("RPL %d DIS\n", rplV);
-/*printf("Sending DIS ");
-uip_debug_ipaddr_print(addr);
-printf("\n");*/
-//----------
 
   PRINTF("RPL: Sending a DIS to ");
   PRINT6ADDR(addr);
@@ -251,31 +230,6 @@ dio_input(void)
   uip_ipaddr_copy(&from, &UIP_IP_BUF->srcipaddr);
 
   /* DAG Information Object */
-
-//ADILA EDIT
-/*printf("Received DIO ");
-uip_debug_ipaddr_print(&from);
-printf("\n");*/
-
-//printf("FROM 11:%x 12:%x 13:%x 6:%x\n\n", from.u8[11], from.u8[12], from.u8[13], from.u8[6]);
-
-//----------
-
-//ADILA EDIT
-/*for(nbr = nbr_table_head(ds6_neighbors); nbr != NULL;
-nbr = nbr_table_next(ds6_neighbors,nbr)) {
-if(nbr->ipaddr.u8[13] == from.u8[13]) {
-printf("ALREADY IN NBR TABLE!! ");
-uip_debug_ipaddr_print(&from);
-printf("\n");
-}
-else {
-printf("NOT YET IN NBR TABLE!\n");
-uip_debug_ipaddr_print(&from);
-printf("\n");
-}
-}*/
-//----------
   PRINTF("RPL: Received a DIO from ");
   PRINT6ADDR(&from);
   PRINTF("\n");
@@ -586,14 +540,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 #if (DEBUG) & DEBUG_PRINT
   if(uc_addr == NULL) {
     PRINTF("RPL: LEAF ONLY sending unicast-DIO from multicast-DIO\n");
-
-//rplV = rplV + 1;
-//printf("RPL %d DIO LEAF\n", rplV);
   }
 #endif /* DEBUG_PRINT */
-
-//rplV = rplV + 1;
-//printf("RPL %d UNICAST DIO\n", rplV);
 
   PRINTF("RPL: Sending unicast-DIO with rank %u to ",
       (unsigned)dag->rank);
@@ -603,31 +551,11 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 #else /* RPL_LEAF_ONLY */
   /* Unicast requests get unicast replies! */
   if(uc_addr == NULL) {
-
-//ADILA EDIT
-//printf("Sending DIO multicast\n\n");
-//rplV = rplV + 1;
-//printf("RPL %d MULTICAST DIO\n", rplV);
-//---------
-
-//!printf("MULTICAST DIO\n");
-
     PRINTF("RPL: Sending a multicast-DIO with rank %u\n",
         (unsigned)instance->current_dag->rank);
     uip_create_linklocal_rplnodes_mcast(&addr);
     uip_icmp6_send(&addr, ICMP6_RPL, RPL_CODE_DIO, pos);
   } else {
-//ADILA
-    /*printf("\nRPL: Sending unicast-DIO with rank %u to ",
-        (unsigned)instance->current_dag->rank);
-    uip_debug_ipaddr_print(uc_addr);
-    printf("\n");*/
-
-//rplV = rplV + 1;
-//printf("RPL %d DIO\n", rplV);
-
-//!printf("UNICAST DIO\n");
-
     PRINTF("RPL: Sending unicast-DIO with rank %u to ",
         (unsigned)instance->current_dag->rank);
     PRINT6ADDR(uc_addr);
@@ -668,13 +596,6 @@ dao_input(void)
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
 
   /* Destination Advertisement Object */
-
-//ADILA EDIT
-/*printf("Received DAO ");
-uip_debug_ipaddr_print(&dao_sender_addr);
-printf("\n");*/
-//----------
-
   PRINTF("RPL: Received a DAO from ");
   PRINT6ADDR(&dao_sender_addr);
   PRINTF("\n");
@@ -805,9 +726,6 @@ printf("\n");*/
     if(dag->preferred_parent != NULL &&
        rpl_get_parent_ipaddr(dag->preferred_parent) != NULL) {
 
-//rplV = rplV + 1;
-//printf("RPL %d R DAO\n", rplV);
-
       PRINTF("RPL: Forwarding DAO to parent ");
       PRINT6ADDR(rpl_get_parent_ipaddr(dag->preferred_parent));
       PRINTF("\n");
@@ -909,16 +827,6 @@ dao_output_target(rpl_parent_t *parent, uip_ipaddr_t *prefix, uint8_t lifetime)
   buffer[pos++] = 0; /* path seq - ignored */
   buffer[pos++] = lifetime;
 
-//ADILA EDIT
-//rplV = rplV + 1;
-//printf("RPL %d DAO\n", rplV);
-/*printf("Sending DAO ");
-uip_debug_ipaddr_print(prefix);
-printf(" to ");
-uip_debug_ipaddr_print(rpl_get_parent_ipaddr(parent));
-printf("\n");*/
-//----------
-
   PRINTF("RPL: Sending DAO with prefix ");
   PRINT6ADDR(prefix);
   PRINTF(" to ");
@@ -958,9 +866,6 @@ void
 dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence)
 {
   unsigned char *buffer;
-
-//rplV = rplV + 1;
-//printf("RPL %d DAO ACK\n", rplV);
 
   PRINTF("RPL: Sending a DAO ACK with sequence number %d to ", sequence);
   PRINT6ADDR(dest);
