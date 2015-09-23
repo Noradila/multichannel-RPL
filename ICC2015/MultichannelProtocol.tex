@@ -24,6 +24,7 @@ The design of the multichannel protocol is based on several crucial observations
 
 \end{itemize}
 
+<<<<<<< HEAD
 Our cross-layer multi-channel protocol focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place only after the topology tree has been formed by RPL and stabilised. The system has two parts: a central algorithm which can be collocated with the LPBR and selects which channel each node should listen on; and a protocol which allows the network to communicate the channel change decision, probe the new channel and either communicate the success of the change or fall back to the previous channel. 
 
 \subsection{Channel Selection Strategy}
@@ -35,12 +36,33 @@ All nodes are initialised to channel 26 by default in Contiki.
 The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup. Channel 26 is chosen as this is the default initial channel in Contiki since it often has fewer interference problems with Wi-Fi and other sources. The studies in \cite{chrysso, micmac, watteyne} use several channels in their experiments and have channel 26 in common.
 	
 %**TWO HOP COLOURING STRATEGY?
+=======
+Our cross-layer multi-channel protocol focuses on the network and application layer of the protocol. This allows channel assignment decisions to be made thoroughly without being limited by the low layer complexity. The channel assignment processes take place only after the topology tree has been formed by RPL and stabilised. The system
+has two parts: a central algorithm which can be collocated with the LPBR and selects which channel each node should listen on; and a protocol which allows the network to communicate the channel change decision, probe the new channel and either communicate the success of the change or fall back to the previous channel. 
+
+\subsection{Channel Selection Strategy}
+
+The system we propose is general and any algorithm can be used at the LPBR to assign channels. In this paper we use a two-hop colouring protocol to select a channel to be assigned to a node. Channels are chosen in a way that
+ensures no nodes within two hops of each other on the network are listening on the same channel.
+This allows fair load balancing on the channels and reduces channel interference that could occur when two nearby nodes transmit together on the same channel. The nodes used in this paper have a transmission range of approximately 50 metres indoors and 125 metres outdoors. It could be the case, therefore, that many nodes in a sensor network are in the transmission range of each other and potentially interfered with.
+
+%As in standard RPL all nodes are initialised to channel 26 by default. 
+All nodes are initialised to channel 26 by default in Contiki.
+The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup. Channel 26 is chosen as this is the default initial channel in Contiki since it often has fewer interference problems with WiFi and other sources. The studies in \cite{chrysso, micmac, watteyne} use several channels in their experiments and have channel 26 in common.
+	
+%**TWO HOP COLOURING STRATEGY?
+%\subsubsection{Two Hops Neighbour Strategy -}
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
 
 In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on.  
 This selection is random from channels 11 to 26 (the full range available). The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be blacklisted.  Knowledge of channel interference (gained by probing, see later description) can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is used (see section \ref{sec:channelswitch}). If no channel can be found meeting these conditions the current
 channel is kept.  
 
+<<<<<<< HEAD
 The node selection algorithm must only attempt one channel change at a time. The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. Until one or other of these happens, no new channel change will be made.
+=======
+The node selection algorithm must only attempt one channel change at a time. The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. Until one or other of these happens no new channel change will be made.
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
 
 %***probing tries to avoid the interference channel.
 
@@ -54,6 +76,13 @@ The node selection algorithm must only attempt one channel change at a time. The
 \subsection{Channel Switching}
 \label{sec:channelswitch}
 
+<<<<<<< HEAD
+=======
+%//explain LPBR that decides whether the nodes should stay on the same channel or switch to a new channel based on the information it gathers through nodes probing.
+
+%State machine explanation should be here?
+
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
 \begin{figure}
 \centering
 \includegraphics[width=3.5in]{Diagram1.eps}
@@ -67,18 +96,45 @@ On receiving a channel change message a node $N$ stores its current channel $C$ 
 
 \subsection{Channel Quality Checking}
 \label{sec:channelquality}
+<<<<<<< HEAD
+=======
+%channel quality check = probing
+%//Channel condition is checked by probing before deciding to switch unless LPBR has the information regarding the specific channel based on probing that were done previously.
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
 
 In describing the channel quality checking process it is worth emphasising the RPL distinction between neighbours and tree neighbours. In RPL, node neighbours are all nodes that a given node knows it could transmit to. Tree neighbours are the nodes that a node does transmit to through the topology formed by the RPL protocol.
 
 The channel quality checking is invoked each time a node changes channel after receiving a message from the LPBR. A node $N$ changing to channel $D$ informs all neighbours in turn, of the new channel $D$ it will be listening on as described in the previous section. It then enters the Probe Wait state and begins channel quality checking with each tree neighbour in turn.  
 
+<<<<<<< HEAD
 In the Probe Wait state node $N$ sends a Probe message to each neighbour in turn. That neighbour will respond to the message by sending eight packets to $N$ on the new channel $D$. If this process times out (because of some communication failure) or the number of probe packets received is below a threshold (currently set to 16) then node $N$ immediately exits Probe Wait and reverts to channel $C$ its previous channel. 
 
 The buffer can accommodate eight packets at a time. As the packets might not be sent immediately due to wakes up and collisions, sending more packets would have the risk of being dropped. Increasing the buffer is not ideal as the sensor has limited memory capability. However, as the numbers of probing packets are small, the estimate value might not be accurate as the representation of the channel condition. The condition of the channel is further investigated through the number of retransmissions and packet collisions of the probing packets. 
 
 The threshold is set to be 16 to ensure that moderate interference channels are avoided. Mild interference channels usually fall below the threshold. If the threshold is not met, none of the node would change the channel as the node would be better off with its current channel. 
+=======
+In the Probe Wait state node $N$ sends a Probe message to each neighbour in turn. That neighbour will respond to the message by sending eight packets to $N$ on the new channel $D$. If this process times out (because of some communication failure) or the number of probe packets received is below a threshold (currently set to seven) then node $N$ immediately exits Probe Wait and reverts to channel $C$ its previous channel. 
+%Reason for 8 packets? 8 packets per second; could be kept in the buffer without the risk of being dropped because the buffer is full. The buffer can accommodate eight packets at a time. As the packets might not be sent immediately due to wakes up and collissions, sending more packets would have the risk of it being dropped. Increasing the buffer is not ideal as the sensor has limited memory. However, as the number of probing packets are short (small? limited?), the estimate value might not be accurate of the channel. The condition of the channel is further investigated through the number of retransmissions and packet collissions of the probing packets. 
+
+%The threshold is set to be /////decideNumber which is quite high to ensure that mild intereference channels are detected. If the threshold is not met, none of the node would change the channel as it would be better off with the current channel. 
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
 
 All neighbours are informed of the change back to channel $C$ and the LPBR is informed of the quality check failure with a summary of all probes received.
 If, on the other hand, all channel quality checks succeed the change to channel $D$ becomes permanent for node $N$ and it informs the LPBR of the results of the probing (numbers of packets received) and the channel change.
 
 Probing is an important part in making the channel change decision. It gives a quick overview of the channel condition based on the number of probing messages received. It is worth noting that probing is only done between the node and the tree neighbours. Neighbours that are not tree neighbours will not use the node as a route during their transmission thus, there is no need for probing to take place with those neighbours. However, the neighbours still need to know the channel value as RPL control messages are sent to neighbours directly without using the routes.
+<<<<<<< HEAD
+=======
+
+%It is possible that the node itself ask for a channel change if its PDR is below a threshold. LPBR checks and updates the information of the channels and sends a change channel message. The steps as previously explained are repeated. ***NOT SURE? LPBR asks for the transmission and receiver rate periodically from all the nodes to decide a channel change.
+
+%LPBR sends a change channel message after ***some time to check the condition of the node's channel and to get updates on the channels. The node's neighbours will start probing on the channel which the result is use to decide the changes.
+
+%\subsection{LPBR Strategies}   
+
+
+
+
+
+
+>>>>>>> cd9f099e0ff80e5bd1c704f7213a9cfb77632b6f
