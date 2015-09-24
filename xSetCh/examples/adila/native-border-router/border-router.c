@@ -354,7 +354,7 @@ random_init(16);
   channelOK = twoHopsLPBR(&msg2.address, msg2.value);
   channelOK = twoHopsOtherNodes(&msg2.address, msg2.value);
 
-/*  //channel will be selected and checked with 2 hops for 4 times
+  //channel will be selected and checked with 2 hops for 4 times
   //if failed, it will use the default channel, 26
   while(channelOK == 0 && i < 4) {
     //!!randomNewCh = (random_rand() % 16) + 11;
@@ -387,11 +387,6 @@ random_init(16);
     channelOK = twoHopsLPBR(&msg2.address, randomNewCh);
     channelOK = twoHopsOtherNodes(&msg2.address, randomNewCh);
   }
-*/
-//ADILA EDIT 21 SEPT 2015
-if(channelOK == 0) {
- randomNewCh = 26;
-}
 
   //printf("LPBR2 CHANNEL OK? %d\n\n\n", channelOK);
   msg2.value = randomNewCh;
@@ -1083,9 +1078,8 @@ struct unicast_message msg2;
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     /* do anything here??? */
 
-//!!!!!  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
-  etimer_set(&changeChTimer, 300 * CLOCK_SECOND); //real hardware
-  //+etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
+//  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
+  etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
 //check if it changes parent (15 nodes, 1 interference(button-xadila-unicast1.c))
 ////  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
 
@@ -1178,8 +1172,8 @@ uint8_t wTime;
 
 //    etimer_set(&time, 10 * CLOCK_SECOND);
 
-//+etimer_set(&time, 40 * CLOCK_SECOND); //simulation
-etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
+etimer_set(&time, 40 * CLOCK_SECOND); //simulation
+//etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
 
 //16 INTERFERENCE USE 70
 //    etimer_set(&time, 70 * CLOCK_SECOND);
