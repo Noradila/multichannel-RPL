@@ -5,45 +5,45 @@ The style file: plain.bst
 Database file #1: icc2015.bib
 Warning--string name "march" is undefined
 --line 99 of file icc2015.bib
-You've used 25 entries,
+You've used 26 entries,
             2118 wiz_defined-function locations,
-            630 strings with 9248 characters,
-and the built_in function-call counts, 10103 in all, are:
-= -- 973
-> -- 489
-< -- 15
-+ -- 198
-- -- 168
-* -- 668
-:= -- 1556
-add.period$ -- 75
-call.type$ -- 25
-change.case$ -- 159
+            638 strings with 9597 characters,
+and the built_in function-call counts, 10695 in all, are:
+= -- 1035
+> -- 522
+< -- 16
++ -- 211
+- -- 180
+* -- 712
+:= -- 1646
+add.period$ -- 79
+call.type$ -- 26
+change.case$ -- 168
 chr.to.int$ -- 0
-cite$ -- 25
-duplicate$ -- 397
-empty$ -- 812
-format.name$ -- 168
-if$ -- 2214
+cite$ -- 26
+duplicate$ -- 420
+empty$ -- 851
+format.name$ -- 180
+if$ -- 2345
 int.to.chr$ -- 0
-int.to.str$ -- 25
-missing$ -- 18
-newline$ -- 128
-num.names$ -- 50
-pop$ -- 211
+int.to.str$ -- 26
+missing$ -- 19
+newline$ -- 133
+num.names$ -- 52
+pop$ -- 220
 preamble$ -- 1
-purify$ -- 134
+purify$ -- 142
 quote$ -- 0
-skip$ -- 335
+skip$ -- 354
 stack$ -- 0
-substring$ -- 600
-swap$ -- 147
-text.length$ -- 15
+substring$ -- 637
+swap$ -- 157
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 100
+type$ -- 104
 warning$ -- 0
-while$ -- 93
-width$ -- 27
-write$ -- 277
+while$ -- 98
+width$ -- 28
+write$ -- 291
 (There was 1 warning)

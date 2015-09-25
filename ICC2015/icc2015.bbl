@@ -89,6 +89,15 @@ Philip Levis, T~Clausen, Jonathan Hui, Omprakash Gnawali, and J~Ko.
 \newblock {RFC}6206: The trickle algorithm.
 \newblock https://tools.ietf.org/html/rfc6206, 2011.
 
+\bibitem{flocklab}
+Roman Lim, Federico Ferrari, Marco Zimmerling, Christoph Walser, Philipp
+  Sommer, and Jan Beutel.
+\newblock Flocklab: A testbed for distributed, synchronized tracing and
+  profiling of wireless embedded systems.
+\newblock In {\em Proceedings of the 12th International Conference on
+  Information Processing in Sensor Networks}, IPSN '13, pages 153--166, New
+  York, NY, USA, 2013. ACM.
+
 \bibitem{pegasis}
 S.~Lindsey and C.S. Raghavendra.
 \newblock Pegasis: Power-efficient gathering in sensor information systems.
