@@ -32,12 +32,10 @@ The system we propose is general and any algorithm can be used at the LPBR to as
 This allows fair load balancing on the channels and reduces channel interference that could occur when two nearby nodes transmit together on the same channel. The nodes used in this paper have a transmission range of approximately 50 metres indoors and 125 metres outdoors. It could be the case, therefore, that many nodes in a sensor network are in the transmission range of each other and potentially interfered with.
 
 %As in standard RPL all nodes are initialised to channel 26 by default. 
-All nodes are initialised to channel 26 by default in Contiki.
-The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup. Channel 26 is chosen as this is the default initial channel in Contiki since it often has fewer interference problems with WiFi and other sources. The studies in \cite{chrysso, micmac, watteyne} use several channels in their experiments and have channel 26 in common.
+All nodes are initialised to channel 26 by default in Contiki. The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup. Channel 26 is chosen as this is the default initial channel in Contiki since it often has fewer interference problems with WiFi and other sources. The studies in \cite{chrysso, micmac, watteyne} use several channels in their experiments and have channel 26 in common.
 	
 %**TWO HOP COLOURING STRATEGY?
 %\subsubsection{Two Hops Neighbour Strategy -}
-
 In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on.  
 This selection is random from channels 11 to 26 (the full range available). The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be blacklisted.  Knowledge of channel interference (gained by probing, see later description) can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is used (see section \ref{sec:channelswitch}). If no channel can be found meeting these conditions the current
 channel is kept.  
@@ -58,7 +56,6 @@ The node selection algorithm must only attempt one channel change at a time. The
 %//explain LPBR that decides whether the nodes should stay on the same channel or switch to a new channel based on the information it gathers through nodes probing.
 
 %State machine explanation should be here?
-
 \begin{figure}
 \centering
 \includegraphics[width=3.5in]{Diagram1.eps}
