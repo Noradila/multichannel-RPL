@@ -1,29 +1,16 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-The authors present a centralized solution that wastes a lot of energy on probing. In the evaluation section, they do not compare their proposal against any of the existing solutions.
+%The authors present a centralized solution that wastes a lot of energy on probing. In the evaluation section, they do not compare their proposal against any of the existing solutions.
 
-Also, the increase in overhead is not at all studied. ///need to have more details!
+%Also, the increase in overhead is not at all studied. ///need to have more details!
 
-In the evaluation section, the proposed solution is not evaluated against the existing ones! Even the comparison against standard RPL is done using different parameter settings. ///scenario 1 and 2 -> single channel would have worse result
+%In the evaluation section, the proposed solution is not evaluated against the existing ones! Even the comparison against standard RPL is done using different parameter settings. ///scenario 1 and 2 -> single channel would have worse result
 
-* The approach proposed by the authors is centralized, and requires
-  communication from the LPBR to the nodes and viceversa. The latter appears
-  to occur upon each channel switching. The communication overhead is never
-  evaluated in the paper: only a passing mention to packets is provided, which
-  is only a part of the picture from an energy standpoint.
+%* The approach proposed by the authors is centralized, and requires communication from the LPBR to the nodes and viceversa. The latter appears  to occur upon each channel switching. The communication overhead is never  evaluated in the paper: only a passing mention to packets is provided, which is only a part of the picture from an energy standpoint.
   
-* The evaluation uses end-to-end packet delivery as the main performance
-  metric. However, the authors fail to state the key parameter affecting this
-  metric, i.e., the diameter of the network. 
+%* The evaluation uses end-to-end packet delivery as the main performance metric. However, the authors fail to state the key parameter affecting this metric, i.e., the diameter of the network. 
 
-* I would have expected that MCRP is able to identify the good channels and
-  use them. Therefore, in the mixed scenario 2, I would have expected MCRP to
-  exploit the 4 good channels, leading the performance at least in between the
-  one of good and mild. Instead, performance is between mild and
-  moderate... why?
+%* I would have expected that MCRP is able to identify the good channels and use them. Therefore, in the mixed scenario 2, I would have expected MCRP to exploit the 4 good channels, leading the performance at least in between the one of good and mild. Instead, performance is between mild and moderate... why?
 
-* Moreover, in scenario 2 performance still appears to degrade over time as
-  shown in Fig.3, which doesn't happen in scenario 1. Why? It seems that in
-  this latter case MCRP provides only marginal advantages over a single
-  channel (and I would argue it uses more energy, see above)
+%* Moreover, in scenario 2 performance still appears to degrade over time as shown in Fig.3, which doesn't happen in scenario 1. Why? It seems that in this latter case MCRP provides only marginal advantages over a single channel (and I would argue it uses more energy, see above)
