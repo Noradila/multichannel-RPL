@@ -252,7 +252,7 @@ PROCESS_THREAD(slip_radio_process, ev, data)
 
   //ADILA EDIT 01/12/14
   /* Set txpower to 11 to reduce the area */
-  cc2420_set_txpower(11);
+ // cc2420_set_txpower(11);
 
   etimer_set(&et, CLOCK_SECOND * 3);
 

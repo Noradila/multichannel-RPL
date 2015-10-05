@@ -30,9 +30,5 @@ endif
 include $(CONTIKI)/Makefile.include
 
 connect-router:	border-router.native
-	#sudo ./border-router.native aaaa::1/64
-	sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64
-	#sudo ./border-router.native -a whymper.ee.ethz.ch -p PORT aaaa::1/64
-	#sudo route add -inet6 -net aaaa::1 -prefixlen 64 -interface tun0
-	#sudo ifconfig tap0 inet6 fdfd::1/64 up
-	#sudo route add -inet6 -net fdfd::1 -prefixlen 64 -interface tap0
+	#sudo ./border-router.native -a 127.0.0.1 -v6 aaaa::1/64
+	sudo ./border-router.native -a whymper.ee.ethz.ch -p 50101 aaaa::1/64

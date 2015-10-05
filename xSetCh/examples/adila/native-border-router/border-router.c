@@ -120,7 +120,7 @@ struct nodesTable {
 };
 
 LIST(nodesTable_table);
-MEMB(nodesTable_mem, struct nodesTable, 10);
+MEMB(nodesTable_mem, struct nodesTable, 100);
 
 enum {
 	CH_CHANGE,
@@ -334,15 +334,28 @@ void doSending(struct unicast_message *msg) {
   static uip_ds6_nbr_t *nbr;
   static uip_ds6_route_t *re;
 
+uint8_t randomValue;
+uint8_t rv;
+
+randomValue = (random_rand() % 10) + 1;
+
   //printf("GOT FROM STARTCHCHANGE WHEN 0 ");
   //uip_debug_ipaddr_print(&msg->address);
   //printf("\n\n");
   uip_ipaddr_copy(&holdAddr, &msg->address);
 
 //random_init((random_rand() % 6) + 20);
-random_init(16);
+//random_init(16);
   //!!randomNewCh = (random_rand() % 16) + 11;
+
+randomNewCh = (random_rand() % 16) + 11;
+
+/*printf("RV %d\n\n", rv);
+while(rv < randomValue) {
   randomNewCh = (random_rand() % 6) + 20;
+
+  rv++;
+}*/
   //! check if randomNewCh is blacklisted (if it's on the list, low success rate)
 
   msg2.type = CH_CHANGE;
@@ -1078,8 +1091,9 @@ struct unicast_message msg2;
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     /* do anything here??? */
 
-//  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
-  etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
+//+  etimer_set(&changeChTimer, 120 * CLOCK_SECOND); //real hardware
+  etimer_set(&changeChTimer, 300 * CLOCK_SECOND); //real hardware
+//+  etimer_set(&changeChTimer, 20 * CLOCK_SECOND); //simulation
 //check if it changes parent (15 nodes, 1 interference(button-xadila-unicast1.c))
 ////  etimer_set(&changeChTimer, 100 * CLOCK_SECOND);
 
@@ -1172,8 +1186,11 @@ uint8_t wTime;
 
 //    etimer_set(&time, 10 * CLOCK_SECOND);
 
-etimer_set(&time, 40 * CLOCK_SECOND); //simulation
-//etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
+//+etimer_set(&time, 40 * CLOCK_SECOND); //simulation
+//+etimer_set(&time, 80 * CLOCK_SECOND); //real hardware
+//++etimer_set(&time, 120 * CLOCK_SECOND); //real hardware
+etimer_set(&time, 300 * CLOCK_SECOND); //real hardware
+//£etimer_set(&time, 60 * CLOCK_SECOND); //real hardware
 
 //16 INTERFERENCE USE 70
 //    etimer_set(&time, 70 * CLOCK_SECOND);
