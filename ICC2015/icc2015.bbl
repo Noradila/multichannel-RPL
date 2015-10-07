@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{ieee802.15.4}
+{IEEE} standard for local and metropolitan area networks--part 15.4: Low-rate
+  wireless personal area networks (lr-wpans).
+\newblock {\em {IEEE} Std 802.15.4-2011 (Revision of IEEE Std 802.15.4-2006)},
+  pages 1--314, Sept 2011.
+
 \bibitem{micmac}
 B.~Al~Nahas, S.~Duquennoy, V.~Iyer, and T.~Voigt.
 \newblock Low-power listening goes multi-channel.
@@ -103,6 +109,13 @@ S.~Lindsey and C.S. Raghavendra.
 \newblock Pegasis: Power-efficient gathering in sensor information systems.
 \newblock In {\em Aerospace Conference Proceedings, 2002. IEEE}, volume~3,
   pages 3--1125--3--1130 vol.3, 2002.
+
+\bibitem{ieeeCompare}
+M.~Petrova, Lili Wu, P.~Mahonen, and J.~Riihijarvi.
+\newblock Interference measurements on performance degradation between
+  colocated ieee 802.11g/n and ieee 802.15.4 networks.
+\newblock In {\em Networking, 2007. ICN '07. Sixth International Conference
+  on}, pages 93--93, April 2007.
 
 \bibitem{sitanayah_cooja-based_2013}
 Lanny Sitanayah, Cormac~J. Sreenan, and Szymon Fedor.
