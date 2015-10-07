@@ -1,13 +1,13 @@
 \section{Multichannel Cross-Layer Routing Protocol}
 \label{sec:multichannel}
 
-Multichannel Cross-Layer Routing Protocol (MCRP) concentrates on finding channels for nodes that are free from or have low interference. It allows the allocation of these channels in a way likely to minimise the chances of nodes which are physically near communicating on the same channel and hence reduce cross interference between different pairs of nodes.
+Multichannel Cross-Layer Routing Protocol (MCRP) concentrates on finding channels for nodes that are free from or have low interference. It allows the allocation of these channels in a way likely to minimise the chances of nodes which are physically near to communicate on the same channel and hence, reduce cross interference between different pairs of nodes.
 
 \subsection{Overview}
 
 The design of the multichannel protocol is based on several crucial observations:
 \begin{itemize}
-\item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is used for decision making. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on the criteria that are explained in the next section. 
+\item Channel assignment - Sensors have limited memory and battery capabilities. In order to maximise the sensors lifetime, a centralised LPBR that has larger memory and fully powered is used for decision making. LPBR has a complete knowledge of the topology which enables it to make good channel assignment decisions based on a two-hop colouring protocol.
 
 \item Interference - External interference cannot be predicted, thus channels cannot be allocated beforehand as it varies over time and locations. It is impossible to determine a single channel that is free from interference at any location. Our protocol checks the channel condition each time before deciding on a channel change to reduce interference and maximise throughput.
 %Please consider the following notes on the design:
@@ -16,9 +16,9 @@ The design of the multichannel protocol is based on several crucial observations
 
 \item Frequency diversity - Multichannel increases the robustness of the network towards interference. However, applying multichannel to the existing RPL may hinder neighbour detection and RPL processes to maintain the network topology as it does not switch to the correct channel. We overcome this problem by enabling both broadcast on a default channel, and unicast, in neighbour detection and RPL control messages. 
 
-\item RPL - as we are using multichannel, sending a broadcast on every channels would waste the bandwidth. RPL messages are instead being sent through unicast when the neighbours are known and broadcast in the default Contiki channel 26 in order to reduce unnecessary transmitting in broadcast. By sending a broadcast on only one channel which the new neighbours are going to start on, the nodes can be discovered and the channel changes processes can be done. 
+\item RPL - In multichannel, sending a broadcast on every channels would waste the bandwidth. RPL messages are instead sent through unicast when the neighbours are known and broadcast in the default Contiki channel 26 in order to reduce unnecessary transmitting in broadcast. By sending a broadcast on only one channel on which the new neighbours are going to start, the nodes can be discovered and the channel change processes can be performed. 
 
-\item Topology - The topology could change according to the routing metric as the how the usual RPL would work. The nodes can still change the parents as usual as all neighbours know each other new channels. The neighbours that are not part of the route do not probe the parent when making the channel decision. However, the neighbours are informed of any channel changes.
+\item Topology - The topology could change according to the routing metric the way the usual RPL would work. The nodes can still change the parents as usual as all neighbours know each other new channels. The neighbours that are not part of the route do not probe the parent when making the channel decision. However, the neighbours are informed of any channel changes.
 
 \end{itemize}
 
@@ -26,15 +26,15 @@ Our cross-layer multi-channel protocol focuses on the network and application la
 
 \subsection{Channel Selection Strategy}
 
-The system we propose is general and any algorithm can be used at the LPBR to assign channels. In this paper we use a two-hop colouring protocol to select a channel to be assigned to a node. Channels are chosen in a way that ensures no nodes within two hops of each other on the network are listening on the same channel.
-This allows fair load balancing on the channels and reduces channel interference that could occur when two nearby nodes transmit together on the same channel. The nodes used in this paper have a transmission range of approximately 50 metres indoors and 125 metres outdoors. It could be the case, therefore, that many nodes in a sensor network are in the transmission range of each other and potentially interfered with.
+One main advantage of the system we propose is it is general and any algorithm can be used at the LPBR to assign channels. In this paper we use a two-hop colouring protocol to select a channel to be assigned to a node. Channels are chosen in a way that ensures no nodes within two hops of each other on the network are listening on the same channel.
+This allows fair load balancing on the channels and reduces channel interference that could occur when two nearby nodes transmit together on the same channel. The nodes used in this paper have a transmission range of approximately 20-30 metres indoors and 75-100 metres outdoors \cite{telosb-datasheet}. It could be the case, therefore, that many nodes in a sensor network are in the transmission range of each other and potentially interfered with.
  
-All nodes are initialised to channel 26 by default in Contiki. The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup. Channel 26 is chosen as this is the default initial channel in Contiki since it often has fewer interference problems with Wi-Fi and other sources. The studies in \cite{chrysso, micmac, watteyne} use several channels in their experiments and have channel 26 in common.
+All nodes are initialised to channel 26 by default in Contiki since it often has fewer interference problems with Wi-Fi and other sources. The studies in \cite{chrysso, micmac, watteyne} use whitelisted channels in their experiments and have channel 26 in common. The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup.  
 	
-In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on. This selection is random from channels 11 to 26 (the full range available). The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be blacklisted.  Knowledge of channel interference (gained by probing, see later description) can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is used (see section \ref{sec:channelswitch}). If no channel can be found meeting these conditions the current
-channel is kept.  
+In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on. The selection is random (from channels 11 to 26) based on the full range available \cite{ieee802.15.4}. The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be blacklisted.  Knowledge of channel interference which is gained by probing can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is triggered. If no channel can be found meeting these conditions, the current channel is kept.  
 
-The node selection algorithm must only attempt one channel change at a time. The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. Until one or other of these happens, no new channel change will be made.
+The node selection algorithm must only attempt one channel change at a time to ensure probing is done on the correct new channel and for the node to finalise the channel to be used before another node tries to attempt a channel change.////WHY?? TO CHANGE
+The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. //WHY?? Until one or other of these happens, no new channel change will be made to ensure that the neighbours will be able to transmit on the correct channel.////TO CHANGE
 
 \subsection{Channel Switching}
 \label{sec:channelswitch}

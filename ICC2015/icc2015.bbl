@@ -131,6 +131,11 @@ A.~Sivanantha, B.~Hamdaoui, M.~Guizani, Xiuzhen Cheng, and T.~Znati.
 \newblock In {\em Wireless Communications and Mobile Computing Conference
   (IWCMC), 2012 8th International}, pages 1159--1164, Aug 2012.
 
+\bibitem{telosb-datasheet}
+Crossbow Technology.
+\newblock {TelosB} - {TelosB} mote platform.
+\newblock Document Part Number: 6020-0094-01 Rev B.
+
 \bibitem{tsch}
 Luigi Alfredo~Grieco Thomas~Watteyne, Maria Rita~Palattella.
 \newblock Using {IEEE802.15.4e} time-slotted channel hopping {(TSCH)} in an
