@@ -33,8 +33,8 @@ All nodes are initialised to channel 26 by default in Contiki since it often has
 	
 In the two-hop colouring protocol, the LPBR chooses a node to which it will assign a channel to listen on. The selection is random (from channels 11 to 26) based on the full range available \cite{ieee802.15.4}. The protocol checks neighbours and neighbours of neighbours to see if any of those are listening on this channel already. If any are, a new channel is picked from the remaining list of available channels. If the LPBR has knowledge of existing bad channels then those channels can be blacklisted.  Knowledge of channel interference which is gained by probing can be used to decide that a channel should not be used. If a channel is found then the channel switching protocol is triggered. If no channel can be found meeting these conditions, the current channel is kept.  
 
-The node selection algorithm must only attempt one channel change at a time to ensure probing is done on the correct new channel and for the node to finalise the channel to be used before another node tries to attempt a channel change.////WHY?? TO CHANGE
-The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. //WHY?? Until one or other of these happens, no new channel change will be made to ensure that the neighbours will be able to transmit on the correct channel.////TO CHANGE
+The node selection algorithm must only attempt one channel change at a time to ensure probing is done on the correct new channel and for the node to finalise the channel to be used before another node tries to attempt a channel change.
+The protocol ensures that the channel change attempt will always result in a message returned to the LPBR either confirming the new channel or announcing a reversion to the old channel. Until one or other of these happens, no new channel change will be made to ensure that the neighbours are transmitting on the correct channel.
 
 \subsection{Channel Switching}
 \label{sec:channelswitch}
