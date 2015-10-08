@@ -1,15 +1,11 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 OCT 2015 17:38
-=======
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.4.24)  8 OCT 2015 00:10
->>>>>>> bd254fbcd6da5b3b06f04b64218427d964abf8ff
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.22)  8 OCT 2015 17:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **icc2015.tex
 (./icc2015.tex
-LaTeX2e <2014/05/01>
-Babel <3.9l> and hyphenation patterns for 2 languages loaded.
+LaTeX2e <2011/06/27>
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (./IEEEtran.cls
 Document Class: IEEEtran 2014/09/17 V1.8a by Michael Shell
 -- See the "IEEEtran_HOWTO" manual for usage information.
@@ -117,19 +113,19 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \c@IEEEbiography=\count93
 \@IEEEtranrubishbin=\box27
 ) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
-Package: inputenc 2014/04/30 v1.2b Input encoding file
+Package: inputenc 2008/03/30 v1.1d Input encoding file
 \inpenc@prehook=\toks15
 \inpenc@posthook=\toks16
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2014/09/29 v1.1m UTF-8 support for inputenc
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
-File: t1enc.dfu 2014/09/29 v1.1m UTF-8 support for inputenc
+File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00AB (decimal 171)
@@ -279,7 +275,7 @@ Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
-File: ot1enc.dfu 2014/09/29 v1.1m UTF-8 support for inputenc
+File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00B8 (decimal 184)
@@ -310,7 +306,7 @@ Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
-File: omsenc.dfu 2014/09/29 v1.1m UTF-8 support for inputenc
+File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
    defining Unicode char U+00B7 (decimal 183)
@@ -334,10 +330,10 @@ Now handling font encoding U ...
    defining Unicode char U+2423 (decimal 9251)
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks17
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
@@ -378,7 +374,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@floatcapt=\box29
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks20
 \c@algorithm=\count96
@@ -493,207 +489,63 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-(./Abstract.tex) (./Introduction.tex
-
-LaTeX Warning: Citation `ieee802.15.4' on page 1 undefined on input line 4.
-
-
-LaTeX Warning: Citation `Boano:2010:MSM:2127940.2127963' on page 1 undefined on
- input line 4.
+(./Abstract.tex) (./Introduction.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/
+pdftex.map}
 
 
-LaTeX Warning: Citation `ieeeCompare' on page 1 undefined on input line 4.
-
-
-LaTeX Warning: Citation `ieee_2012' on page 1 undefined on input line 4.
-
-
-LaTeX Warning: Citation `wu' on page 1 undefined on input line 4.
-
-
-LaTeX Warning: Citation `watteyne' on page 1 undefined on input line 7.
-
-
-LaTeX Warning: Citation `watteyne' on page 1 undefined on input line 7.
-
-
-LaTeX Warning: Citation `chrysso' on page 1 undefined on input line 7.
-
-
-LaTeX Warning: Citation `micmac' on page 1 undefined on input line 7.
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
-
-
-]
-
-LaTeX Warning: Citation `flocklab' on page 2 undefined on input line 18.
-
-
-LaTeX Warning: Reference `sec:conclusion' on page 2 undefined on input line 20.
-
-
-) (./RelatedWork.tex
-
-LaTeX Warning: Citation `mc-lmac' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `y-mac' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `tsch' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `emmac' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `muchmac' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `chrysso' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `micmac' on page 2 undefined on input line 3.
-
-
-LaTeX Warning: Citation `micmac' on page 2 undefined on input line 7.
-
-
-LaTeX Warning: Citation `contikimac' on page 2 undefined on input line 7.
-
-
-LaTeX Warning: Citation `micmac' on page 2 undefined on input line 7.
-
-
-LaTeX Warning: Citation `orpl' on page 2 undefined on input line 7.
-
-
-LaTeX Warning: Citation `chrysso' on page 2 undefined on input line 7.
-
-
-LaTeX Warning: Citation `leach' on page 2 undefined on input line 11.
-
-
-LaTeX Warning: Citation `pegasis' on page 2 undefined on input line 11.
-
-
-LaTeX Warning: Citation `ctp' on page 2 undefined on input line 11.
-
-
-LaTeX Warning: Citation `winter2012rpl' on page 2 undefined on input line 13.
-
-
-LaTeX Warning: Citation `routingmetrics' on page 2 undefined on input line 13.
-
-
-LaTeX Warning: Citation `mrhof' on page 2 undefined on input line 13.
-
-) (./MultichannelProtocol.tex
+]) (./RelatedWork.tex) (./MultichannelProtocol.tex
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 10.
  [2]
-<<<<<<< HEAD
 <Diagram1.pdf, id=14, 739.76375pt x 425.59pt>
 File: Diagram1.pdf Graphic file (type pdf)
  <use Diagram1.pdf>
 Package pdftex.def Info: Diagram1.pdf used on input line 44.
 (pdftex.def)             Requested size: 252.94499pt x 145.51692pt.
-=======
-
-LaTeX Warning: Citation `telosb-datasheet' on page 3 undefined on input line 30
-.
-
-
-LaTeX Warning: Citation `chrysso' on page 3 undefined on input line 32.
-
-
-LaTeX Warning: Citation `micmac' on page 3 undefined on input line 32.
-
-
-LaTeX Warning: Citation `watteyne' on page 3 undefined on input line 32.
-
-
-LaTeX Warning: Citation `ieee802.15.4' on page 3 undefined on input line 34.
-
-Package epstopdf Info: Source file: <Diagram1.eps>
-(epstopdf)                    date: 2015-10-08 00:06:59
-(epstopdf)                    size: 0 bytes
-(epstopdf)             Output file: <Diagram1-eps-converted-to.pdf>
-(epstopdf)                    date: 2015-10-08 00:07:04
-(epstopdf)                    size: 2217 bytes
-(epstopdf)             Command: <repstopdf --outfile=Diagram1-eps-converted-to.
-pdf Diagram1.eps>
-(epstopdf)             \includegraphics on input line 44.
-Package epstopdf Info: Output file is already uptodate.
-<Diagram1-eps-converted-to.pdf, id=14, 597.23125pt x 845.1575pt>
-File: Diagram1-eps-converted-to.pdf Graphic file (type pdf)
-
-<use Diagram1-eps-converted-to.pdf>
-Package pdftex.def Info: Diagram1-eps-converted-to.pdf used on input line 44.
-(pdftex.def)             Requested size: 252.94499pt x 357.95561pt.
->>>>>>> bd254fbcd6da5b3b06f04b64218427d964abf8ff
 
 Overfull \hbox (0.94499pt too wide) in paragraph at lines 44--45
  [][] 
  []
 
-<<<<<<< HEAD
 [3 <./Diagram1.pdf>]) (./Evaluation.tex [4]
-=======
-[3]) (./Evaluation.tex
-
-LaTeX Warning: Citation `Boano:2010:MSM:2127940.2127963' on page 4 undefined on
- input line 10.
-
-[4 <./Diagram1-eps-converted-to.pdf>]
-
-LaTeX Warning: Citation `Boano:2010:MSM:2127940.2127963' on page 5 undefined on
- input line 33.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
->>>>>>> bd254fbcd6da5b3b06f04b64218427d964abf8ff
 Package epstopdf Info: Source file: <experiments/single_channel.eps>
-(epstopdf)                    date: 2015-10-08 00:08:17
-(epstopdf)                    size: 0 bytes
+(epstopdf)                    date: 2015-05-22 17:25:28
+(epstopdf)                    size: 21783 bytes
 (epstopdf)             Output file: <experiments/single_channel-eps-converted-t
 o.pdf>
-(epstopdf)                    date: 2015-10-08 00:08:19
-(epstopdf)                    size: 2217 bytes
+(epstopdf)                    date: 2015-05-25 16:35:18
+(epstopdf)                    size: 7782 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/single_channel
 -eps-converted-to.pdf experiments/single_channel.eps>
 (epstopdf)             \includegraphics on input line 40.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/single_channel-eps-converted-to.pdf, id=23, 597.23125pt x 845.1575
-pt>
+<experiments/single_channel-eps-converted-to.pdf, id=29, 361.35pt x 201.75375pt
+>
 File: experiments/single_channel-eps-converted-to.pdf Graphic file (type pdf)
  <use experiments/single_channel-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/single_channel-eps-converted-to.pdf used o
 n input line 40.
-(pdftex.def)             Requested size: 232.19843pt x 328.59131pt.
+(pdftex.def)             Requested size: 232.19843pt x 129.6453pt.
 Package epstopdf Info: Source file: <experiments/multi_channel.eps>
-(epstopdf)                    date: 2015-10-08 00:08:26
-(epstopdf)                    size: 0 bytes
+(epstopdf)                    date: 2015-10-07 16:33:19
+(epstopdf)                    size: 20773 bytes
 (epstopdf)             Output file: <experiments/multi_channel-eps-converted-to
 .pdf>
-(epstopdf)                    date: 2015-10-08 00:08:28
-(epstopdf)                    size: 2217 bytes
+(epstopdf)                    date: 2015-10-07 17:01:01
+(epstopdf)                    size: 7094 bytes
 (epstopdf)             Command: <repstopdf --outfile=experiments/multi_channel-
 eps-converted-to.pdf experiments/multi_channel.eps>
 (epstopdf)             \includegraphics on input line 51.
 Package epstopdf Info: Output file is already uptodate.
 
-<experiments/multi_channel-eps-converted-to.pdf, id=24, 597.23125pt x 845.1575p
-t>
+<experiments/multi_channel-eps-converted-to.pdf, id=30, 361.35pt x 201.75375pt>
 File: experiments/multi_channel-eps-converted-to.pdf Graphic file (type pdf)
- <use experiments/multi_channel-eps-converted-to.pdf>
+<use experiments/multi_channel-eps-converted-to.pdf>
 Package pdftex.def Info: experiments/multi_channel-eps-converted-to.pdf used on
  input line 51.
-<<<<<<< HEAD
 (pdftex.def)             Requested size: 232.19843pt x 129.6453pt.
  [5 <./experiments/single_channel-eps-converted-to.pdf> <./experiments/multi_ch
 annel-eps-converted-to.pdf>]) (./Conclusion.tex) (./icc2015.bbl
@@ -743,40 +595,3 @@ PDF statistics:
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-=======
-(pdftex.def)             Requested size: 232.19843pt x 328.59131pt.
- [5 <./experiments/single_channel-eps-converted-to.pdf>]
-
-LaTeX Warning: Reference `fig:multi_interference' on page 6 undefined on input 
-line 69.
-
-) (./Conclusion.tex) (./icc2015.bbl
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.3 \end{thebibliography}
-                         
-? 
-! Emergency stop.
- ...                                              
-                                                  
-l.3 \end{thebibliography}
-                         
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
- 
-Here is how much of TeX's memory you used:
- 3025 strings out of 495020
- 46843 string characters out of 6181324
- 110830 words of memory out of 5000000
- 6182 multiletter control sequences out of 15000+600000
- 34114 words of font info for 63 fonts, out of 8000000 for 9000
- 17 hyphenation exceptions out of 8191
- 38i,7n,24p,1500b,234s stack positions out of 5000i,500n,10000p,200000b,80000s
-!  ==> Fatal error occurred, no output PDF file produced!
->>>>>>> bd254fbcd6da5b3b06f04b64218427d964abf8ff

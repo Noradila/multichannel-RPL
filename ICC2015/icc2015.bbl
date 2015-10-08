@@ -1,3 +1,193 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
+
+\bibitem{ieee802.15.4}
+{IEEE} standard for local and metropolitan area networks--part 15.4: Low-rate
+  wireless personal area networks (lr-wpans).
+\newblock {\em {IEEE} Std 802.15.4-2011 (Revision of IEEE Std 802.15.4-2006)},
+  pages 1--314, Sept 2011.
+
+\bibitem{micmac}
+B.~Al~Nahas, S.~Duquennoy, V.~Iyer, and T.~Voigt.
+\newblock Low-power listening goes multi-channel.
+\newblock In {\em 2014 {IEEE} International Conference on Distributed Computing
+  in Sensor Systems ({DCOSS})}, pages 2--9, May 2014.
+
+\bibitem{leach}
+Asaduzzaman and Hyung~Yun Kong.
+\newblock Energy efficient cooperative leach protocol for wireless sensor
+  networks.
+\newblock {\em Communications and Networks, Journal of}, 12(4):358--365, Aug
+  2010.
+
+\bibitem{Boano:2010:MSM:2127940.2127963}
+Carlo~Alberto Boano, Thiemo Voigt, Nicolas Tsiftes, Luca Mottola, Kay
+  R\"{o}mer, and Marco~Antonio Z\'{u}\~{n}iga.
+\newblock Making sensornet mac protocols robust against interference.
+\newblock In {\em Proceedings of the 7th European Conference on Wireless Sensor
+  Networks}, EWSN'10, pages 272--288, 2010.
+
+\bibitem{muchmac}
+Joris Borms, Kris Steenhaut, and Bart Lemmens.
+\newblock Low-overhead dynamic multi-channel mac for wireless sensor networks.
+\newblock In {\em Proceedings of the 7th European Conference on Wireless Sensor
+  Networks}, EWSN'10, pages 81--96, 2010.
+
+\bibitem{chien_comparative_2011}
+Thang~Vu Chien, Hung~Nguyen Chan, and Thanh~Nguyen Huu.
+\newblock A comparative study on operating system for wireless sensor networks.
+\newblock In {\em 2011 International Conference on Advanced Computer Science
+  and Information System ({ICACSIS})}, pages 73--78, December 2011.
+
+\bibitem{contikimac}
+Adam Dunkels.
+\newblock The {ContikiMAC} radio duty cycling protocol.
+\newblock Technical Report T2011:13. ISSN 1100-3154
+  \url{http://dunkels.com/adam/dunkels11contikimac.pdf}, 2011.
+
+\bibitem{orpl}
+Simon Duquennoy, Olaf Landsiedel, and Thiemo Voigt.
+\newblock Let the tree bloom: Scalable opportunistic routing with {ORPL}.
+\newblock In {\em Proceedings of the 11th {ACM} Conference on Embedded
+  Networked Sensor Systems}, {SenSys} '13, pages 2:1--2:14, 2013.
+
+\bibitem{mrhof}
+Omprakash Gnawali.
+\newblock The minimum rank with hysteresis objective function, {RFC}6719.
+\newblock \url{https://tools.ietf.org/html/rfc6719}, 2012.
+
+\bibitem{ctp}
+Omprakash Gnawali, Rodrigo Fonseca, Kyle Jamieson, David Moss, and Philip
+  Levis.
+\newblock Collection tree protocol.
+\newblock In {\em Proceedings of the 7th ACM Conference on Embedded Networked
+  Sensor Systems}, SenSys '09, pages 1--14, 2009.
+
+\bibitem{ieee_2012}
+{IEEE}.
+\newblock {IEEE} standard for information technology--telecommunications and
+  information exchange between systems local and metropolitan area
+  networks--specific requirements part 11.
+\newblock {\em {IEEE} Std 802.11-2012 (Revision of {IEEE} Std 802.11-2007)},
+  pages 1--2793, March 2012.
+
+\bibitem{mc-lmac}
+Ozlem~Durmaz Incel, Lodewijk van Hoesel, Pierre Jansen, and Paul Havinga.
+\newblock {MC-LMAC}: A multi-channel {MAC} protocol for wireless sensor
+  networks.
+\newblock {\em Ad Hoc Netw.}, 9(1):73--94, January 2011.
+
+\bibitem{chrysso}
+V.~Iyer, M.~Woehrle, and K.~Langendoen.
+\newblock Chrysso - a multi-channel approach to mitigate external interference.
+\newblock In {\em 2011 8th Annual {IEEE} Communications Society Conference on
+  Sensor, Mesh and Ad Hoc Communications and Networks ({SECON})}, pages
+  449--457, June 2011.
+
+\bibitem{y-mac}
+Youngmin Kim, Hyojeong Shin, and Hojung Cha.
+\newblock {Y-MAC}: An energy-efficient multi-channel {MAC} protocol for dense
+  wireless sensor networks.
+\newblock In {\em Information Processing in Sensor Networks, 2008. IPSN '08.
+  International Conference on}, pages 53--63, April 2008.
+
+\bibitem{trickle}
+Philip Levis, T~Clausen, Jonathan Hui, Omprakash Gnawali, and J~Ko.
+\newblock {RFC}6206: The trickle algorithm.
+\newblock https://tools.ietf.org/html/rfc6206, 2011.
+
+\bibitem{flocklab}
+Roman Lim, Federico Ferrari, Marco Zimmerling, Christoph Walser, Philipp
+  Sommer, and Jan Beutel.
+\newblock Flocklab: A testbed for distributed, synchronized tracing and
+  profiling of wireless embedded systems.
+\newblock In {\em Proceedings of the 12th International Conference on
+  Information Processing in Sensor Networks}, IPSN '13, pages 153--166, New
+  York, NY, USA, 2013. ACM.
+
+\bibitem{pegasis}
+S.~Lindsey and C.S. Raghavendra.
+\newblock Pegasis: Power-efficient gathering in sensor information systems.
+\newblock In {\em Aerospace Conference Proceedings, 2002. IEEE}, volume~3,
+  pages 3--1125--3--1130 vol.3, 2002.
+
+\bibitem{ieeeCompare}
+M.~Petrova, Lili Wu, P.~Mahonen, and J.~Riihijarvi.
+\newblock Interference measurements on performance degradation between
+  colocated ieee 802.11g/n and ieee 802.15.4 networks.
+\newblock In {\em Networking, 2007. ICN '07. Sixth International Conference
+  on}, pages 93--93, April 2007.
+
+\bibitem{sitanayah_cooja-based_2013}
+Lanny Sitanayah, Cormac~J. Sreenan, and Szymon Fedor.
+\newblock A cooja-based tool for maintaining sensor network coverage
+  requirements in a building.
+\newblock In {\em Proceedings of the 11th {ACM} Conference on Embedded
+  Networked Sensor Systems}, {SenSys} '13, pages 70:1--70:2, 2013.
+
+\bibitem{emmac}
+A.~Sivanantha, B.~Hamdaoui, M.~Guizani, Xiuzhen Cheng, and T.~Znati.
+\newblock Em-mac: An energy-aware multi-channel mac protocol for multi-hop
+  wireless networks.
+\newblock In {\em Wireless Communications and Mobile Computing Conference
+  (IWCMC), 2012 8th International}, pages 1159--1164, Aug 2012.
+
+\bibitem{telosb-datasheet}
+Crossbow Technology.
+\newblock {TelosB} - {TelosB} mote platform.
+\newblock Document Part Number: 6020-0094-01 Rev B.
+
+\bibitem{tsch}
+Luigi Alfredo~Grieco Thomas~Watteyne, Maria Rita~Palattella.
+\newblock Using {IEEE802.15.4e} time-slotted channel hopping {(TSCH)} in an
+  internet of things {(IoT)}: Problem statement.
+\newblock \url{https://tools.ietf.org/html/rfc7554}, May 2015.
+
+\bibitem{of0}
+Pascal Thubert.
+\newblock Objective function zero for the routing protocol for low-power and
+  lossy networks {(RPL)}, {RFC}6552.
+\newblock \url{https://tools.ietf.org/html/rfc6552}, 2012.
+
+\bibitem{tsiftes_framework_2010}
+Nicolas Tsiftes, Joakim Eriksson, Niclas Finne, Fredrik Osterlind, Joel
+  Höglund, and Adam Dunkels.
+\newblock A framework for low-power {IPv6} routing simulation, experimentation,
+  and evaluation.
+\newblock In {\em Proceedings of the {ACM} {SIGCOMM} 2010 Conference},
+  {SIGCOMM} '10, pages 479--480, New York, {NY}, {USA}, 2010.
+
+\bibitem{tsvetkov2011rpl}
+Tsvetko Tsvetkov.
+\newblock {RPL}: {IPv6} routing protocol for low power and lossy networks.
+\newblock {\em Sensor Nodes--Operation, Network and Application (SN)}, 59:2,
+  2011.
+
+\bibitem{routingmetrics}
+J~Vasseur, M~Kim, K~Pister, N~Dejean, and D~Barthel.
+\newblock Routing metrics used for path calculation in low power and lossy
+  networks.
+\newblock https://tools.ietf.org/html/rfc6551, 2012.
+
+\bibitem{watteyne}
+Thomas Watteyne, Ankur Mehta, and Kris Pister.
+\newblock Reliability through frequency diversity: Why channel hopping makes
+  sense.
+\newblock In {\em Proceedings of the 6th {ACM} Symposium on Performance
+  Evaluation of Wireless Ad Hoc, Sensor, and Ubiquitous Networks}, pages
+  116--123, 2009.
+
+\bibitem{winter2012rpl}
+T~Winter, P~Thubert, T~Clausen, J~Hui, R~Kelsey, P~Levis, K~Pister, R~Struik,
+  and J~Vasseur.
+\newblock {RPL}: {IPv6} routing protocol for low power and lossy networks,
+  {RFC} 6550.
+\newblock \url{https://tools.ietf.org/html/rfc6550}, 2012.
+
+\bibitem{wu}
+Yafeng Wu, J.A. Stankovic, Tian He, and Shan Lin.
+\newblock Realistic and efficient multi-channel communications in wireless
+  sensor networks.
+\newblock In {\em {IEEE} {INFOCOM} 2008. The 27th Conference on Computer
+  Communications}, April 2008.
 
 \end{thebibliography}
