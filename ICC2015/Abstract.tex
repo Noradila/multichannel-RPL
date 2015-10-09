@@ -1,8 +1,9 @@
 This paper proposes a new centralised multi-channel tree building protocol for ad-hoc sensor networks. Our protocol alleviates the effect of interference which results in improved network efficiency and stability, link reliability and minimised latency. 
-	Our proposal takes into account all available channels to utilise the spectrum and aims to use the spectrum efficiently by transmitting on several channels. The protocol detects which channels suffer interference and changes away from those channels. We use two-hop colouring protocol to avoid collision. 
-In order to maintain a link when a node changes its channel, all neighbours must be informed of the change.
-	All nodes are battery operated except for the low power border router (LPBR). This enables a centralised channel switching process at the LPBR. Our protocol is inspired by the routing protocol for low power and lossy networks (RPL). In its initial phase, the protocol uses RPL's standard topology formation to create an initial working topology and then seeks to improve this topology by switching channels.
-	We implement and evaluate our solution using the Contiki framework. Our experimental results demonstrate an increased resilience to interference, and significant higher throughput making better use of the total available spectrum and link stability. 
+        Our proposal takes into account all available channels to utilise the spectrum and aims to use the spectrum efficiently by transmitting on several channels. The protocol detects which channels suffer interference and changes away from those channels. We use two-hop colouring protocol to avoid collision on the same channel. 
+%In order to maintain a link when a node changes its channel, all neighbours must be informed of the change.
+        All nodes are battery operated except for the low power border router (LPBR). This enables a centralised channel switching process at the LPBR. Our protocol is inspired by the routing protocol for low power and lossy networks (RPL). In its initial phase, the protocol uses RPL's standard topology formation to create an initial working topology and then seeks to improve this topology by switching channels.
+        We implement and evaluate our solution using the Contiki framework. Our experimental results demonstrate an increased resilience to interference, and significant higher throughput making better use of the total available spectrum and link stability. 
+
 
 
 
