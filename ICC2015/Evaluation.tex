@@ -1,14 +1,14 @@
 \section{Evaluation}
 \label{sec:evaluation}
 %ours, RPL + ContikiMAC, MiCMAC
-The performance of MCRP is compared against the standard RPL with ContikiMAC on multiple channels.
+The performance of MCRP is compared against the standard RPL with ContikiMAC.
 
 \subsection{Experimental Setup}
 %//methodology? key metrics?
-We evaluate the protocol in the  Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 31 nodes are used to run the simulation where we have 1 border router node, 16 interference nodes, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR. RPL border router is used as LPBR in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of 10K bytes and 48K bytes of flash memory. By using a border router, this allows channel changing to be decided in real time without draining the memory and battery on a sensor. The border router also acts as the root of the tree.
+We evaluate the protocol in the  Cooja simulated environment with emulation of TMote sky nodes that feature the CC2420 transceiver, a 802.15.4 radio. The nodes run on IPv6, using UDP with standard RPL and 6LoWPAN protocols. The network consists of 31 nodes are used to run the simulation where we have 1 border router node, 16 interference nodes, and 14 duty cycled nodes that act as UDP clients to send packets to LPBR spanning over 20-30 metres between each node. RPL border router is used as LPBR in order to move most processing decisions on a PC as it has more RAM and better processing capabilities than a sensor. TelosB has limited RAM and ROM of 10K bytes and 48K bytes of flash memory \cite{telosb-datasheet}. By using a border router, this allows channel changing to be decided in real time without draining the memory and battery on a sensor. The border router also acts as the root of the tree.
 
-We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on several channels at random (see later). The interference model that we use is described in \cite{Boano:2010:MSM:2127940.2127963}. The interference has two states, a clear state and an interference state. 
-In the interference state, the interference node generates packets for a time that is uniformly distributed between $9/16$ seconds and $15/16$ seconds. In the clear state the interferer produces no packets and stays in this state for between $3/4 * \emph{clear\textunderscore time}$ and $5/4 * \emph{clear\textunderscore time}$ where \emph{clear\textunderscore time} refers to the rate of interference (see later).
+We simulated a controlled interference node that generates semi-periodic bursty interference to resemble a simplified WiFi or Bluetooth transmitter on several channels at random. The interference model that we use is described in \cite{Boano:2010:MSM:2127940.2127963}. The interference has two states, a clear state and an interference state. 
+In the interference state, the interference node generates packets for a time that is uniformly distributed between $9/16$ seconds and $15/16$ seconds. In the clear state the interferer produces no packets and stays in this state for between $3/4 * \emph{clear\textunderscore time}$ and $5/4 * \emph{clear\textunderscore time}$ where \emph{clear\textunderscore time} refers to the rate of interference.
 %In the clear state the interferer produces no packets and stays in this state for between $9/16$ seconds and $15/16$ seconds. In the interference state, the interference node generates packets for a time that is uniformly distributed between $3/4 * \emph{clear\textunderscore time}$ and $5/4 * \emph{clear\textunderscore time}$ where \emph{clear\textunderscore time} refers to the rate of interference (see later). 
 We use multiple channels interference in our simulation to show our hypothesis that our multichannel protocol can help avoid interference. We consider the scenario where an RPL system is subject to interference on its channel after set up has successfully completed so the RPL set up is allowed to complete before interference begins.
 
@@ -22,7 +22,8 @@ We evaluate MCRP using an end-to-end packet delivery performance metric. The tra
 
 %//be more clear about interference model; when it switches on, what is the experimental setup - systematic description of all stages and why. DON'T MENTION PROBLEMS!
 
-We run the simulation for a duration of 60 minutes to send 560 packets. When the nodes are switched on for the first time, all nodes are initialised to channel 26 by default. RPL is allowed five minutes to set up (which is ample time). RPL topology is formed in a minute. We wait for another 4 minutes to allow trickle timer to doubles the interval length so that RPL control messages are less frequently invoke. We then let our multichannel protocol runs for 10 minutes. In our 15 nodes simulation, our protocol takes 7-8 minutes to run the channel change set up. We allow another 2 minutes wait time if channel changes retransmission happen. In a single channel simulation, all the nodes are changed to channel 22 after 5 minutes of RPL set up time. This allows RPL to have enough time to discover all nodes to form an optimised topology. The topology formation does not formed completely if the interference node interferes from the beginning. The interference node starts sending packets to interfere after 3 minutes the system is switched on so that the interference channel is involve in the channel changes decision. We proved that our protocol tries to avoid from changing to the interference channel through time out and probing failures. After 15 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 10 times.
+We run the simulation for a duration of 45-60 minutes to send 210-560 packets. When the nodes are switched on for the first time, all nodes are initialised to channel 26 by default. RPL is allowed five minutes to set up (which is ample time). RPL topology is formed in a minute. We wait for another five minutes to allow trickle timer to doubles the interval length so that RPL control messages are less frequently invoke. We then let our multichannel protocol runs for 25 minutes. In our 15 nodes simulation, our protocol takes 20-25 minutes to run the channel change set up. We allow another 5 minutes wait time if channel changes retransmission happen. 
+In a single channel simulation, all the nodes are changed to channel 22 after 5 minutes of RPL set up time. This allows RPL to have enough time to discover all nodes to form an optimised topology. The topology formation does not formed completely if the interference node interferes from the beginning. The interference node starts sending packets to interfere after 3 minutes the system is switched on so that the interference channel is involve in the channel changes decision. We proved that our protocol tries to avoid from changing to the interference channel through time out and probing failures. After 30 minutes, the client nodes will send a normal packet periodically every 30-60 seconds to LPBR. This is done in order to avoid collision of the nodes sending at the same time. The simulation is repeated 10 times.
 
 %We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
 
@@ -32,7 +33,7 @@ We run the simulation for a duration of 60 minutes to send 560 packets. When the
 
 As described previously, levels of interference used (referred to as \emph{clear\textunderscore time} in \cite{Boano:2010:MSM:2127940.2127963})
 vary between 100\% (no interference), 75\% (mild), 50\% (moderate) and 25\% (extreme) where the percentage is the ratio of the time the channel is clear for transmission.  All our tests have a common format: the RPL procedure is allowed to set up without interference in order not to bias subsequent tests.
-Then the intereferers begin to operate with a constant level (none, mild, moderate or extreme).  In the single channel case only that channel is used for interference.  In the multi-channel case, different channels have different interference levels.  All experiments are repeated ten times and the mean
+Then the interferers begin to operate with a constant level (none, mild, moderate or extreme). In the single channel case only that channel is used for interference.  In the multi-channel case, different channels have different interference levels.  All experiments are repeated ten times and the mean
 is plotted with error bars corresponding to one standard deviation in either deviation.  The plots are of the proportion of received packets (from 0\% to 100\%) against time where the loss is measured over the previous time period.  The x-value is shifted slightly left and right to prevent error bars overlapping
 
 \begin{figure}
@@ -64,18 +65,12 @@ packets but this can increase.
 For our new multiple channel protocol we consider two interference scenarios.
 In scenario 1 half the channels (including the original channel) have no
 interference at all and half the channels have extreme interference.
-In scenario 2, four channels (including the orginal channel) have no
+In scenario 2, four channels (including the original channel) have no
 interference, four have mild, four moderate and four extreme interference.
 Figure \ref{fig:multi_interference} shows multi channel results for these
-two scenarios.  In scenario 1 the protocol performs extremely well, the packet
-loss is near zero and the protocol successfully detects channels with interference.
-Scenario 2 has worse results but the protocol still does well at reducing the
-effects of interference.  In this case the final result is somewhere between
-the mild and the moderate interference level of the single channel case
-showing that the protocol has picked some of the channels with the least interference.
-The variance in the results is, as with the single channel case, high.  The worst
-results happen when nodes near the LPBR choose channels with higher interference
-levels (as those nodes carry the most traffic).
+two scenarios.  In scenario 1 the protocol performs extremely well, the packet loss is near zero and the protocol successfully detects channels with interference.
+Scenario 2 has similar results as in scenario 1. The protocol does well at reducing the effects of interference and could detects moderate and mild interference. 
+%Scenario 2 has worse results but the protocol still does well at reducing the effects of interference.  In this case the final result is somewhere between the mild and the moderate interference level of the single channel case showing that the protocol has picked some of the channels with the least interference. The variance in the results is, as with the single channel case, high. The worst results happen when nodes near the LPBR choose channels with higher interference levels (as those nodes carry the most traffic).
 
 
 \subsection{Setup Overhead}
