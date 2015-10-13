@@ -28,6 +28,12 @@ In a single channel simulation, all the nodes are changed to channel 22 after 5 
 %We evaluate multichannel RPL variant using three performance metrics: end to end packet delivery, latency and duty cycle. In end to end packet delivery, the transmission success rate is calculated from the sender to the receiver over multiple hops. The latency, time difference from sending to receiving is also calculated based on Cooja log time. Contiki's energy profiler is used to measure the duty cycle where the radio usage time in the total run is calculated.
 
 
+\subsection{Effect of multi-channel on performance}
+- MiCMAC, Chrysso - reduced PDR when the number of channels increases
+- ours could use any number of channels
+
+//graph??
+
 \subsection{Packet loss rates with single channel RPL versus multi-channel}
 %//with existings - better? worse? what about RAM, ROM used?
 
@@ -54,7 +60,7 @@ is plotted with error bars corresponding to one standard deviation in either dev
 \label{fig:multi_interference}
 \end{figure}
 
-Figure \ref{fig:interference} shows the results for the original RPL protocol.
+Figure \ref{fig:interference} shows the results for the ContikiMAC with RPL protocol.
 It can be seen that the level of packet loss varies considerably between experiments
 (the error bars are always large).  It can also be seen that even for mild 
 interference there is considerable loss and this gets worse as time proceeds.
