@@ -34,6 +34,8 @@ This paper focuses on a Multichannel Cross-Layer Routing Protocol (MCRP) which c
 %%%%%This paper focuses on a Multichannel Cross-Layer Routing Protocol (MCRP) which allows a centralised intelligence to make and communicate decisions about channels across the network and MAC layer. MCRP provides feedback when a channel is subject to interference using a probing phase. The protocol is tested using a two-hop colouring protocol to reduce interference between physically proximate nodes trying to communicate on the same channel. The system is failed safe in the sense that the WSN functions if the central system which assigns channels fails temporarily or permanently.
 %%%%
 
-We implement MCRP in Contiki and evaluate the protocol in Cooja simulated environment and in 26-nodes testbed FlockLab \cite{flocklab}. We demonstrate that MCRP avoids channels with interference which greatly reduces the effects of interference on the network.
+We implement MCRP in Contiki and evaluate the protocol in Cooja simulated environment. 
+%and in 26-nodes testbed FlockLab \cite{flocklab}. 
+We demonstrate that MCRP avoids channels with interference which greatly reduces the effects of interference on the network.
 
 The rest of the paper is organised as follows: Section \ref{sec:relatedwork} presents related work to multichannel protocols. Section \ref{sec:multichannel} describes the key idea of our proposed protocol and the high-level design and the implementation of the protocol in Contiki. We describe and evaluate the experimental results in Section \ref{sec:evaluation}. Finally, we conclude in Section \ref{sec:conclusion}.
