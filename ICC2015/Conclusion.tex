@@ -5,9 +5,9 @@
 
 We presented MCRP, a centralised cross-layer protocol that mitigates the effect of interference by avoiding affected channels and allows better spectrum usage by trying to move nearby nodes to listen on different channel using two-hop colouring protocol. Our protocol provides feedback when a channel is subject to interference using a probing phase.
 %The interference avoidance is through probing when moving to a new channel.
-The results from the simulation showed that our protocol avoids channels with interference hence has a high packet receiving rate.
+The results from the simulation showed that our protocol avoids channels with interference hence greatly reduced loss rates with negligible overhead. By reducing packet loss (hence retransmissions) and increasing the efficiency of spectrum usage, the multichannel system will be more energy efficient than single channel ContikiMAC with RPL over the lifetime of the system's deployment.
 
-%avoids packet loss.
+Future work is ongoing to develop the protocol. Deployment is underway on testbed FlockLab \cite{flocklab}. The next stages that we plan to pursue is to improve the interference model that we used in testing to cover multiple interference channels replicating the real world environment. The protocol will be tested against competing multi-channel protocols such as MiCMAC. We also plan to test our implementation on real hardware.  Finally we will allow nodes to update the LPBR on packet loss experienced in order that changes to interference patterns in the network can be reacted to.
 
 %Future work is ongoing to develop the protocol. The next stages that we plan to pursue is to improve the interference model that we used in testing to cover multiple interference channels replicating the real world environment. The protocol will be tested against competing multi-channel protocols such as MiCMAC. We also plan to test our implementation on real hardware.  Finally we will allow nodes to update the LPBR on packet loss experienced in order that changes to interference patterns in the network can be reacted to.
 
