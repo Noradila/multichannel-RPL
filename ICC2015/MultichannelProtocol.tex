@@ -19,7 +19,8 @@ The design of the multichannel protocol is based on several crucial observations
 \item RPL - RPL messages are sent through unicast when the neighbours are known and broadcast in the default Contiki channel 26 in order to reduce unnecessary transmitting in broadcast. By sending a broadcast on only one channel on which the new neighbours are going to start, the nodes can be discovered and the channel change processes can be performed. 
 %In multichannel, sending a broadcast on every channels would waste the bandwidth. RPL messages are instead sent through unicast when the neighbours are known and broadcast in the default Contiki channel 26 in order to reduce unnecessary transmitting in broadcast. By sending a broadcast on only one channel on which the new neighbours are going to start, the nodes can be discovered and the channel change processes can be performed. 
 
-\item Topology - The topology could change according to the routing metric the way the usual RPL would work. The nodes can still change the parents as usual as all neighbours know each other new channels. The neighbours that are not part of the route do not probe the parent when making the channel decision. However, the neighbours are informed of any channel changes.
+\item Topology - The topology could change according to the routing metric the way the usual RPL would work.
+The nodes can still change the parents as usual as all neighbours know each other new channels. The neighbours that are not part of the route do not probe the parent when making the channel decision. However, the neighbours are informed of any channel changes.
 
 \end{itemize}
 
