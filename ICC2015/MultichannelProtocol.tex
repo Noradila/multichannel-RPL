@@ -24,8 +24,8 @@ Our cross-layer multi-channel protocol focuses on the network and application la
 
 \subsection{Channel Selection Strategy}
 
-One main advantage of the system we propose is it is general and any algorithm can be used at the LPBR to assign channels. In this paper we use a two-hop colouring algorithm to select a channel to be assigned to a node.
-Two-hop colouring algorithm attempts to ensure that nearby nodes do not communicate on the same channel and risk interfering with each other. The protocol is inspired by graph colouring problems. The core idea is that no node should use the same listening channel as a neighbour or a neighbour of a neighbour (two hops).
+One main advantage of the system we propose is generality. Any algorithm can be used at the LPBR to assign channels. In this paper we use a two-hop colouring algorithm to select a channel to be assigned to a node.
+The two-hop colouring algorithm attempts to ensure that nearby nodes do not communicate on the same channel and risk interfering with each other. The protocol is inspired by graph colouring problems. The core idea is that no node should use the same listening channel as a neighbour or a neighbour of a neighbour (two hops).
 This allows fair load balancing on the channels and reduces channel interference that could occur when two nearby nodes transmit together on the same channel. The nodes used in this paper have a transmission range of approximately 20-30 metres indoors and 75-100 metres outdoors \cite{telosb-datasheet}. It could be the case that many nodes in a sensor network are in the transmission range of each other and potentially interfered with.
  
 All nodes are initialised to channel 26 by default in Contiki since it often has fewer interference problems with Wi-Fi and other sources. The studies in \cite{chrysso, micmac, watteyne} use a set list of whitelisted channels in their experiments and have channel 26 in common. The usual RPL set up mechanism is used to exchange control messages that are required to form an optimised topology before channel assignments can take place. The nodes will only be on the same channel once during the initial setup.  
