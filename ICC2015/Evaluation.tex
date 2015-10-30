@@ -17,6 +17,7 @@ In a single channel simulation, all the nodes are changed to channel 22 after 5 
 The simulations are repeated ten times. In all plots, the mean value of the ten simulations is plotted with error bars corresponding to one standard deviation in either deviation to give a measure of repeatability. The plots are of the proportion of received packets (from 0\% to 100\%) against time where the loss is measured over the previous time period.  The x-value is shifted slightly left and right to prevent error bars overlapping.
 
 \subsection{Packet loss rates with single channel RPL versus multi-channel}
+The performance obtained in ContikiMAC with RPL (single channel) is compared with our protocol in terms of packet loss rate.
 As described previously, levels of interference used (referred to as \emph{clear\textunderscore time} in \cite{Boano:2010:MSM:2127940.2127963})
 vary between 100\% (no interference), 75\% (mild), 50\% (moderate) and 25\% (extreme) where the percentage is the ratio of the time the channel is clear for transmission.  All our tests have a common format: the RPL procedure is allowed to set up without interference in order not to bias subsequent tests.
 Then the interferers begin to operate with a constant level (none, mild, moderate or extreme).
